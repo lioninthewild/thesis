@@ -1,0 +1,276 @@
+\chapter{Conclusions and Recommendations}
+\label{ch:conclusions}
+
+This chapter synthesises the findings of the thesis, provides
+direct answers to the research questions stated in
+Chapter~\ref{ch:introduction}, summarises the contributions of
+the work, presents specific recommendations for the Nepal Rastra
+Bank, and identifies directions for future research.
+
+% ================================================================
+\section{Summary of Work}
+\label{sec:summary}
+% ================================================================
+
+This thesis developed a formal, normalised metadata
+de-anonymization risk model for token-based Central Bank Digital
+Currency and applied it to Nepal's domestic CBDC deployment
+context under Nepal Rastra Bank jurisdiction.
+
+The theoretical framework derived three interconnected components
+from first principles. The single-attribute uniqueness score
+$s(a_i)$ measures the fraction of users uniquely identifiable
+from a single metadata attribute. The pairwise interaction
+coefficient $\lambda_{ij}$ captures the amplification in
+re-identification risk when two attributes are observed in
+combination, beyond what either attribute reveals individually.
+The normalised risk score $R_{\mathrm{norm}} = \Rraw / \Rmax$
+maps total accumulated risk into the unit interval using a proven
+theoretical upper bound $\Rmax(m) = m + \binom{m}{2}$, enabling
+direct comparison across schemes, attribute sets, and population
+sizes.
+
+The model was applied to six cryptographic schemes --- Plain Hash
+Token, Blind Signature, Hybrid Scheme, Ring Signature, Stealth
+Address, and ZKP Token --- across seven metadata attributes
+including two Nepal-specific fields: payment channel and
+transaction zone. Eight analyses were conducted covering baseline
+scheme comparison, population scalability, mitigation
+effectiveness, attribute sensitivity, seed sensitivity,
+micro-scale pilot behaviour, lambda sensitivity, and worst-case
+calibration against the theoretical maximum.
+
+% ================================================================
+\section{Answers to Research Questions}
+\label{sec:answers}
+% ================================================================
+
+\textbf{Primary question:} How can the metadata de-anonymization
+risk of different cryptographic schemes in a token-based CBDC be
+formally measured, normalised, and compared on a common
+quantitative scale?
+
+The $\Rnorm$ metric answers this question directly. By
+normalising $\Rraw$ against its proven theoretical maximum
+$\Rmax(m)$, the metric produces a scale-independent score in
+$[0, 1]$ comparable across any number of attributes and any
+population size. The metric was validated across 30 random seeds
+and calibrated against a worst-case scenario achieving
+$\Rnorm = 0.9994$, confirming the normalisation is correctly
+calibrated at 99.9\% of the theoretical maximum.
+
+\textbf{Secondary question 1 --- Scheme comparison:}
+At baseline ($N = 1{,}000$, $m = 7$), the six schemes produce
+the following $\Rnorm$ values: Plain Hash Token 0.317, Blind
+Signature 0.174, Stealth Address 0.107, Ring Signature 0.069,
+Hybrid Scheme 0.067, and ZKP Token 0.035. The six schemes form
+a clean, non-overlapping risk ladder. ZKP Token is 9.1 times
+safer than Plain Hash Token. Hybrid Scheme and Ring Signature
+are statistically equivalent at $N = 1{,}000$.
+
+\textbf{Secondary question 2 --- Population scalability:}
+Scale does not resolve the privacy problem for weak schemes.
+Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$
+--- 5.5 times the risk of ZKP Token at the same scale. ZKP Token
+is the only scheme whose $\Rnorm$ is scale-independent, remaining
+flat at 0.035 from $N = 100$ to $N = 100{,}000$. This formally
+disproves the assumption that population growth can substitute
+for cryptographic privacy design.
+
+\textbf{Secondary question 3 --- Mitigation effectiveness:}
+A full mitigation stack reduces risk substantially across all
+schemes. Ring Signature with full mitigation reaches
+$\Rnorm = 0.002$, within 0.001 of ZKP Token with full mitigation.
+Wallet unlinkability is the single most effective individual
+mitigation across all schemes. Nepal Controls alone produce zero
+risk reduction at $N = 1{,}000$ because Nepal's demographic
+clustering already suppresses uniqueness on payment channel and
+transaction zone.
+
+\textbf{Secondary question 4 --- Nepal-specific context:}
+Adding Nepal-specific attributes counterintuitively
+\textit{decreases} $\Rnorm$ for all schemes because $\Rmax$
+grows by 6 then 7 as each attribute is added, while $\Rraw$
+increases by near-zero due to the skewed distributions of these
+attributes. This formally proves that Nepal's demographic
+structure provides passive privacy protection on payment channel
+and transaction zone fields that does not require explicit
+technical mitigation at domestic scale.
+
+% ================================================================
+\section{Contributions}
+\label{sec:contributions}
+% ================================================================
+
+This thesis makes five contributions to the existing body of
+knowledge.
+
+\textbf{Contribution 1 --- Formal normalised privacy risk metric.}
+The $\Rnorm$ metric provides the first formally derived,
+normalised privacy risk score for token-based CBDC metadata.
+Unlike k-anonymity and differential privacy, which were not
+designed for scheme comparison, $\Rnorm$ produces a continuous
+score in $[0, 1]$ directly comparable across any cryptographic
+scheme, attribute set, and population size. The derivation of
+$\Rmax(m) = m + \binom{m}{2}$ as the proven theoretical upper
+bound is an original mathematical contribution.
+
+\textbf{Contribution 2 --- Quantitative six-scheme comparison.}
+This thesis provides the first quantitative comparison of six
+CBDC cryptographic schemes on a common privacy risk metric. Prior
+to this work, inter-scheme comparisons were qualitative. The risk
+ladder spanning $\Rnorm = 0.317$ to $\Rnorm = 0.035$ gives
+policymakers specific numbers for the privacy cost of each design
+choice.
+
+\textbf{Contribution 3 --- Formal disproof of scale substitution.}
+The population scalability analysis formally disproves the
+assumption that deploying a CBDC across a larger population
+provides meaningful privacy improvement for weak schemes. Plain
+Hash Token's residual risk floor of 0.191 at $N = 100{,}000$
+demonstrates that cryptographic design, not population size, is
+the determinant of long-run privacy risk.
+
+\textbf{Contribution 4 --- Nepal-specific deployment analysis.}
+By incorporating payment channel and transaction zone as
+Nepal-specific attributes grounded in Nepal's payment
+infrastructure, this thesis provides the first formal privacy risk
+analysis specifically designed for Nepal's domestic CBDC context.
+
+\textbf{Contribution 5 --- Micro-scale pilot risk quantification.}
+The micro-scale analysis demonstrates that at VDC pilot scale
+($N = 50$), all schemes except ZKP Token exceed
+$\Rnorm = 0.48$. This finding directly informs how NRB should
+approach any community-level CBDC pilot.
+
+% ================================================================
+\section{Recommendations for Nepal Rastra Bank}
+\label{sec:nrb_recommendations}
+% ================================================================
+
+Based on the findings of this thesis, the following specific
+recommendations are made to the Nepal Rastra Bank.
+
+\textbf{Recommendation 1 --- Do not deploy Plain Hash Token at
+any scale.} Plain Hash Token produces $\Rnorm = 0.317$ at pilot
+scale and 0.191 at national scale. Both values represent
+unacceptable citizen re-identification risk under Nepal's
+constitutional right to privacy. The scheme should be excluded
+from all deployment consideration.
+
+\textbf{Recommendation 2 --- Adopt Ring Signature as the minimum
+acceptable scheme for national deployment.} Ring Signature
+achieves $\Rnorm = 0.069$ at baseline and 0.002 with a full
+mitigation stack --- near-ZKP performance at significantly lower
+computational cost.
+
+\textbf{Recommendation 3 --- Consider Hybrid Scheme for
+resource-constrained deployment.} Hybrid Scheme
+($\Rnorm = 0.067$) is statistically equivalent to Ring Signature
+($\Rnorm = 0.069$) at $N = 1{,}000$ and may be implementable at
+lower computational cost on Nepal's low-end rural devices.
+
+\textbf{Recommendation 4 --- Prioritise wallet unlinkability in
+any mitigation stack.} Wallet unlinkability produces the largest
+single reduction in $\Rnorm$ across all schemes. Any deployed
+CBDC wallet should generate fresh addresses per transaction or
+implement nullifier-based unlinkability.
+
+\textbf{Recommendation 5 --- Do not rely on Nepal Controls as a
+substitute for cryptographic privacy.} Nepal Controls produce
+zero risk reduction at $N = 1{,}000$. Mitigation resources should
+be focused on amount, timestamp, and wallet attributes where
+marginal reduction is largest.
+
+\textbf{Recommendation 6 --- Use ZKP Token only if computational
+constraints can be resolved.} ZKP Token is the only scheme with
+scale-independent risk. If NRB can resolve its computational
+requirements through tiered CBDC architecture or offline ZKP
+verification, it should be the target deployment scheme.
+
+\textbf{Recommendation 7 --- Conduct any village pilot under
+Ring Signature or better.} At $N = 50$, all schemes except ZKP
+Token exceed $\Rnorm = 0.48$. Any NRB community-level pilot must
+deploy Ring Signature or above to protect pilot participants from
+high re-identification risk during the experimental phase.
+
+% ================================================================
+\section{Limitations}
+\label{sec:limitations_ch5}
+% ================================================================
+
+The model uses synthetically generated transaction data rather
+than real NRB records. While distributions are grounded in
+Nepal's context, results may differ with real data having
+different statistical properties.
+
+The model captures pairwise interactions only. In datasets with
+strong multi-way correlations the model may underestimate total
+risk.
+
+The adversary model covers passive observation only. Active
+attacks are outside scope.
+
+Several Hyperledger Fabric-specific metadata fields are not
+modelled --- transaction ID linkability, endorsing peer identity,
+and certificate metadata. Including these would increase $m$ and
+likely increase $\Rnorm$ for all schemes.
+
+% ================================================================
+\section{Future Work}
+\label{sec:future_work}
+% ================================================================
+
+\textbf{Higher-order interactions.} Extending the model to
+triplet and higher-order interaction terms would increase
+measurement precision for datasets with strong multi-way
+correlations, generalising to $\binom{m}{k}$ terms for order $k$.
+
+\textbf{Real transaction data.} Applying the model to real data
+from eSewa, Khalti, or NRB's own records would validate the
+synthetic distributions and produce deployment-specific estimates
+directly actionable for NRB.
+
+\textbf{Formal connection to existing frameworks.} A formal proof
+connecting $\Rnorm$ to the k-anonymity framework of
+\citet{sweeney2002} and the differential privacy framework of
+\citet{dwork2006} would position the metric within the
+established theoretical privacy literature.
+
+\textbf{Additional Fabric metadata attributes.} Extending to
+include transaction ID linkability, endorsing peer identity, and
+certificate metadata would raise $m$ from 7 to approximately 10,
+producing a more complete risk assessment for real Fabric
+deployments.
+
+\textbf{Cross-border remittance extension.} Including remittance
+corridor in a cross-border CBDC model would address Nepal's
+significant international financial flows excluded from this
+domestic-scope analysis.
+
+% ================================================================
+\section{Closing Remarks}
+\label{sec:closing}
+% ================================================================
+
+Nepal is at a consequential moment in its financial history.
+Millions of citizens who have never held a bank account may soon
+transact digitally for the first time. That opportunity is real,
+but so is the risk that the systems built to serve them could
+expose their lives in ways they never consented to.
+
+The choice of cryptographic scheme in a CBDC is not a technical
+detail. It is a policy decision with direct consequences for
+every person who uses the system. The difference between Plain
+Hash Token and Ring Signature is a factor of 4.6 in
+re-identification risk at national scale. The difference between
+Ring Signature with full mitigation and no mitigation is a
+factor of 34.
+
+Privacy in a CBDC is not incompatible with financial inclusion,
+regulatory compliance, or operational efficiency. Ring Signature
+with a full mitigation stack delivers near-ZKP privacy at a
+fraction of ZKP's computational cost. Nepal does not have to
+choose between reaching its unbanked population and protecting
+that population's privacy. It has to choose the right
+cryptographic scheme.

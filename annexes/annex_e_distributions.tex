@@ -1,0 +1,74 @@
+\chapter{Nepal Attribute Distribution Justification}
+\label{app:e_distributions}
+
+\section*{Payment Channel Distribution}
+
+The payment channel attribute reflects Nepal's digital
+payment infrastructure as of 2024--2025.
+
+\begin{table}[H]
+\centering
+\caption{Payment channel distribution --- Nepal context}
+\begin{tabular}{clcc}
+\toprule
+\textbf{Value} & \textbf{Channel} &
+\textbf{Probability} & \textbf{Justification}\\
+\midrule
+0 & Mobile wallet  & 0.60 &
+eSewa and Khalti market dominance\\
+1 & QR code        & 0.25 &
+Rapid QR adoption at merchants\\
+2 & NFC            & 0.10 &
+Urban smartphone users only\\
+3 & Offline token  & 0.05 &
+Rural low-connectivity deployment\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Transaction Zone Distribution}
+
+The transaction zone attribute reflects Nepal's geographic
+population distribution across five distinct zones.
+
+\begin{table}[H]
+\centering
+\caption{Transaction zone distribution --- Nepal context}
+\begin{tabular}{clcc}
+\toprule
+\textbf{Value} & \textbf{Zone} &
+\textbf{Probability} & \textbf{Justification}\\
+\midrule
+0 & Kathmandu valley & 0.35 &
+Capital digital activity concentration\\
+1 & Hill urban       & 0.20 &
+Secondary cities --- Pokhara, Biratnagar\\
+2 & Hill rural       & 0.25 &
+Largest rural population segment\\
+3 & Terai urban      & 0.12 &
+Southern plains urban centres\\
+4 & Terai rural      & 0.08 &
+Southern plains rural population\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Excluded Attribute: Remittance Corridor}
+
+Remittance corridor was considered as a third Nepal-specific
+attribute but excluded on scope grounds. This thesis models
+a domestic CBDC under NRB jurisdiction. Cross-border
+remittances involve separate settlement rails, foreign
+correspondent banking relationships, and regulatory
+frameworks outside NRB's domestic CBDC mandate. Remittance
+corridor is not an attribute observable within the domestic
+CBDC transaction record.
+
+Had remittance corridor been included, it would have taken
+five values: domestic (55\%), India corridor (20\%), Gulf
+corridor (15\%), Malaysia corridor (7\%), and other (3\%),
+based on Nepal Rastra Bank remittance flow data. Its skewed
+distribution would likely have produced
+$s(\text{remit}) \approx 0$ at $N = 1{,}000$, decreasing
+$R_{\mathrm{norm}}$ for the same reason the included
+Nepal-specific attributes do.

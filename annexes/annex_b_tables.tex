@@ -1,0 +1,84 @@
+\chapter{Full Numerical Results}
+\label{app:b_tables}
+
+\section*{Table B.1: Baseline Scheme Comparison}
+
+$R_{\mathrm{norm}}$ for all six schemes at
+$N = 1{,}000$, $m = 7$, $R_{\mathrm{max}} = 28$.
+
+\begin{table}[H]
+\centering
+\caption{Baseline $R_{\mathrm{norm}}$, $m=7$, $N=1{,}000$}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Scheme} &
+\textbf{$R_{\mathrm{raw}}$} &
+\textbf{$R_{\mathrm{norm}}$} &
+\textbf{Full Stack} &
+\textbf{Reduction}\\
+\midrule
+Plain Hash Token & 8.886 & 0.317 & 0.017 & 94.7\%\\
+Blind Signature  & 4.881 & 0.174 & 0.014 & 92.2\%\\
+Stealth Address  & 2.986 & 0.107 & 0.009 & 91.4\%\\
+Ring Signature   & 1.940 & 0.069 & 0.002 & 97.0\%\\
+Hybrid Scheme    & 1.887 & 0.067 & 0.002 & 97.1\%\\
+ZKP Token        & 0.982 & 0.035 & 0.002 & 95.0\%\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Table B.2: Population Scalability}
+
+$R_{\mathrm{norm}}$ across population sizes, $m = 7$.
+
+\begin{table}[H]
+\centering
+\caption{Population scalability, $m=7$}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Scheme} &
+\textbf{N=100} & \textbf{N=500} & \textbf{N=1K} &
+\textbf{N=5K} & \textbf{N=10K} & \textbf{N=100K}\\
+\midrule
+Plain~Hash~Token & 0.492 & 0.374 & 0.317 & 0.262 & 0.237 & 0.191\\
+Blind~Signature  & 0.450 & 0.256 & 0.174 & 0.090 & 0.090 & 0.083\\
+Hybrid~Scheme    & 0.380 & 0.098 & 0.067 & 0.068 & 0.068 & 0.068\\
+Ring~Signature   & 0.214 & 0.083 & 0.069 & 0.070 & 0.070 & 0.070\\
+Stealth~Address  & 0.277 & 0.158 & 0.107 & 0.087 & 0.087 & 0.087\\
+ZKP~Token        & 0.035 & 0.035 & 0.035 & 0.035 & 0.035 & 0.035\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Table B.3: Attribute Uniqueness $s(a_i)$}
+
+Individual $s(a_i)$ values at $N = 1{,}000$, $m = 7$.
+
+\begin{table}[H]
+\centering
+\caption{$s(a_i)$ values by scheme, $m=7$, $N=1{,}000$}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Attribute} &
+\textbf{PHT} & \textbf{BS} & \textbf{HS} &
+\textbf{RS} & \textbf{SA} & \textbf{ZKP}\\
+\midrule
+amount              & 0.988 & 0.988 & 0.006 & 0.006 & 0.988 & 0.000\\
+timestamp           & 0.892 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000\\
+merchant            & 0.006 & 0.006 & 0.000 & 0.000 & 0.000 & 0.000\\
+wallet              & 1.000 & 0.889 & 0.889 & 0.938 & 0.998 & 0.982\\
+frequency           & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000\\
+pay.\ channel       & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000\\
+tx.\ zone           & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000\\
+\midrule
+$R_{\mathrm{norm}}$ & 0.317 & 0.174 & 0.067 & 0.069 & 0.107 & 0.035\\
+\bottomrule
+\multicolumn{7}{l}{\footnotesize
+PHT=Plain Hash Token, BS=Blind Signature,
+HS=Hybrid Scheme,}\\
+\multicolumn{7}{l}{\footnotesize
+RS=Ring Signature, SA=Stealth Address, ZKP=ZKP Token}
+\end{tabular}
+\end{table}

@@ -1,0 +1,91 @@
+\documentclass[12pt,a4paper,oneside,openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}
+\usepackage{geometry}
+\geometry{a4paper,top=25mm,bottom=20mm,left=30mm,right=20mm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{parskip}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{float}
+\usepackage{booktabs,longtable,array,multirow,caption}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{language=Python,basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},commentstyle=\color{gray},
+  stringstyle=\color{orange},breaklines=true,frame=single,
+  numbers=left,numberstyle=\tiny\color{gray},xleftmargin=15pt,
+  extendedchars=true,inputencoding=utf8}
+\usepackage{fancyhdr}
+\usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\def\headrulewidth{0pt}
+\def\footrulewidth{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\def\headrulewidth{0pt}}
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\usepackage[hidelinks,bookmarks=true,bookmarksnumbered=true,
+  pdfencoding=auto]{hyperref}
+\hypersetup{
+  pdftitle={Quantifying Privacy Risk in Token-Based CBDC: A Normalised Metadata De-Anonymization Framework for Nepal},
+  pdfauthor={Prashish Dahal},
+  pdfsubject={Bachelor's Project Report, KU School of Science},
+  pdfkeywords={CBDC, privacy, blockchain, de-anonymization, Nepal}
+}
+\pdfstringdefDisableCommands{%
+  \def\Rnorm{R\_norm}%
+  \def\Rraw{R\_raw}%
+  \def\Rmax{R\_max}%
+  \def\mathrm#1{#1}%
+  \def\lambda{lambda}%
+  \def\binom#1#2{C(#1,#2)}%
+}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newcommand{\Rnorm}{R_{\mathrm{norm}}}
+\newcommand{\Rraw}{R_{\mathrm{raw}}}
+\newcommand{\Rmax}{R_{\mathrm{max}}}
+\begin{document}
+\pagenumbering{roman}
+\pagestyle{plain}
+\input{front/title}
+\input{front/declaration}
+\input{front/certification}
+\input{front/abstract}
+\input{front/acknowledgements}
+\clearpage
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\input{front/abbreviations}
+\clearpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+\clearpage
+\input{chapters/ch1_introduction}
+\input{chapters/ch2_literature}
+\input{chapters/ch3_methodology}
+\input{chapters/ch4_results}
+\input{chapters/ch5_conclusions}
+\newpage
+\addcontentsline{toc}{chapter}{References}
+\bibliography{references}
+\def\appendixname{Annex}
+\appendix
+\input{annexes/annex_a_code}
+\input{annexes/annex_b_tables}
+\input{annexes/annex_c_charts}
+\input{annexes/annex_d_seeds}
+\input{annexes/annex_e_distributions}
+\end{document}

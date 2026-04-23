@@ -1,0 +1,51 @@
+\newpage\thispagestyle{empty}
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\vspace{0.5cm}
+
+Central Bank Digital Currencies (CBDCs) promise to modernise
+payment infrastructure while extending financial inclusion to
+unbanked populations. However, the transition from physical cash
+to digital tokens introduces a critical privacy challenge: every
+transaction leaves a metadata trail that can expose citizens to
+re-identification even when no names are recorded. This risk is
+particularly significant in Nepal, where the Nepal Rastra Bank
+(NRB) is actively exploring a domestic token-based CBDC for
+deployment across diverse geographic and demographic contexts.
+
+Existing approaches to CBDC privacy comparison are qualitative in
+nature, offering no formal metric by which policymakers can
+measure, compare, or regulate metadata de-anonymization risk
+across different cryptographic scheme choices. This thesis
+addresses that gap by developing a formal, normalised privacy risk
+model grounded in information-theoretic principles.
+
+The model introduces three core components: a single-attribute
+uniqueness score $s(a_i)$, a pairwise interaction coefficient
+$\lambda_{ij}$ that captures amplification effects between
+attribute combinations, and a normalised risk score
+$R_{\mathrm{norm}} = R_{\mathrm{raw}} / R_{\mathrm{max}}$,
+where $R_{\mathrm{max}}(m) = m + \binom{m}{2}$ is derived from
+first principles as the proven theoretical upper bound. The model
+is applied to six cryptographic schemes --- Plain Hash Token,
+Blind Signature, Hybrid Scheme, Ring Signature, Stealth Address,
+and ZKP Token --- across seven metadata attributes, including two
+Nepal-specific fields: payment channel and transaction zone.
+
+Results demonstrate that the six schemes form a clean,
+non-overlapping risk ladder from $R_{\mathrm{norm}} = 0.317$
+(Plain Hash Token) to $R_{\mathrm{norm}} = 0.035$ (ZKP Token).
+Population scale provides no meaningful privacy improvement for
+weak schemes, with Plain Hash Token at $N = 100{,}000$ remaining
+$5.5\times$ riskier than ZKP Token. Nepal's demographic clustering
+provides passive privacy protection at domestic scale. Statistical
+validation across 30 random seeds confirms the scheme ranking is
+robust. A micro-scale analysis at $N = 50$ reveals critical risk
+at village pilot scale, with all non-ZKP schemes exceeding
+$R_{\mathrm{norm}} = 0.48$.
+
+The findings provide NRB with a formal, quantitative basis for
+cryptographic scheme selection prior to national CBDC deployment,
+with Ring Signature combined with a full mitigation stack
+identified as the recommended minimum for resource-constrained
+deployment contexts.

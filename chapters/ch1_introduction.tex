@@ -1,0 +1,647 @@
+% ================================================================
+% chapters/ch1_introduction.tex
+% Chapter 1 — Introduction
+% ================================================================
+
+\chapter{Introduction}
+\label{ch:introduction}
+
+% ================================================================
+\section{Background}
+\label{sec:background}
+% ================================================================
+
+Money has existed for thousands of years, but its form has
+changed dramatically over time. From barter to coins, from
+coins to paper notes, and now from paper notes to digital
+payments --- each transition has brought new conveniences
+alongside new challenges. The latest and perhaps most
+significant transition is the move toward fully digital
+currency issued directly by central banks, known as Central
+Bank Digital Currency, or CBDC.
+
+A CBDC is a digital form of a country's official currency,
+issued and backed by the central bank, just as physical
+banknotes are. Unlike private digital payment platforms such
+as eSewa or Khalti, a CBDC is legal tender --- it carries the
+full authority of the government and the central bank behind
+it. Unlike cryptocurrencies such as Bitcoin or Ethereum, a
+CBDC is not decentralised. It is issued, managed, and
+overseen by the central bank of the issuing country.
+
+To understand why CBDCs are being explored worldwide, it helps
+to understand the limitations of existing payment systems.
+Physical cash is anonymous --- when a person pays for groceries
+with a banknote, no record is created linking that person to
+that purchase. However, cash is inefficient for large
+transactions, easily lost or stolen, and impossible to use
+for remote or online payments. Digital payments solve these
+problems but introduce a new one: every digital transaction
+creates a data record. This record includes who paid, how
+much, when, where, and to whom. These details are collectively
+referred to as transaction metadata.
+
+Transaction metadata is enormously valuable --- to banks for
+fraud detection, to governments for tax compliance, and to
+regulators for anti-money laundering monitoring. However, the
+same metadata that serves legitimate purposes also creates
+serious privacy risks. If transaction metadata can be accessed
+by unauthorised parties, or if it can be analysed to identify
+individuals who were supposed to be anonymous, then digital
+currency systems fundamentally undermine the privacy that
+physical cash provided.
+
+This is the core tension at the heart of every CBDC design:
+how do you build a digital currency that is efficient,
+compliant with regulations, and inclusive --- while also
+protecting the privacy of the citizens who use it? There is
+no simple answer, and different cryptographic approaches offer
+different tradeoffs between privacy and transparency. The
+choice of cryptographic scheme is therefore one of the most
+consequential design decisions in any CBDC deployment.
+
+Globally, over 130 countries are exploring or piloting CBDCs
+as of 2024. China's digital yuan, known as the e-CNY, has
+been piloted across multiple major cities and has processed
+billions of yuan in transactions. The European Central Bank
+is advancing the digital euro project, with privacy described
+as a core design requirement. The Eastern Caribbean Currency
+Union launched the DCash system, and the Bahamas operates the
+Sand Dollar --- the world's first fully deployed retail CBDC.
+These projects represent a broad consensus that digital
+currency is not a distant possibility but an imminent reality
+for financial systems worldwide.
+
+Nepal is not isolated from this global movement. The Nepal
+Rastra Bank (NRB), Nepal's central bank, has been examining
+the feasibility of a domestic CBDC as part of its digital
+financial infrastructure strategy. Any CBDC deployed in Nepal
+would sit on top of existing payment infrastructure, interact
+with platforms like eSewa and Khalti that millions of Nepalis
+already use, and serve a population that spans geographically
+diverse zones from the dense urban concentration of the
+Kathmandu valley to the remote hill and Terai rural regions.
+The privacy implications of a CBDC in this specific context
+have not yet been formally studied, and that is precisely the
+gap this thesis addresses.
+
+% ================================================================
+\section{Nepal Context}
+\label{sec:nepal_context}
+% ================================================================
+
+Nepal presents a distinctive and important context for CBDC
+deployment that differs significantly from both Western
+economies and the larger Asian economies typically studied in
+the CBDC literature. Understanding Nepal's specific
+characteristics is essential for understanding why this
+thesis approaches the privacy problem the way it does.
+
+\subsection{Financial Inclusion and the Unbanked Population}
+
+Despite significant progress in recent years, a substantial
+portion of Nepal's population remains either unbanked or
+underbanked. Access to formal financial services is
+geographically uneven, with urban centres having far greater
+branch density than rural hill and Terai regions. A CBDC
+represents a significant opportunity to extend financial
+access to populations who have historically been excluded
+from the formal banking system, particularly if it is
+delivered through mobile platforms that do not require a
+physical branch visit.
+
+However, financial inclusion and privacy are not automatically
+aligned. The very act of bringing previously unbanked citizens
+into a digital payment system creates a new metadata record
+for every transaction they make. For a person who has never
+been part of a formal financial system, this represents a
+sudden and significant increase in their digital footprint.
+If the CBDC system does not adequately protect metadata
+privacy, the populations that benefit most from financial
+inclusion may also bear the greatest privacy risk.
+
+\subsection{Mobile-First Payment Infrastructure}
+
+Nepal's digital payment ecosystem has developed rapidly and
+is predominantly mobile-first. eSewa and Khalti, Nepal's two
+dominant digital wallet platforms, together process the
+majority of digital transactions in the country. QR code
+payments have been adopted widely at merchants ranging from
+large supermarkets to small roadside stalls. Near-field
+communication (NFC) payments are emerging in urban areas,
+while offline token systems are being explored for low
+connectivity rural deployment.
+
+This mobile-first reality means that in a CBDC deployment,
+the payment channel --- whether a transaction was made via
+mobile wallet, QR code, NFC, or offline token --- is a
+metadata field that is observable at the network level. As
+this thesis will demonstrate, this attribute is relevant to
+privacy risk modelling in Nepal's specific context and has
+been incorporated into the model accordingly.
+
+\subsection{Geographic Stratification}
+
+Nepal's geography creates one of the most stratified
+transaction environments of any CBDC deployment context
+being considered globally. The country spans five distinct
+geographic zones with dramatically different population
+densities, merchant concentrations, and transaction
+frequencies:
+
+\begin{itemize}
+    \item \textbf{Kathmandu Valley} --- the capital region,
+    accounting for approximately 35\% of all digital
+    transactions despite being a small geographic area.
+    High merchant density, high transaction frequency.
+
+    \item \textbf{Hill Urban} --- secondary cities such as
+    Pokhara, Biratnagar, and Dharan. Moderate transaction
+    density and growing digital payment adoption.
+
+    \item \textbf{Hill Rural} --- the largest rural segment
+    by population. Low merchant density, low transaction
+    frequency, and limited connectivity in many areas.
+
+    \item \textbf{Terai Urban} --- urban centres in Nepal's
+    southern plains. Growing commercial activity and
+    cross-border trade influence.
+
+    \item \textbf{Terai Rural} --- rural southern plains
+    with significant agricultural activity and informal
+    economic transactions.
+\end{itemize}
+
+This geographic stratification matters for privacy because
+transaction zone is an observable metadata field in any
+CBDC system with location-aware merchant registration.
+A transaction recorded in a hill rural zone with limited
+merchants may be far more uniquely identifying than an
+identical transaction recorded in the Kathmandu valley,
+simply because there are fewer possible users that
+transaction could belong to. This thesis incorporates
+transaction zone as a Nepal-specific attribute in its
+model for precisely this reason.
+
+\subsection{Constitutional Right to Privacy}
+
+Nepal's Constitution, promulgated in 2015, guarantees the
+right to privacy as a fundamental right under Article 28.
+This constitutional protection extends to personal
+information and communications, and creates a legal
+obligation for any state-sponsored digital system to
+protect citizen privacy. A CBDC issued by the Nepal Rastra
+Bank would be a state-sponsored system, and its privacy
+properties are therefore not merely a technical preference
+but a constitutional requirement.
+
+\subsection{The Nepal Rastra Bank's Digital Currency Exploration}
+
+The Nepal Rastra Bank has been actively studying digital
+financial infrastructure, including CBDC feasibility, as
+part of its broader financial modernisation agenda. NRB
+has noted the importance of privacy, security, and
+financial inclusion as core requirements for any digital
+currency initiative. The deployment platform most
+frequently referenced in the context of permissioned
+blockchain-based CBDC is Hyperledger Fabric, a
+production-grade enterprise blockchain framework that
+provides the permissioned identity management and
+chaincode-based transaction processing capabilities
+required for a regulated financial system.
+
+This thesis models the privacy risk specifically within
+the context of a Hyperledger Fabric-based token CBDC
+under NRB's domestic jurisdiction. Cross-border
+remittances, while significant to Nepal's economy,
+involve separate settlement rails and regulatory
+frameworks and are therefore outside the scope of this
+domestic model.
+
+% ================================================================
+\section{The Problem}
+\label{sec:problem}
+% ================================================================
+
+The problem this thesis addresses can be stated plainly:
+when a CBDC transaction is recorded on a digital ledger,
+it leaves behind a set of observable metadata fields.
+These fields --- the amount, the time, the merchant, the
+wallet identifier, the transaction frequency, the payment
+channel, and the geographic zone --- do not contain the
+user's name. But the combination of these fields may be
+sufficient to identify the user anyway.
+
+This is not a hypothetical concern. In 2006, researchers
+Narayanan and Shmatikoff demonstrated that supposedly
+anonymous Netflix viewing records could be linked to real
+individuals by correlating them with public ratings on
+the Internet Movie Database. The users had no names
+attached to their Netflix records. Yet their viewing
+patterns alone were unique enough that knowing just eight
+ratings was sufficient to identify 99\% of users in the
+dataset. The lesson was direct: removing a name from a
+record does not make the record anonymous if the
+remaining data is sufficiently unique.
+
+The same principle applies to CBDC transaction metadata.
+A user who pays NPR 4,738.50 at a specific merchant at
+2:47am using a mobile wallet in a hill rural zone has
+created a transaction fingerprint that may be unique to
+exactly one person in the entire population. No
+cryptographic attack is needed. No key is broken. The
+information is simply there in the metadata, waiting to
+be read.
+
+\subsection{The Pseudonymity Problem}
+
+Hyperledger Fabric, the platform most relevant to Nepal's
+CBDC context, operates with a permissioned identity model.
+Every participant has an X.509 certificate issued by the
+Membership Service Provider (MSP). The Nepal Rastra Bank,
+as the network operator, knows the real-world identity
+behind every wallet address. This is by design --- KYC
+and AML compliance requires it.
+
+However, this does not mean the privacy problem disappears.
+The ledger is visible to all peers on a channel, which
+may include financial institutions, payment processors,
+and merchant organisations who are channel participants
+but who should not have access to the complete transaction
+history of every citizen. Furthermore, if the transaction
+log is ever separated from the identity mapping --- through
+a data breach, an insider threat, or a regulatory
+disclosure --- the richness of the metadata alone may be
+sufficient to re-identify users without ever consulting
+the identity table.
+
+This is the pseudonymity problem. A CBDC system may
+replace real names with wallet addresses, but if the
+transaction metadata is rich enough, the pseudonym itself
+becomes identifying. The wallet address of a user who
+always pays at the same four merchants, always at the
+same times, and always in amounts consistent with a
+specific income level is effectively a name --- it just
+uses numbers instead of letters.
+
+\subsection{The Measurement Gap}
+
+Despite the significance of this problem, no formal
+quantitative framework exists for measuring metadata
+de-anonymization risk across different CBDC cryptographic
+scheme choices. Existing comparisons between schemes are
+qualitative: researchers and policymakers say that ring
+signatures provide more privacy than blind signatures,
+or that zero-knowledge proofs provide stronger guarantees
+than hash-based tokens. These statements are directionally
+correct but provide no quantitative basis for decision-making.
+
+A policymaker at NRB considering whether to deploy Ring
+Signature tokens or ZKP tokens cannot currently answer
+questions such as:
+
+\begin{itemize}
+    \item How much more privacy does Ring Signature
+    provide compared to Blind Signature, expressed as
+    a measurable quantity?
+
+    \item If Ring Signature cannot be deployed due to
+    computational constraints, how much privacy is lost
+    by falling back to Blind Signature, and can that
+    loss be recovered through mitigation strategies?
+
+    \item At Nepal's target deployment scale of
+    100,000 users, does the risk profile of each scheme
+    change significantly compared to a pilot of 1,000
+    users?
+
+    \item Are the results of any such analysis stable,
+    or do they depend on the specific data used to
+    produce them?
+\end{itemize}
+
+Without answers to these questions, scheme selection
+is either arbitrary or driven by factors other than
+privacy --- such as implementation cost or familiarity
+--- with no formal basis for claiming that the chosen
+scheme provides adequate privacy protection.
+
+This thesis provides the mathematical framework,
+the implementation, and the empirical analysis required
+to answer all of these questions with specific numbers.
+
+% ================================================================
+\section{Research Question}
+\label{sec:research_question}
+% ================================================================
+
+The central research question motivating this thesis is:
+
+\vspace{0.5em}
+\begin{center}
+\textit{How can the metadata de-anonymization risk of
+different cryptographic schemes in a token-based CBDC
+be formally measured, normalised, and compared on a
+common quantitative scale?}
+\end{center}
+\vspace{0.5em}
+
+This primary question gives rise to four secondary
+research questions that structure the analysis:
+
+\begin{enumerate}
+
+    \item \textbf{Scheme comparison.} Across six
+    cryptographic schemes --- Plain Hash Token, Blind
+    Signature, Hybrid Scheme, Ring Signature, Stealth
+    Address, and ZKP Token --- what are the relative
+    metadata privacy risk levels at a baseline population
+    of $N = 1{,}000$ users?
+
+    \item \textbf{Population scalability.} How does the
+    risk profile of each scheme change as the CBDC
+    population grows from a small village pilot of
+    $N = 10$ users to a national deployment of
+    $N = 100{,}000$ users? Does scale improve privacy,
+    and if so, by how much and for which schemes?
+
+    \item \textbf{Mitigation effectiveness.} How
+    effectively do privacy-enhancing technical
+    mitigations --- differential privacy on amounts,
+    timestamp suppression, wallet unlinkability, and
+    Nepal-specific controls --- reduce the risk score
+    of each scheme, and which mitigations provide the
+    greatest return?
+
+    \item \textbf{Nepal-specific context.} How do
+    Nepal-specific metadata attributes --- payment
+    channel and transaction zone --- affect the risk
+    model, and what does the model reveal about the
+    privacy implications of Nepal's specific demographic
+    and geographic structure?
+
+\end{enumerate}
+
+These questions are answered through the development
+and application of a formal mathematical model whose
+design, derivation, and implementation are described
+in detail in Chapter~\ref{ch:methodology}, and whose
+results are presented and discussed in
+Chapter~\ref{ch:results}.
+
+% ================================================================
+\section{Research Objectives}
+\label{sec:objectives}
+% ================================================================
+
+The overarching objective of this thesis is to develop a
+formal, quantitative framework for measuring metadata
+de-anonymization risk in token-based CBDC systems and to
+apply that framework in Nepal's specific deployment context.
+This overarching objective is broken down into five concrete
+objectives that together define the scope and contribution
+of the work.
+
+The first objective is to derive a normalised privacy risk
+metric from mathematical first principles. This metric,
+denoted $R_{\mathrm{norm}}$, must be bounded in the interval
+$[0, 1]$, must be comparable across different numbers of
+attributes and different population sizes, and must have a
+proven theoretical upper bound that gives the normalisation
+its meaning. Achieving this requires deriving both the
+raw risk accumulation formula and the theoretical maximum
+against which it is normalised.
+
+The second objective is to model six cryptographic schemes
+that represent the realistic spectrum of token-based CBDC
+privacy designs. These schemes --- Plain Hash Token, Blind
+Signature, Hybrid Scheme, Ring Signature, Stealth Address,
+and ZKP Token --- span from the weakest to the strongest
+available privacy guarantees. Each scheme must be modelled
+in terms of how it transforms the value domain of each
+observable metadata attribute, so that differences in
+$R_{\mathrm{norm}}$ across schemes reflect genuine
+cryptographic design differences rather than arbitrary
+parameter choices.
+
+The third objective is to incorporate Nepal-specific context
+into the model. This means identifying the metadata
+attributes most relevant to Nepal's domestic CBDC deployment,
+grounding their value distributions in Nepal's payment
+infrastructure and geographic structure, and formally
+justifying the exclusion of attributes outside the domestic
+scope.
+
+The fourth objective is to conduct a comprehensive empirical
+analysis covering eight distinct experimental conditions:
+baseline scheme comparison, population scalability from
+village pilot to national scale, mitigation strategy
+effectiveness, attribute sensitivity as the number of modelled
+attributes grows, statistical robustness across multiple
+random seeds, micro-scale behaviour at very small populations,
+sensitivity of results to the interaction coefficient, and
+worst-case scenario calibration against the theoretical
+maximum.
+
+The fifth objective is to translate the quantitative findings
+into actionable policy recommendations for the Nepal Rastra
+Bank, providing a formal basis for cryptographic scheme
+selection that can inform NRB's CBDC deployment decision.
+
+% ================================================================
+\section{Scope and Limitations}
+\label{sec:scope}
+% ================================================================
+
+Every research model operates within a defined boundary.
+Being explicit about that boundary is not a weakness --- it
+is a requirement for honest and reproducible science. This
+section defines what this thesis does and does not cover,
+and why each boundary was drawn where it was.
+
+\subsection{Scope}
+
+This thesis models a domestic, token-based CBDC under the
+jurisdiction of the Nepal Rastra Bank. The reference
+deployment platform is Hyperledger Fabric, a permissioned
+enterprise blockchain framework. The model operates on
+transaction metadata --- the observable fields associated
+with a completed transaction --- and measures the risk that
+this metadata can be used to re-identify users.
+
+The model covers seven metadata attributes: transaction
+amount, timestamp, merchant identifier, wallet address,
+transaction frequency, payment channel, and transaction
+zone. These seven attributes correspond to fields that would
+be observable on a Hyperledger Fabric ledger in a realistic
+CBDC deployment. The model covers six cryptographic schemes,
+five mitigation strategies, populations ranging from
+$N = 10$ to $N = 100{,}000$, and attribute sets ranging
+from $m = 1$ to $m = 7$.
+
+\subsection{Limitations}
+
+The following limitations are acknowledged and should be
+considered when interpreting results.
+
+\textbf{Synthetic data.} The model uses synthetically
+generated transaction data rather than real NRB transaction
+records. The distributions chosen for each attribute are
+informed by Nepal's payment infrastructure context, but
+they are approximations. Results may differ if applied to
+real transaction data with different statistical properties.
+
+\textbf{Domestic scope only.} Cross-border remittance
+transactions are excluded. While remittances constitute
+a significant portion of Nepal's financial flows,
+they involve separate settlement rails, foreign
+correspondent banking relationships, and regulatory
+frameworks outside NRB's domestic CBDC mandate.
+Remittance corridor was considered as an attribute
+and explicitly excluded on these grounds.
+
+\textbf{Pairwise interactions only.} The model captures
+interaction effects between pairs of attributes. Higher-order
+interactions --- triplets, quadruplets, and beyond --- are
+not modelled. For most practical deployment scenarios,
+pairwise interactions capture the dominant amplification
+effects. However, in datasets with strong higher-order
+correlations, the model may underestimate total risk.
+
+\textbf{Passive adversary only.} The threat model assumes
+a passive observer who reads the ledger but does not
+modify it, inject transactions, or perform active attacks
+such as Sybil attacks or transaction injection. Active
+attack vectors are outside the scope of this model.
+
+\textbf{Hyperledger Fabric specific fields.} Several
+Fabric-specific metadata fields are not included in the
+model, including transaction ID linkability, endorsing
+peer identity, chaincode version, and X.509 certificate
+metadata. These fields represent additional leakage channels
+that would increase $m$ and consequently $R_{\mathrm{max}}$
+if included. Their exclusion is acknowledged as a limitation
+and represents a direction for future work.
+
+\textbf{Static population.} The model assumes a fixed
+population of $N$ users. In practice, a CBDC user base
+grows over time as adoption increases. The scalability
+analysis in Chapter~\ref{ch:results} partially addresses
+this by testing across a wide range of $N$ values, but
+does not model dynamic user entry and exit.
+
+% ================================================================
+\section{Significance of the Study}
+\label{sec:significance}
+% ================================================================
+
+The significance of this work operates at three levels:
+academic, policy, and societal.
+
+At the academic level, this thesis makes a contribution
+to the formal privacy measurement literature by introducing
+a normalised metric specifically designed for the CBDC
+metadata context. Existing privacy frameworks --- k-anonymity,
+l-diversity, and differential privacy --- were not developed
+with CBDC metadata in mind and do not directly address the
+multi-scheme comparison problem this thesis solves.
+The derivation of $R_{\mathrm{max}}(m) = m + \binom{m}{2}$
+as a proven theoretical upper bound, and the use of this
+bound to produce a scale-independent normalised score,
+represents a formal contribution that extends the existing
+privacy measurement literature into a new application domain.
+
+At the policy level, this thesis provides the Nepal Rastra
+Bank with the first quantitative tool for comparing CBDC
+cryptographic schemes on the basis of metadata privacy risk.
+Prior to this work, any comparison between schemes relied
+on qualitative judgement. This thesis replaces that
+judgement with specific numbers: $R_{\mathrm{norm}} = 0.317$
+for Plain Hash Token and $R_{\mathrm{norm}} = 0.035$ for
+ZKP Token at $N = 1{,}000$, with the full risk ladder,
+mitigation effectiveness data, and population scalability
+curves available for any deployment scenario NRB wishes
+to evaluate.
+
+At the societal level, the stakes of getting CBDC privacy
+right are real and affect ordinary people. Nepal has a
+constitutional right to privacy, a large rural population
+that will be entering the digital financial system for
+the first time, and a geographic structure that makes
+certain communities particularly vulnerable to
+re-identification from transaction metadata. The
+micro-scale analysis in this thesis demonstrates that
+at a village pilot scale of $N = 50$ users, all schemes
+except ZKP Token produce $R_{\mathrm{norm}} > 0.48$ ---
+meaning nearly half of pilot participants are potentially
+re-identifiable from their transaction metadata alone.
+This finding has direct implications for how NRB should
+approach any community-level CBDC pilot, regardless of
+which scheme is ultimately selected for national deployment.
+
+Furthermore, Nepal is not alone in this context. Many
+developing economies share Nepal's characteristics ---
+mobile-first infrastructure, geographic stratification,
+high remittance dependency, and a large unbanked population
+entering the digital economy. The framework developed in
+this thesis is generalizable beyond Nepal. Any central bank
+facing similar deployment conditions can substitute their
+own attribute set and population parameters into the model
+and obtain equivalent analysis. This positions the work
+as a contribution not only to Nepal's CBDC policy but
+to the broader global conversation about how to build
+digital currencies that serve financial inclusion without
+sacrificing the privacy of the people they are designed
+to help.
+
+% ================================================================
+\section{Report Structure}
+\label{sec:structure}
+% ================================================================
+
+This report is organised into five chapters, each building
+on the previous to construct a complete argument from
+problem identification through to policy recommendation.
+
+Chapter~\ref{ch:introduction} --- the present chapter ---
+establishes the background, context, and motivation for
+the research. It introduces the CBDC privacy problem,
+situates it within Nepal's specific deployment context,
+defines the research questions and objectives, and
+honestly states the scope and limitations of the work.
+
+Chapter~\ref{ch:literature} reviews the existing body of
+knowledge relevant to this thesis. It covers the global
+CBDC landscape, the concept of privacy in digital payment
+systems, the cryptographic schemes evaluated in this work,
+known de-anonymization attacks including the foundational
+Netflix attack, existing formal privacy measurement
+frameworks and their limitations, and the role of
+Hyperledger Fabric as the reference platform. The chapter
+concludes by identifying the specific research gap that
+this thesis fills.
+
+Chapter~\ref{ch:methodology} presents the complete
+theoretical framework and implementation. It defines the
+system model and adversary model, derives the mathematical
+components of the risk metric from first principles,
+describes the six cryptographic schemes and their metadata
+transformations, justifies the Nepal-specific attribute
+set, and documents the synthetic data generation approach
+and Python implementation.
+
+Chapter~\ref{ch:results} presents and discusses the
+results of eight analyses. Each analysis is presented
+with its motivating question, methodology, results, and
+interpretation. The chapter covers baseline scheme
+comparison, population scalability, mitigation
+effectiveness, attribute sensitivity, seed sensitivity,
+micro-scale pilot behaviour, lambda sensitivity, and
+worst-case calibration.
+
+Chapter~\ref{ch:conclusions} synthesises the findings,
+provides direct answers to the research questions stated
+in this chapter, summarises the contributions of the
+thesis, makes specific recommendations to the Nepal
+Rastra Bank, and identifies directions for future work
+that extend or build upon this model.

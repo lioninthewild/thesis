@@ -1,0 +1,1430 @@
+% ================================================================
+% chapters/ch3_methodology.tex
+% Chapter 3 — Materials and Methods
+% Sections 3.1 to 3.4 (this file)
+% ================================================================
+
+\chapter{Materials and Methods}
+\label{ch:methodology}
+
+This chapter presents the complete theoretical framework and
+implementation of the metadata de-anonymization risk model.
+It is structured in two parts. The first part --- Sections
+\ref{sec:system_model} through \ref{sec:mitigation} ---
+derives the mathematical model from first principles. The
+second part --- Sections \ref{sec:fabric_context} through
+\ref{sec:implementation} --- describes the system design and
+Python implementation through which the model is applied to
+Nepal's domestic CBDC context.
+
+% ================================================================
+\section{System Model}
+\label{sec:system_model}
+% ================================================================
+
+\subsection{Population and Users}
+
+Let $U$ denote the set of all users in the CBDC system,
+with $|U| = N$ where $N$ is the total population size. Each
+user $u \in U$ represents a distinct real-world individual
+who holds a CBDC wallet and participates in the domestic
+payment system.
+
+In this model, the population is treated as a fixed snapshot
+at a given point in time. This reflects the scenario where
+an adversary obtains the complete transaction ledger and
+attempts to identify users from the observable metadata.
+The scalability analysis in Chapter~\ref{ch:results}
+examines how the risk profile changes as $N$ varies from
+a small village pilot to a national deployment.
+
+\subsection{Attributes and Value Domains}
+
+Each transaction in the CBDC system is associated with a
+set of $m$ observable metadata attributes. Formally, each
+attribute $a_i$ is a function that maps every user in $U$
+to a value in a domain $V_i$:
+
+\begin{equation}
+a_i : U \rightarrow V_i \quad \text{for } i = 1, 2, \ldots, m
+\label{eq:attribute_function}
+\end{equation}
+
+The value domain $V_i$ is the complete set of all possible
+values that attribute $a_i$ can take. The nature of $V_i$
+depends on the attribute:
+
+\begin{itemize}
+    \item For \textit{amount}, $V_i \subset \mathbb{R}^+$,
+    the positive reals. Under Plain Hash Token, $V_i$ is
+    effectively continuous. Under ZKP Token, $V_i$ is a
+    finite set of five denomination bands.
+
+    \item For \textit{timestamp}, $V_i \subset \mathbb{Z}$,
+    the integers. The granularity --- from fine-grained
+    Unix-style integers to day-of-week only --- depends on
+    the cryptographic scheme.
+
+    \item For \textit{merchant}, \textit{payment channel},
+    and \textit{transaction zone}, $V_i$ is a finite
+    categorical set whose cardinality varies by scheme.
+
+    \item For \textit{wallet}, $V_i$ is a finite set of
+    address identifiers whose size depends on the scheme's
+    wallet generation mechanism.
+
+    \item For \textit{frequency}, $V_i \subset \mathbb{Z}^+$,
+    the positive integers, bounded by the scheme's
+    transaction rate parameters.
+\end{itemize}
+
+The value domain is determined at three levels. Reality sets
+the outer boundary: amounts cannot be negative, zones cannot
+refer to regions outside Nepal. The CBDC system design sets
+the precision and granularity: the chaincode records amounts
+to two decimal places under Plain Hash Token or to the
+nearest NPR 100 under Ring Signature. The cryptographic
+scheme then transforms what is actually observable: ZKP range
+proofs reduce the observable amount to a coarse band
+regardless of the underlying transaction value.
+
+\subsection{The Attribute Matrix}
+
+The complete metadata record of the CBDC system can be
+represented as a matrix $\mathbf{A}$ of dimension $N \times m$,
+where entry $\mathbf{A}_{u,i} = a_i(u)$ is the value of
+attribute $i$ for user $u$. Each row corresponds to a user's
+transaction fingerprint. The adversary's goal is to identify
+which row corresponds to a target individual --- that is,
+to invert the mapping from observable metadata to real
+identity.
+
+% ================================================================
+\section{Adversary Model}
+\label{sec:adversary_model}
+% ================================================================
+
+\subsection{Adversary Type}
+
+The adversary is modelled as a \textit{passive,
+honest-but-curious observer}. This is a standard adversary
+model in cryptographic privacy literature. The adversary:
+
+\begin{itemize}
+    \item \textbf{Observes} all $m$ metadata fields for
+    every transaction on the ledger. They have complete
+    read access to the attribute matrix $\mathbf{A}$.
+
+    \item \textbf{Does not modify} transactions, inject
+    false records, or perform active attacks on the
+    cryptographic primitives.
+
+    \item \textbf{Has unlimited computation}. There is no
+    computational hardness assumption in this model. The
+    threat is purely information-theoretic: what can be
+    inferred from the structure of the observable data,
+    regardless of computational cost.
+
+    \item \textbf{Has one goal}: given a transaction record
+    --- a row of $\mathbf{A}$ --- identify which user
+    $u \in U$ produced it.
+\end{itemize}
+
+\subsection{Why Unlimited Computation}
+
+The unlimited computation assumption is deliberate and
+important. Computational hardness assumptions --- the basis
+of most cryptographic security proofs --- are time-dependent.
+What is computationally infeasible today may become feasible
+with advances in hardware, algorithms, or quantum computing.
+By assuming unlimited computation, this model produces
+risk bounds that are permanent: if the information is
+structurally present in the metadata, the adversary can
+exploit it regardless of when or with what hardware they
+attempt to do so.
+
+This is an information-theoretic threat model, asking not
+``can the adversary compute this?'' but ``is the information
+present in the data at all?'' The answer to the latter
+question does not change over time.
+
+\subsection{Concrete Adversary Instantiations}
+
+The passive honest-but-curious adversary model covers three
+realistic threat scenarios in Nepal's CBDC context.
+
+\textbf{The compromised insider.} A Nepal Rastra Bank
+employee with read access to the transaction database. They
+have not broken any cryptographic system --- they have
+legitimate access --- but they attempt to use transaction
+patterns to build behavioural profiles of specific users.
+This is not a theoretical risk: central bank data breaches
+have occurred in Bangladesh, Ecuador, and multiple other
+jurisdictions.
+
+\textbf{The passive network participant.} Any organisation
+that is a member of the Hyperledger Fabric channel sees all
+transactions on that channel. A large merchant network,
+a payment processor, or a correspondent bank that is a
+channel participant has full read access to the ledger
+without any attack.
+
+\textbf{The merchant coalition.} Multiple merchants
+independently see their own transactions with users. By
+sharing transaction data --- amounts, times, wallet
+addresses --- they can construct a combined view of user
+behaviour across platforms. Nepal's dominant payment
+platforms eSewa and Khalti already hold significant
+transaction data on the same user populations that would
+use a CBDC.
+
+\subsection{Scope of the Adversary Model}
+
+This model does not cover active adversaries who inject
+false transactions, perform Sybil attacks, or attempt to
+break cryptographic primitives by brute force or algorithm.
+Those threat categories are outside the scope of this
+thesis and represent a separate research problem. The
+passive metadata analysis threat is chosen because it is
+the realistic and immediate risk for a CBDC deployment ---
+no sophisticated attack is required, only the ability to
+read and analyse what is already publicly visible on the
+ledger.
+
+% ================================================================
+\section{Single-Attribute Uniqueness Score \texorpdfstring{$s(a_i)$}{s(ai)}}
+\label{sec:s_attr}
+% ================================================================
+
+\subsection{Definition}
+
+The single-attribute uniqueness score $s(a_i)$ measures the
+fraction of users in the population who are uniquely
+identifiable from attribute $a_i$ alone.
+
+A user $u$ is \textit{unique} on attribute $a_i$ if no
+other user in $U$ shares the same attribute value:
+
+\begin{equation}
+\mathbb{I}_i(u) =
+\begin{cases}
+1 & \text{if } |\{u' \in U : a_i(u') = a_i(u)\}| = 1 \\
+0 & \text{otherwise}
+\end{cases}
+\label{eq:indicator}
+\end{equation}
+
+The indicator function $\mathbb{I}_i(u)$ equals 1 if and
+only if user $u$ is the sole occupant of their attribute
+value --- no other user shares it. The uniqueness score is
+then the population-weighted average of this indicator:
+
+\begin{equation}
+s(a_i) = \frac{1}{N} \sum_{u \in U} \mathbb{I}_i(u)
+\label{eq:s_single}
+\end{equation}
+
+\subsection{Bounds and Interpretation}
+
+\begin{proposition}
+$0 \leq s(a_i) \leq 1$ for any attribute $a_i$ and any
+population $U$.
+\end{proposition}
+
+\begin{proof}
+The indicator $\mathbb{I}_i(u) \in \{0, 1\}$ for every
+$u \in U$. Therefore $\sum_{u \in U} \mathbb{I}_i(u)
+\in [0, N]$. Dividing by $N$ gives $s(a_i) \in [0, 1]$.
+\end{proof}
+
+The two extremes have precise interpretations:
+
+\begin{itemize}
+    \item $s(a_i) = 0$ means no user is unique on attribute
+    $a_i$. Every user shares their attribute value with at
+    least one other user. The adversary gains no identifying
+    information from observing this attribute. This is the
+    privacy ideal for any single attribute.
+
+    \item $s(a_i) = 1$ means every user is unique on
+    attribute $a_i$. Every user has a distinct value that
+    appears in exactly one record. Observing this attribute
+    alone is sufficient to identify the user completely.
+    This is the worst case for any single attribute.
+\end{itemize}
+
+Values between 0 and 1 represent partial risk. $s(a_i) =
+0.317$ means 31.7\% of users are uniquely identifiable
+from attribute $a_i$ alone; the remaining 68.3\% share
+their attribute value with at least one other user and
+are protected from single-attribute identification.
+
+\subsection{Connection to k-Anonymity}
+
+The single-attribute uniqueness score connects formally
+to the k-anonymity framework introduced by Sweeney
+\citeyear{sweeney2002}. A user satisfies k-anonymity
+on attribute $a_i$ with $k \geq 2$ if they share their
+attribute value with at least $k-1$ other users. A user
+who is unique --- $k=1$ --- has zero k-anonymity protection
+on that attribute.
+
+The uniqueness score $s(a_i)$ is precisely the
+\textit{k-anonymity failure rate} for attribute $a_i$:
+the fraction of users for whom k-anonymity has completely
+collapsed to $k=1$. This connection provides theoretical
+grounding for the metric: maximising k-anonymity across
+the population is equivalent to minimising $s(a_i)$
+toward zero.
+
+\subsection{Worked Example}
+
+Consider a population of $N = 5$ users and the attribute
+\textit{transaction zone}:
+
+\begin{table}[H]
+\centering
+\caption{Example: single-attribute uniqueness on zone}
+\label{tab:s_example}
+\begin{tabular}{lll}
+\toprule
+\textbf{User} & \textbf{Zone} & \textbf{Unique?} \\
+\midrule
+Alice  & Kathmandu valley & No --- shared with Carol, Eve \\
+Bob    & Hill rural       & Yes --- sole occupant \\
+Carol  & Kathmandu valley & No --- shared with Alice, Eve \\
+David  & Terai urban      & Yes --- sole occupant \\
+Eve    & Kathmandu valley & No --- shared with Alice, Carol \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+$\sum \mathbb{I}_i(u) = 0 + 1 + 0 + 1 + 0 = 2$
+
+$s(\text{zone}) = 2/5 = 0.400$
+
+Bob and David are uniquely identifiable from zone alone.
+Alice, Carol, and Eve are protected by sharing the
+Kathmandu valley value. $s = 0.400$ means 40\% of this
+population is exposed by this attribute.
+
+% ================================================================
+\section{Pairwise Interaction Coefficient \texorpdfstring{$\lambda_{ij}$}{lambda\_ij}}
+\label{sec:lambda}
+% ================================================================
+
+\subsection{Motivation}
+
+Single-attribute uniqueness captures only part of the
+privacy risk. Consider a user who is not unique on zone
+alone and not unique on payment channel alone. If the
+combination of their zone and payment channel values is
+unique --- shared by no other user --- they are fully
+identifiable from the pair of attributes even though
+neither attribute exposes them individually. This is the
+attribute combination effect demonstrated empirically by
+Narayanan and Shmatikoff \citeyear{narayanan2008} in the
+Netflix de-anonymization study. The pairwise interaction
+coefficient $\lambda_{ij}$ formally captures this
+amplification.
+
+\subsection{Joint Uniqueness}
+
+Define the \textit{joint uniqueness score} $s(a_i, a_j)$
+as the fraction of users who are unique on the
+\textit{combination} of attributes $a_i$ and $a_j$
+simultaneously:
+
+\begin{equation}
+s(a_i, a_j) = \frac{1}{N}
+\sum_{u \in U} \mathbb{I}_{ij}(u)
+\label{eq:s_joint}
+\end{equation}
+
+where $\mathbb{I}_{ij}(u) = 1$ if and only if no other
+user $u' \in U$ shares both $a_i(u') = a_i(u)$ and
+$a_j(u') = a_j(u)$ simultaneously. A user must match on
+both attributes to be considered non-unique.
+
+\subsection{Definition of $\lambda_{ij}$}
+
+If attributes $a_i$ and $a_j$ were statistically
+independent, the expected joint uniqueness under
+independence would be $s(a_i) \times s(a_j)$ --- the
+product of the individual uniqueness scores. The pairwise
+interaction coefficient $\lambda_{ij}$ measures how much
+the actual joint uniqueness deviates from this
+independence baseline:
+
+\begin{equation}
+\lambda_{ij} = \frac{s(a_i, a_j)}{s(a_i) \times s(a_j)}
+\label{eq:lambda}
+\end{equation}
+
+\subsection{Interpretation}
+
+The three cases of $\lambda_{ij}$ have clear interpretations:
+
+\begin{itemize}
+    \item $\lambda_{ij} = 1$: the attributes contribute
+    \textit{independently}. The combination identifies
+    exactly as many users as independence predicts. No
+    amplification.
+
+    \item $\lambda_{ij} > 1$: \textit{amplified risk}.
+    The combination is more identifying than independence
+    predicts. Users who are safe on each attribute
+    individually become exposed by the combination. This
+    is the Netflix effect.
+
+    \item $\lambda_{ij} < 1$: \textit{suppressed risk}.
+    The attributes are redundant --- they carry overlapping
+    information. The combination identifies fewer additional
+    users than independence predicts.
+\end{itemize}
+
+\subsection{Special Case: Zero Denominator}
+
+When $s(a_i) = 0$ or $s(a_j) = 0$, the denominator of
+Equation~\ref{eq:lambda} is zero and $\lambda_{ij}$ is
+undefined. By convention, $\lambda_{ij} = 0$ in this case.
+
+This convention is justified by examining the contribution
+of the pair to the risk score $\Rraw$:
+
+\begin{equation}
+\text{pair contribution} =
+\lambda_{ij} \times s(a_i) \times s(a_j)
+\end{equation}
+
+If either $s(a_i) = 0$ or $s(a_j) = 0$, this product
+equals zero regardless of $\lambda_{ij}$. Setting
+$\lambda_{ij} = 0$ produces the correct result --- zero
+pair contribution --- without division by zero. In the
+Python implementation this is handled as:
+
+\begin{lstlisting}
+def lam(si, sj, sij):
+    d = si * sj
+    return 0.0 if d < 1e-12 else sij / d
+\end{lstlisting}
+
+The threshold $10^{-12}$ rather than exact zero accounts
+for floating point precision.
+
+\subsection{Symmetry}
+
+\begin{proposition}
+$\lambda_{ij} = \lambda_{ji}$ for all pairs $(i, j)$.
+\end{proposition}
+
+\begin{proof}
+The joint uniqueness score is symmetric by definition:
+$s(a_i, a_j) = s(a_j, a_i)$, since the condition
+``no other user shares both values'' is invariant to
+the order in which attributes are named. The denominator
+$s(a_i) \times s(a_j) = s(a_j) \times s(a_i)$ by
+commutativity of multiplication. Therefore
+$\lambda_{ij} = \lambda_{ji}$.
+\end{proof}
+
+This symmetry means the interaction matrix
+$\Lambda = [\lambda_{ij}]$ is symmetric. In the
+$\lambda_{ij}$ heatmaps in Chapter~\ref{ch:results},
+the matrix is visually symmetric across the diagonal.
+
+\subsection{Worked Example}
+
+Extending the five-user example, add a second attribute
+\textit{payment channel}:
+
+\begin{table}[H]
+\centering
+\caption{Example: joint uniqueness and $\lambda_{ij}$}
+\label{tab:lambda_example}
+\begin{tabular}{lllll}
+\toprule
+\textbf{User} & \textbf{Zone} & \textbf{Channel} &
+\textbf{Pair} & \textbf{Joint unique?} \\
+\midrule
+Alice  & Kathmandu & Mobile & (KTM, Mob) & No --- Eve same \\
+Bob    & Hill rural & Mobile & (HR, Mob)  & Yes \\
+Carol  & Kathmandu & QR     & (KTM, QR)  & Yes \\
+David  & Terai urb & Mobile & (TU, Mob)  & Yes \\
+Eve    & Kathmandu & Mobile & (KTM, Mob) & No --- Alice same \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+From the earlier example: $s(\text{zone}) = 0.400$,
+$s(\text{channel}) = 1/5 = 0.200$ (Carol is the only
+QR user).
+
+$s(\text{zone, channel}) = 3/5 = 0.600$
+(Bob, Carol, David are jointly unique).
+
+\begin{equation*}
+\lambda_{\text{zone,channel}} =
+\frac{0.600}{0.400 \times 0.200} = \frac{0.600}{0.080}
+= 7.5
+\end{equation*}
+
+The combination is 7.5 times more identifying than
+independence predicts. Carol was protected on zone alone
+(shared Kathmandu) but exposed by the combination
+(sole Kathmandu QR user). This 7.5$\times$ amplification
+is the core of the pairwise interaction effect.
+
+% ================================================================
+\section{Raw Risk Score \texorpdfstring{$R_{\mathrm{raw}}$}{R\_raw}}
+\label{sec:r_raw}
+% ================================================================
+
+\subsection{From Two Attributes to m Attributes}
+
+The two-attribute formulation combines individual
+uniqueness and pairwise interaction into a single
+raw risk accumulator:
+
+\begin{equation}
+R = s(a_1) + s(a_2) + \lambda_{12} \times s(a_1) \times s(a_2)
+\label{eq:r_two}
+\end{equation}
+
+This expression has three terms: the individual exposure
+of attribute 1, the individual exposure of attribute 2,
+and the amplified joint exposure from their combination.
+Generalising to $m$ attributes requires extending both
+sums. For $m$ attributes there are $m$ individual terms
+and $\binom{m}{2} = m(m-1)/2$ distinct pairs.
+
+\subsection{General Definition}
+
+The raw risk score for $m$ attributes is:
+
+\begin{equation}
+\Rraw = \sum_{i=1}^{m} s(a_i)
+\;+\;
+\sum_{i=1}^{m} \sum_{j > i} \lambda_{ij} \times s(a_i) \times s(a_j)
+\label{eq:r_raw}
+\end{equation}
+
+The first sum accumulates individual attribute leakage
+across all $m$ attributes. The second sum accumulates
+pairwise amplification effects across all $\binom{m}{2}$
+distinct pairs. The condition $j > i$ ensures each pair
+$(i,j)$ is counted exactly once --- the pair
+$(\text{amount}, \text{wallet})$ is counted when $i =
+\text{amount}$ and $j = \text{wallet}$ but not again
+when $i = \text{wallet}$ and $j = \text{amount}$, since
+$\lambda_{ij} = \lambda_{ji}$ by symmetry.
+
+\subsection{Structure of the Pair Terms}
+
+Each pair term $\lambda_{ij} \times s(a_i) \times s(a_j)$
+equals $s(a_i, a_j)$ by the definition of $\lambda_{ij}$:
+
+\begin{equation}
+\lambda_{ij} \times s(a_i) \times s(a_j)
+= \frac{s(a_i, a_j)}{s(a_i) \times s(a_j)}
+\times s(a_i) \times s(a_j)
+= s(a_i, a_j)
+\label{eq:pair_term}
+\end{equation}
+
+This means $\Rraw$ can equivalently be read as the sum of
+all individual uniqueness scores plus the sum of all joint
+uniqueness scores across every distinct attribute pair.
+The $\lambda_{ij}$ formulation is retained because it
+makes the amplification beyond independence explicit and
+measurable.
+
+\subsection{Counting the Pairs}
+
+For this thesis with $m = 7$ attributes, the number of
+distinct pairs is:
+
+\begin{equation}
+\binom{7}{2} = \frac{7 \times 6}{2} = 21
+\end{equation}
+
+The seven individual terms plus the 21 pair terms give
+a total of 28 terms in $\Rraw$. This figure is not
+coincidental --- it equals $R_{\mathrm{max}}(7) = 28$,
+derived in the following section.
+
+\subsection{Why Most Terms Vanish in Practice}
+
+In the results of this thesis, most pair terms contribute
+approximately zero to $\Rraw$. This occurs because the
+Nepal-specific attributes --- payment channel and
+transaction zone --- have $s(a_i) \approx 0$ due to
+their skewed distributions. Any pair term involving an
+attribute with $s(a_i) = 0$ contributes
+$\lambda_{ij} \times 0 \times s(a_j) = 0$ regardless
+of the value of $\lambda_{ij}$. For Plain Hash Token,
+where $s(\text{wallet}) = 1.000$ and
+$s(\text{amount}) = 0.988$, the dominant contribution
+comes from the (wallet, amount) pair, the (wallet,
+timestamp) pair, and the individual terms for wallet
+and amount. The remaining 19 pairs contribute little.
+
+\subsection{Python Implementation}
+
+The \texttt{R\_raw} function in the implementation
+directly maps to Equation~\ref{eq:r_raw}:
+
+\begin{lstlisting}
+def R_raw(s, lmat, attrs):
+    R = sum(s[a] for a in attrs)
+    for ai, aj in combinations(attrs, 2):
+        R += lmat[ai].get(aj, 0.0) * s[ai] * s[aj]
+    return R
+\end{lstlisting}
+
+The \texttt{combinations(attrs, 2)} call from Python's
+\texttt{itertools} library automatically generates all
+$\binom{m}{2}$ pairs with $j > i$, exactly matching the
+double sum in Equation~\ref{eq:r_raw}.
+
+% ================================================================
+\section{Theoretical Maximum \texorpdfstring{$R_{\mathrm{max}}$}{R\_max}}
+\label{sec:r_max}
+% ================================================================
+
+\subsection{Motivation}
+
+$\Rraw$ as defined in Equation~\ref{eq:r_raw} is an
+un-normalised quantity. Its value depends on $m$: with
+more attributes, more terms accumulate and $\Rraw$ grows.
+A value of $\Rraw = 8.886$ for Plain Hash Token with
+$m = 7$ is meaningless without knowing the scale.
+To interpret it, we need to know the maximum value
+$\Rraw$ could possibly reach.
+
+$R_{\mathrm{max}}$ is the \textit{theoretical upper bound}
+on $\Rraw$ --- the value it achieves under the
+worst-case configuration of all attributes simultaneously.
+Deriving $R_{\mathrm{max}}$ from first principles is a
+core contribution of this thesis.
+
+\subsection{Worst-Case Conditions}
+
+$\Rraw$ is maximised when every term in
+Equation~\ref{eq:r_raw} simultaneously reaches its
+maximum value. Two conditions must hold jointly:
+
+\textbf{Condition 1:} $s(a_i) = 1$ for all $i = 1,
+\ldots, m$. Every user is unique on every attribute
+individually. This is the maximum individual exposure
+possible.
+
+\textbf{Condition 2:} $\lambda_{ij} = 1$ for all pairs
+$(i, j)$. All attributes interact at the independence
+level.
+
+Under these conditions each individual term equals:
+$s(a_i) = 1$.
+
+Each pair term equals:
+$\lambda_{ij} \times s(a_i) \times s(a_j)
+= 1 \times 1 \times 1 = 1$.
+
+\subsection{Why $\lambda_{ij} = 1$ Gives the Maximum}
+
+This may appear counterintuitive --- surely $\lambda_{ij}
+> 1$ would give larger pair terms? The answer is no,
+because of the bound on $s(a_i, a_j)$.
+
+From Equation~\ref{eq:pair_term}, each pair term equals
+$s(a_i, a_j)$, which is a fraction of users and
+therefore bounded above by 1. When $s(a_i) = s(a_j) = 1$,
+setting $\lambda_{ij} = 1$ gives $s(a_i, a_j) = 1$,
+which is already the maximum the pair term can achieve.
+No value of $\lambda_{ij} > 1$ can push the pair term
+above 1 because $s(a_i, a_j) \leq 1$ always. The
+bound of 1 per term is tight at $\lambda_{ij} = 1$
+when both individual scores are also 1.
+
+\subsection{Derivation}
+
+Under the worst-case conditions:
+
+\begin{align}
+R_{\mathrm{max}}(m)
+&= \underbrace{\sum_{i=1}^{m} 1}_{m \text{ terms}}
++ \underbrace{\sum_{i=1}^{m} \sum_{j > i} 1}_{\binom{m}{2}
+\text{ terms}} \nonumber \\[6pt]
+&= m + \binom{m}{2} \nonumber \\[6pt]
+&= m + \frac{m(m-1)}{2}
+\label{eq:r_max}
+\end{align}
+
+\subsection{Values for Relevant $m$}
+
+\begin{table}[H]
+\centering
+\caption{$R_{\mathrm{max}}(m)$ for $m = 1$ to $m = 7$}
+\label{tab:r_max}
+\begin{tabular}{cccc}
+\toprule
+$m$ & Individual terms & Pair terms $\binom{m}{2}$ &
+$R_{\mathrm{max}}$ \\
+\midrule
+1 & 1 & 0  & 1  \\
+2 & 2 & 1  & 3  \\
+3 & 3 & 3  & 6  \\
+4 & 4 & 6  & 10 \\
+5 & 5 & 10 & 15 \\
+6 & 6 & 15 & 21 \\
+7 & 7 & 21 & \textbf{28} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For this thesis with $m = 7$:
+
+\begin{equation}
+R_{\mathrm{max}}(7) = 7 + \frac{7 \times 6}{2} = 7 + 21 = 28
+\end{equation}
+
+\subsection{Quadratic Growth and Its Implication}
+
+$R_{\mathrm{max}}$ grows quadratically in $m$. Each new
+attribute added increases $R_{\mathrm{max}}$ by $m$ ---
+adding the $m$-th attribute introduces one new individual
+term and $m-1$ new pair terms, for a total increase of
+$m$. This quadratic growth is the formal explanation for
+the counterintuitive finding in the m-sensitivity analysis:
+adding Nepal's low-cardinality attributes decreases
+$R_{\mathrm{norm}}$ because $R_{\mathrm{max}}$ grows by
+6 and then 7, while $\Rraw$ increases by near-zero.
+
+\subsection{Proof that $\Rraw \leq R_{\mathrm{max}}$}
+
+\begin{theorem}
+For any valid population $U$, any attribute set of size
+$m$, and any cryptographic scheme:
+$\Rraw \leq R_{\mathrm{max}}(m)$.
+\end{theorem}
+
+\begin{proof}
+It suffices to show each term in $\Rraw$ is bounded by
+its maximum-case value of 1.
+
+For individual terms: $s(a_i) \leq 1$ for all $i$,
+since $s(a_i)$ is a fraction of users.
+
+For pair terms: from Equation~\ref{eq:pair_term},
+each pair term equals $s(a_i, a_j)$. Since
+$s(a_i, a_j)$ is a fraction of users,
+$s(a_i, a_j) \leq 1$ for all pairs.
+
+Therefore each of the $m$ individual terms contributes
+at most 1, and each of the $\binom{m}{2}$ pair terms
+contributes at most 1. Summing all maximum contributions:
+$\Rraw \leq m + \binom{m}{2} = R_{\mathrm{max}}(m)$.
+\end{proof}
+
+This theorem guarantees that the normalisation in the
+following section always produces a score in $[0, 1]$.
+
+% ================================================================
+\section{Normalised Risk Score \texorpdfstring{$R_{\mathrm{norm}}$}{R\_norm}}
+\label{sec:r_norm}
+% ================================================================
+
+\subsection{Definition}
+
+The normalised risk score $R_{\mathrm{norm}}$ maps
+$\Rraw$ into the unit interval by dividing by the
+proven theoretical maximum:
+
+\begin{equation}
+R_{\mathrm{norm}} = \frac{\Rraw}{R_{\mathrm{max}}(m)}
+\label{eq:r_norm}
+\end{equation}
+
+\subsection{Properties}
+
+\begin{proposition}
+$R_{\mathrm{norm}}$ satisfies the following properties
+for any $m$, $N$, and cryptographic scheme.
+\end{proposition}
+
+\textbf{Property 1 --- Boundedness:}
+$R_{\mathrm{norm}} \in [0, 1]$.
+
+This follows directly from the theorem in
+Section~\ref{sec:r_max}: $0 \leq \Rraw
+\leq R_{\mathrm{max}}$, and dividing by $R_{\mathrm{max}}
+> 0$ preserves the bounds.
+
+\textbf{Property 2 --- Zero case:}
+$R_{\mathrm{norm}} = 0$ if and only if $s(a_i) = 0$
+for all $i = 1, \ldots, m$.
+
+When every $s(a_i) = 0$, every pair term
+$\lambda_{ij} \times s(a_i) \times s(a_j) = 0$,
+so $\Rraw = 0$ and $R_{\mathrm{norm}} = 0$.
+This represents the privacy ideal: no user is
+uniquely identifiable on any attribute or any
+combination of attributes.
+
+\textbf{Property 3 --- Maximum case:}
+$R_{\mathrm{norm}} = 1$ if and only if
+$\Rraw = R_{\mathrm{max}}$, achieved when $s(a_i) = 1$
+for all $i$ and $\lambda_{ij} = 1$ for all pairs.
+This represents maximum possible risk: every user is
+uniquely identifiable on every attribute and every
+combination.
+
+\textbf{Property 4 --- Cross-$m$ comparability:}
+$R_{\mathrm{norm}}$ is directly comparable across
+different values of $m$, because both the numerator
+and denominator scale with $m$ through the same
+structure. A model with $m = 5$ attributes and
+a model with $m = 7$ attributes can be compared
+on $R_{\mathrm{norm}}$ without adjustment. This
+property makes the m-sensitivity analysis in
+Chapter~\ref{ch:results} formally valid.
+
+\textbf{Property 5 --- Monotonicity:}
+$R_{\mathrm{norm}}$ is non-decreasing in each
+$s(a_i)$ and in each $\lambda_{ij}$, holding all
+other quantities fixed. Increasing any individual
+uniqueness score or any interaction coefficient
+increases $\Rraw$ and therefore $R_{\mathrm{norm}}$.
+Privacy never improves when uniqueness increases.
+
+\subsection{Worked Example with Normalisation}
+
+Using the original worked example from the thesis
+model specification with $m = 2$ attributes,
+$N = 1{,}000$ users, $s(A) = 0.05$, $s(B) = 0.04$,
+$s(A,B) = 0.12$:
+
+\begin{align*}
+\lambda_{AB} &= \frac{0.12}{0.05 \times 0.04}
+= \frac{0.12}{0.002} = 60 \\[4pt]
+\Rraw &= 0.05 + 0.04 + 60 \times 0.05 \times 0.04 \\
+&= 0.05 + 0.04 + 0.12 = 0.21 \\[4pt]
+R_{\mathrm{max}}(2) &= 2 + \binom{2}{2} = 2 + 1 = 3 \\[4pt]
+R_{\mathrm{norm}} &= \frac{0.21}{3} = 0.070
+\end{align*}
+
+$R_{\mathrm{norm}} = 0.070$ means 7.0\% of the maximum
+possible de-anonymization risk. Despite the very high
+interaction coefficient $\lambda_{AB} = 60$, the absolute
+risk remains low because the individual uniqueness scores
+are small ($s(A) = 0.05$, $s(B) = 0.04$). The
+normalisation correctly captures that amplification of
+a small base risk produces a small absolute risk.
+This illustrates a key insight: a high $\lambda_{ij}$
+is only dangerous when the underlying $s(a_i)$ values
+are also substantial.
+
+\subsection{Interpretation Guide}
+
+Table~\ref{tab:r_norm_interp} provides a practical
+interpretation guide for $R_{\mathrm{norm}}$ values
+in the CBDC deployment context.
+
+\begin{table}[H]
+\centering
+\caption{Interpretation of $R_{\mathrm{norm}}$ values}
+\label{tab:r_norm_interp}
+\begin{tabular}{lll}
+\toprule
+\textbf{$R_{\mathrm{norm}}$ range} &
+\textbf{Risk level} &
+\textbf{Interpretation} \\
+\midrule
+$0.000$--$0.050$ & Very low  &
+Fewer than 5\% of maximum risk \\
+$0.051$--$0.100$ & Low       &
+5--10\% of maximum risk \\
+$0.101$--$0.200$ & Moderate  &
+10--20\% of maximum risk \\
+$0.201$--$0.350$ & High      &
+20--35\% of maximum risk \\
+$0.351$--$1.000$ & Very high &
+Above 35\% of maximum risk \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Plain Hash Token with $R_{\mathrm{norm}} = 0.317$ falls
+in the High category. ZKP Token with
+$R_{\mathrm{norm}} = 0.035$ falls in the Very Low
+category. Ring Signature and Hybrid Scheme with
+$R_{\mathrm{norm}} \approx 0.069$ fall in the Low
+category. These classifications directly inform the
+policy recommendations in Chapter~\ref{ch:results}.
+
+% ================================================================
+\section{Mitigation Modelling}
+\label{sec:mitigation}
+% ================================================================
+
+\subsection{Motivation}
+
+The baseline model measures $R_{\mathrm{norm}}$ under
+the assumption that all metadata is observable at its
+natural granularity. In practice, privacy-enhancing
+technical controls can reduce the observability or
+uniqueness of individual attributes. This section defines
+how mitigation strategies are incorporated into the model.
+
+\subsection{Multiplicative Mitigation Approach}
+
+Each mitigation strategy is represented as a set of
+\textit{multipliers} $\mu_i \in [0, 1]$ applied to the
+individual uniqueness scores:
+
+\begin{equation}
+s_{\mathrm{mit}}(a_i) = \mu_i \times s(a_i)
+\label{eq:mitigation}
+\end{equation}
+
+A multiplier of $\mu_i = 1.0$ means no mitigation ---
+the attribute is observed at full precision. A multiplier
+of $\mu_i = 0.0$ means perfect suppression --- the
+attribute contributes zero uniqueness. Intermediate values
+represent partial mitigation. The joint uniqueness under
+mitigation is approximated as:
+
+\begin{equation}
+s_{\mathrm{mit}}(a_i, a_j)
+= \mu_i \times \mu_j \times s(a_i, a_j)
+\label{eq:mit_joint}
+\end{equation}
+
+This multiplicative approximation assumes that mitigation
+on two attributes scales the joint uniqueness by the
+product of their individual multipliers, which is exact
+under independence and a conservative approximation
+under positive correlation.
+
+\subsection{Justification of the Multiplicative Approach}
+
+The multiplicative approach is chosen for three reasons.
+
+First, it is \textit{interpretable}. A multiplier of
+$\mu_i = 0.20$ on the amount attribute means that
+differential privacy noise reduces observable uniqueness
+to 20\% of its unmitigated level. This maps naturally
+to the practical effect of adding Gaussian or Laplace
+noise to transaction amounts.
+
+Second, it is \textit{conservative}. By applying the
+same multiplier to the joint uniqueness as to the
+individual scores, the model does not underestimate
+residual risk after mitigation.
+
+Third, it is \textit{computationally efficient}. The
+mitigated scores can be computed from the original
+dataset by simple scalar multiplication, without
+re-generating data or re-computing all uniqueness
+scores from scratch.
+
+\subsection{Mitigation Strategies Evaluated}
+
+Seven mitigation strategies are evaluated in
+Chapter~\ref{ch:results}. Table~\ref{tab:mitigations}
+shows the multiplier configuration of each strategy.
+
+\begin{table}[H]
+\centering
+\caption{Mitigation strategies and attribute multipliers}
+\label{tab:mitigations}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{Strategy} & \textbf{Multipliers applied} \\
+\midrule
+No Mitigation &
+All $\mu_i = 1.00$. Baseline --- no controls applied. \\
+
+Differential Privacy on Amount &
+$\mu_{\mathrm{amount}} = 0.20$, all others $= 1.00$.
+Simulates Laplace or Gaussian noise injection reducing
+amount uniqueness by 80\%. \\
+
+Timestamp Suppression &
+$\mu_{\mathrm{timestamp}} = 0.05$, all others $= 1.00$.
+Simulates coarsening timestamp to hour of day or day
+of week, reducing temporal uniqueness by 95\%. \\
+
+Wallet Unlinkability &
+$\mu_{\mathrm{wallet}} = 0.05$, all others $= 1.00$.
+Simulates stealth address or nullifier-based wallet
+generation reducing wallet uniqueness by 95\%. \\
+
+Nepal Controls &
+$\mu_{\mathrm{channel}} = 0.20$,
+$\mu_{\mathrm{zone}} = 0.15$, all others $= 1.00$.
+Simulates coarsening of Nepal-specific attributes to
+fewer categories (digital/physical; valley/non-valley). \\
+
+DP and Timestamp &
+$\mu_{\mathrm{amount}} = 0.20$,
+$\mu_{\mathrm{timestamp}} = 0.05$,
+all others $= 1.00$.
+Combined differential privacy on amount and
+timestamp suppression. \\
+
+Full Stack &
+$\mu_{\mathrm{amount}} = 0.20$,
+$\mu_{\mathrm{timestamp}} = 0.05$,
+$\mu_{\mathrm{merchant}} = 0.50$,
+$\mu_{\mathrm{wallet}} = 0.05$,
+$\mu_{\mathrm{frequency}} = 0.30$,
+$\mu_{\mathrm{channel}} = 0.20$,
+$\mu_{\mathrm{zone}} = 0.15$.
+All seven attributes mitigated simultaneously. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Full Stack strategy represents the maximum technically
+feasible privacy enhancement within the constraints of
+a functional CBDC system that still supports AML
+monitoring and tax reporting obligations.
+
+
+% ================================================================
+\section{Hyperledger Fabric Context}
+\label{sec:fabric_context}
+% ================================================================
+
+\subsection{Why Hyperledger Fabric}
+
+The reference deployment platform for this thesis is
+Hyperledger Fabric, a permissioned enterprise blockchain
+framework maintained under the Linux Foundation's Hyperledger
+project \citep{hyperledgerfabric2023}. Fabric is chosen
+because it is the most widely referenced platform in the
+CBDC implementation literature for token-based retail
+deployments \citep{biscgide2024}, and because its
+architecture directly determines which metadata fields are
+observable on the ledger.
+
+Unlike public permissionless blockchains, Fabric requires
+every participant to be enrolled through a Membership Service
+Provider (MSP) before joining the network. This permissioned
+model makes Fabric suitable for CBDC deployment where KYC
+and AML compliance require verified participant identities.
+Androulaki et al. \citeyear{androulaki2018} describe Fabric's
+core architecture: modular consensus, channel-based data
+partitioning, and chaincode (smart contract) execution in
+isolated containers.
+
+\subsection{Observable Metadata on a Fabric CBDC Ledger}
+
+Every transaction on a Fabric channel produces a transaction
+envelope containing several metadata fields visible to all
+channel members. In a CBDC chaincode, the following fields
+are directly observable:
+
+\begin{itemize}
+    \item \textbf{Transaction amount} --- the token transfer
+    value, recorded as a chaincode argument.
+
+    \item \textbf{Timestamp} --- the block orderer timestamp,
+    recorded in the block header with the precision of the
+    ordering service clock.
+
+    \item \textbf{Merchant (recipient)} --- the recipient
+    organisation ID or wallet address, recorded as a chaincode
+    argument.
+
+    \item \textbf{Wallet (sender)} --- the sender's MSP
+    identity or token address, recorded in the transaction
+    proposal header.
+
+    \item \textbf{Frequency} --- not a single-field value,
+    but derivable by any channel participant who counts
+    transactions from a given wallet address across the
+    ledger history.
+
+    \item \textbf{Payment channel} --- derivable from the
+    chaincode ID, which differs between mobile wallet,
+    QR code, NFC, and offline token chaincodes.
+
+    \item \textbf{Transaction zone} --- derivable from the
+    endorsing peer's organisation, whose geographic MSP
+    configuration identifies its zone.
+\end{itemize}
+
+These seven fields map directly to the $m = 7$ attributes
+in this model. The choice of attributes is therefore not
+arbitrary --- it reflects what a passive observer with read
+access to a Fabric CBDC channel can observe without any
+cryptographic attack.
+
+\subsection{Permissioned Identity and the Privacy Problem}
+
+Fabric's permissioned identity model means NRB, as the
+network operator, knows the real-world identity behind every
+wallet address. This is by design: KYC and AML compliance
+require it. However, this does not eliminate the privacy
+problem addressed in this thesis. As argued in
+Chapter~\ref{ch:introduction}, the metadata privacy problem
+exists at a different level --- it concerns what other
+channel participants, insiders with partial access, and
+adversaries who obtain the transaction log without the
+identity mapping can infer from observable metadata alone.
+
+\subsection{Scope Boundary: Domestic Transactions Only}
+
+This model is scoped to domestic CBDC transactions settled
+within Nepal's Fabric network under NRB jurisdiction.
+Cross-border remittance transactions involve separate
+settlement rails and are excluded. The seven modelled
+attributes are all observable within the domestic channel;
+remittance corridor is not observable within this boundary
+and is therefore excluded from the attribute set.
+
+% ================================================================
+\section{Attribute Set Design}
+\label{sec:attribute_design}
+% ================================================================
+
+\subsection{The m=7 Attribute Set}
+
+This thesis models seven metadata attributes: five standard
+attributes present in any CBDC deployment, and two
+Nepal-specific attributes grounded in Nepal's payment
+infrastructure and geographic structure.
+Table~\ref{tab:attribute_set} defines the complete set.
+
+\begin{table}[H]
+\centering
+\caption{The $m = 7$ attribute set with value domains}
+\label{tab:attribute_set}
+\begin{tabular}{llll}
+\toprule
+\textbf{Attribute} & \textbf{Type} &
+\textbf{Value Domain} & \textbf{Nepal?}\\
+\midrule
+amount    & Continuous  & $\mathbb{R}^+$ (scheme-dependent granularity) & No\\
+timestamp & Discrete    & Integer (scheme-dependent precision) & No\\
+merchant  & Categorical & Finite set of IDs or categories & No\\
+wallet    & Identifier  & Scheme-dependent address pool & No\\
+frequency & Discrete    & $\mathbb{Z}^+$ bounded by scheme & No\\
+payment\_channel  & Categorical & $\{0,1,2,3\}$ (mobile/QR/NFC/offline) & Yes\\
+transaction\_zone & Categorical & $\{0,1,2,3,4\}$ (five geographic zones) & Yes\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Nepal-Specific Attribute: Payment Channel}
+
+Payment channel takes four values reflecting Nepal's digital
+payment infrastructure. The distribution is informed by the
+dominance of eSewa and Khalti in Nepal's mobile payment
+ecosystem:
+
+\begin{itemize}
+    \item 0 = Mobile wallet (60\%) --- eSewa and Khalti
+    \item 1 = QR code (25\%) --- rapid adoption at merchants
+    \item 2 = NFC (10\%) --- urban smartphone users
+    \item 3 = Offline token (5\%) --- rural low-connectivity
+\end{itemize}
+
+NFC and offline token users form small, identifiable
+subpopulations. At small $N$, these users may be uniquely
+identifiable from channel alone.
+
+\subsection{Nepal-Specific Attribute: Transaction Zone}
+
+Transaction zone takes five values reflecting Nepal's
+geographic population distribution:
+
+\begin{itemize}
+    \item 0 = Kathmandu valley (35\%) --- capital region
+    \item 1 = Hill urban (20\%) --- Pokhara, Biratnagar
+    \item 2 = Hill rural (25\%) --- largest rural segment
+    \item 3 = Terai urban (12\%) --- southern plains cities
+    \item 4 = Terai rural (8\%) --- southern plains rural
+\end{itemize}
+
+Hill rural and Terai rural users form the smallest
+subpopulations and are consequently the most vulnerable to
+re-identification in small communities with limited merchants.
+
+\subsection{Excluded Attribute: Remittance Corridor}
+
+Remittance corridor was considered as a third Nepal-specific
+attribute but excluded on scope grounds. This thesis models
+a domestic CBDC under NRB jurisdiction. Cross-border
+remittances involve separate settlement rails, foreign
+correspondent banking relationships, and regulatory
+frameworks outside NRB's domestic CBDC mandate. Remittance
+corridor is not an attribute observable within the domestic
+CBDC transaction record and therefore falls outside the
+defined system boundary.
+
+\subsection{R\_max for m=7}
+
+With $m = 7$ attributes, the theoretical maximum is:
+
+\begin{equation}
+R_{\mathrm{max}}(7) = 7 + \binom{7}{2}
+= 7 + 21 = 28
+\end{equation}
+
+All $\Rnorm$ values in this thesis are normalised against
+this ceiling of 28.
+
+% ================================================================
+\section{The Six Cryptographic Schemes}
+\label{sec:six_schemes}
+% ================================================================
+
+Six cryptographic schemes are modelled, spanning the full
+spectrum of realistic token-based CBDC privacy designs.
+Table~\ref{tab:six_schemes} summarises each scheme.
+
+\begin{table}[H]
+\centering
+\caption{Six cryptographic schemes and their privacy
+mechanisms}
+\label{tab:six_schemes}
+\begin{tabular}{lp{4cm}p{4cm}}
+\toprule
+\textbf{Scheme} & \textbf{Key Mechanism} &
+\textbf{What It Hides}\\
+\midrule
+Plain Hash Token &
+SHA-256 hash of token serial number &
+Nothing --- all metadata fully exposed\\
+
+Blind Signature &
+Chaum's blind signature protocol &
+Wallet randomised; timestamp coarsened to hour\\
+
+Hybrid Scheme &
+Blind signature wallet + ring signature amounts &
+Wallet randomised; amounts bucketed to NPR 100\\
+
+Ring Signature &
+Ring anonymity set over $k$ possible signers &
+Wallet in larger pool; amounts bucketed; fewer merchant categories\\
+
+Stealth Address &
+One-time wallet address per transaction &
+Wallet completely unlinkable across transactions; amounts remain visible\\
+
+ZKP Token &
+Zero-knowledge range proofs; nullifier wallet &
+All attributes reduced to coarse bands; wallet unlinkable\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Plain Hash Token} is the weakest baseline. All
+transaction metadata is recorded at full precision. The
+wallet address is sequential and permanently fixed to each
+user. No metadata transformation occurs.
+
+\textbf{Blind Signature} applies Chaum's
+\citeyear{chaum1983} blinding protocol. The bank signs a
+token without seeing its serial number, enabling wallet
+randomisation. The timestamp is coarsened to the hour of
+day (24 values). Amounts and merchant IDs remain at full
+precision.
+
+\textbf{Hybrid Scheme} models the digital euro's proposed
+tiered privacy design, combining wallet blinding from blind
+signatures with amount bucketing from ring signatures.
+Amounts are rounded to NPR 100 increments. Merchant
+categories are reduced from 200 to 100. This scheme fills
+the gap between Blind Signature and Ring Signature on the
+risk ladder.
+
+\textbf{Ring Signature} applies the CryptoNote ring
+signature construction \citep{vansaberhagen2013}. The
+wallet is drawn from a pool 20 times the population size.
+Amounts are bucketed to NPR 100 increments. Merchant
+categories are reduced to 20 broad types. This provides
+a meaningful anonymity set for the wallet attribute.
+
+\textbf{Stealth Address} generates a mathematically unique,
+fresh address for every transaction using the formula:
+$\text{wallet}(u) = u \times 997 + \epsilon$ where
+$\epsilon \sim \text{Uniform}(0, 100{,}000)$. No two
+transactions by the same user share a wallet address with
+any mathematical relationship between them. This breaks
+the spending pattern attack entirely for the wallet
+attribute, but amounts and timestamps remain visible.
+
+\textbf{ZKP Token} applies zero-knowledge range proofs
+\citep{groth2015} to reduce all attributes to coarse
+disclosure bands. Amounts are restricted to five
+denominations $\{0, 100, 500, 1000, 5000\}$ NPR.
+Timestamps are reduced to day of week (7 values). Merchants
+are categorised into 5 broad economic sectors. The wallet
+is a nullifier drawn from a pool of size $N \times 100$,
+providing transaction unlinkability with a large anonymity
+set.
+
+% ================================================================
+\section{Synthetic Data Generation}
+\label{sec:data_gen}
+% ================================================================
+
+\subsection{Justification for Synthetic Data}
+
+This thesis uses synthetically generated transaction data
+rather than real NRB transaction records. This choice is
+justified on three grounds. First, no real NRB CBDC
+transaction dataset exists, as Nepal has not yet deployed
+a CBDC. Second, synthetic data allows precise control over
+the distributions of each attribute under each scheme,
+enabling a clean comparison of cryptographic design choices
+without confounding factors from real usage patterns.
+Third, the distributions chosen are grounded in Nepal's
+observed payment infrastructure context, making the
+synthetic data a principled approximation of realistic
+deployment conditions.
+
+\subsection{Distribution Design}
+
+For each scheme, the value domain of each attribute is
+set to reflect how that scheme transforms the underlying
+transaction data. Table~\ref{tab:data_gen} describes the
+generation logic for each scheme-attribute combination.
+
+\begin{table}[H]
+\centering
+\caption{Data generation logic by scheme and attribute}
+\label{tab:data_gen}
+\begin{tabular}{lp{8.5cm}}
+\toprule
+\textbf{Scheme} & \textbf{Generation logic}\\
+\midrule
+Plain Hash Token &
+Amount: $\text{Exponential}(500)$ rounded to 2dp.
+Timestamp: Uniform integer in $[0, 10N]$.
+Merchant: Uniform from $\{0,\ldots,199\}$.
+Wallet: Sequential $\{0,\ldots,N-1\}$.
+Frequency: Uniform in $[1, 99]$.\\
+
+Blind Signature &
+Amount: $\text{Exponential}(500)$ rounded to 2dp.
+Timestamp: Uniform hour in $[0, 23]$.
+Merchant: Uniform from $\{0,\ldots,199\}$.
+Wallet: Uniform from pool of size $10N$.
+Frequency: Uniform in $[1, 49]$.\\
+
+Hybrid Scheme &
+Amount: $\text{Exponential}(500)$ rounded to NPR 100.
+Timestamp: Uniform hour in $[0, 23]$.
+Merchant: Uniform from $\{0,\ldots,99\}$.
+Wallet: Uniform from pool of size $10N$.
+Frequency: Uniform in $[1, 34]$.\\
+
+Ring Signature &
+Amount: $\text{Exponential}(500)$ rounded to NPR 100.
+Timestamp: Uniform hour in $[0, 23]$.
+Merchant: Uniform from $\{0,\ldots,19\}$.
+Wallet: Uniform from pool of size $20N$.
+Frequency: Uniform in $[1, 19]$.\\
+
+Stealth Address &
+Amount: $\text{Exponential}(500)$ rounded to 2dp.
+Timestamp: Uniform hour in $[0, 23]$.
+Merchant: Uniform from $\{0,\ldots,19\}$.
+Wallet: $u \times 997 + \epsilon$, $\epsilon \sim
+\text{Uniform}(0, 100{,}000)$.
+Frequency: Uniform in $[1, 14]$.\\
+
+ZKP Token &
+Amount: Choice from $\{0, 100, 500, 1000, 5000\}$.
+Timestamp: Choice from $\{0,\ldots,6\}$ (day of week).
+Merchant: Choice from $\{0,\ldots,4\}$ (5 sectors).
+Wallet: Uniform from pool of size $100N$.
+Frequency: Choice from $\{0,\ldots,4\}$ (5 bands).\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Nepal-specific attributes are generated identically across
+all schemes because they are observable at the network level
+regardless of which cryptographic scheme is deployed on the
+token layer:
+
+\begin{itemize}
+    \item payment\_channel: drawn from
+    $\{0,1,2,3\}$ with probabilities
+    $[0.60, 0.25, 0.10, 0.05]$
+    \item transaction\_zone: drawn from
+    $\{0,1,2,3,4\}$ with probabilities
+    $[0.35, 0.20, 0.25, 0.12, 0.08]$
+\end{itemize}
+
+\subsection{Reproducibility}
+
+All analyses use NumPy's \texttt{default\_rng} with a fixed
+seed of 42 for the baseline analysis. The seed sensitivity
+analysis (Analysis 9) re-runs all computations with seeds
+0 through 29 to validate that results are not artefacts of
+any particular random draw.
+
+% ================================================================
+\section{Implementation}
+\label{sec:implementation}
+% ================================================================
+
+\subsection{Pipeline Architecture}
+
+The complete model is implemented in Python 3 using NumPy,
+Pandas, Matplotlib, and Seaborn. The core pipeline function
+executes the following steps for any given dataframe and
+attribute list:
+
+\begin{lstlisting}
+def pipeline(df, attrs):
+    m    = len(attrs)
+    s    = {a: s_single(df[a].values) for a in attrs}
+    lmat = {a: {} for a in attrs}
+    for ai, aj in combinations(attrs, 2):
+        sij          = s_joint(df[ai].values, df[aj].values)
+        l            = lam(s[ai], s[aj], sij)
+        lmat[ai][aj] = lmat[aj][ai] = l
+    Rr = R_raw(s, lmat, attrs)
+    Rn = Rr / R_max(m)
+    return {"s": s, "lmat": lmat, "R_raw": Rr,
+            "R_norm": Rn, "m": m, "R_max": R_max(m)}
+\end{lstlisting}
+
+This function: (1) computes $s(a_i)$ for all $m$ attributes;
+(2) computes $\lambda_{ij}$ for all $\binom{m}{2}$ pairs;
+(3) accumulates $\Rraw$ using Equation~\ref{eq:r_raw};
+(4) normalises to produce $\Rnorm$.
+
+\subsection{Software Environment}
+
+\begin{table}[H]
+\centering
+\caption{Software dependencies}
+\label{tab:software}
+\begin{tabular}{ll}
+\toprule
+\textbf{Library} & \textbf{Purpose}\\
+\midrule
+Python 3.10+  & Core language\\
+NumPy         & Random number generation, array operations\\
+Pandas        & Value counting, dataframe operations\\
+Matplotlib    & Chart generation\\
+Seaborn       & Heatmap visualisation\\
+itertools     & Combinations generation for pair iteration\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The complete source code is provided in
+Annex~\ref{app:a_code}. All analyses in
+Chapter~\ref{ch:results} are produced by running a single
+Python file: \texttt{cbdc\_nepal\_final.py}.
