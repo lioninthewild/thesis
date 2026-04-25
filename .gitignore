@@ -1,0 +1,22 @@
+# Artifacts
+artifacts/
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.pdf
+*.toc
+*.lof
+*.lot
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
