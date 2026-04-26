@@ -72,22 +72,22 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ── Output directory ──────────────────────────────────────────────
-OUTPUT_DIR = "charts_final"
+OUTPUT_DIR = "figures"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ── Plot styling ──────────────────────────────────────────────────
-BG   = "#0D1117"
-AX   = "#161B22"
-EDGE = "#30363D"
+BG   = "white"
+AX   = "white"
+EDGE = "black"
 
 def sax(ax):
-    """Apply dark theme styling to a matplotlib axis."""
+    """Apply light theme styling to a matplotlib axis."""
     ax.set_facecolor(AX)
-    ax.tick_params(colors="white")
+    ax.tick_params(colors="black")
     ax.spines[:].set_color(EDGE)
-    ax.yaxis.label.set_color("white")
-    ax.xaxis.label.set_color("white")
-    ax.title.set_color("white")
+    ax.yaxis.label.set_color("black")
+    ax.xaxis.label.set_color("black")
+    ax.title.set_color("black")
 
 # Scheme colours and line styles
 COLORS = {
@@ -491,7 +491,7 @@ bars = axes[0].bar(
     color=[COLORS[s] for s in SCHEMES],
     edgecolor=EDGE, linewidth=1.2, width=0.6)
 axes[0].set_xticks(range(len(SCHEMES)))
-axes[0].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[0].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[0].set_ylabel("R_norm  [0, 1]", fontsize=11)
 axes[0].set_title(
     "Normalised Risk R_norm\n6 Schemes, m=7, N=1,000",
@@ -502,9 +502,9 @@ for bar, val in zip(bars, R_norm_vals):
     axes[0].text(
         bar.get_x() + bar.get_width() / 2,
         val + 0.008, f"{val:.3f}",
-        ha="center", color="white",
+        ha="center", color="black",
         fontsize=9, fontweight="bold")
-axes[0].grid(axis="y", alpha=0.15, color="white")
+axes[0].grid(axis="y", alpha=0.15, color="black")
 
 # Stacked attribute contributions
 orig_colors  = ["#FF6B6B", "#FFD93D", "#6BCB77",
@@ -520,20 +520,20 @@ for i, (attr, col) in enumerate(zip(ATTRS_7, all_colors)):
     axes[1].bar(
         range(len(SCHEMES)), s_data[:, i],
         bottom=bottom, color=col,
-        label=label, edgecolor=BG, linewidth=0.4)
+        label=label, edgecolor="black", linewidth=0.4)
     bottom += s_data[:, i]
 axes[1].set_xticks(range(len(SCHEMES)))
-axes[1].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[1].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[1].set_ylabel("Cumulative s(ai)", fontsize=11)
 axes[1].set_title(
     "Attribute Contributions\n([Nepal] = Nepal-specific)",
     fontsize=11, fontweight="bold", pad=8)
 leg = axes[1].legend(
     title="Attribute", facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", title_fontsize=8,
+    labelcolor="black", title_fontsize=8,
     fontsize=7, loc="upper right")
-leg.get_title().set_color("white")
-axes[1].grid(axis="y", alpha=0.15, color="white")
+leg.get_title().set_color("black")
+axes[1].grid(axis="y", alpha=0.15, color="black")
 
 # Nepal attributes isolated
 nepal_s = np.array([
@@ -544,24 +544,24 @@ for i, (attr, col) in enumerate(zip(NEPAL_ATTRS, nepal_colors)):
     axes[2].bar(
         range(len(SCHEMES)), nepal_s[:, i],
         bottom=nb, color=col,
-        label=attr, edgecolor=BG, linewidth=0.4)
+        label=attr, edgecolor="black", linewidth=0.4)
     nb += nepal_s[:, i]
 axes[2].set_xticks(range(len(SCHEMES)))
-axes[2].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[2].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[2].set_ylabel("Cumulative s(ai)", fontsize=11)
 axes[2].set_title(
     "Nepal-Specific Attributes\n(payment_channel + transaction_zone)",
     fontsize=11, fontweight="bold", pad=8)
 leg2 = axes[2].legend(
     title="Nepal Attr.", facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", title_fontsize=8, fontsize=8)
-leg2.get_title().set_color("white")
-axes[2].grid(axis="y", alpha=0.15, color="white")
+    labelcolor="black", title_fontsize=8, fontsize=8)
+leg2.get_title().set_color("black")
+axes[2].grid(axis="y", alpha=0.15, color="black")
 
 plt.suptitle(
     "Analysis 3: Six-Scheme Comparison  |  "
     "m=7 (5 standard + 2 Nepal)  |  R_max=28  |  N=1,000",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a3_comparison.png",
@@ -574,7 +574,7 @@ fig, axes = plt.subplots(2, 3, figsize=(22, 13))
 fig.patch.set_facecolor(BG)
 fig.suptitle(
     "Analysis 3: λ_ij Interaction Heatmaps — All 6 Schemes  (m=7)",
-    color="white", fontsize=14, fontweight="bold", y=1.01)
+    color="black", fontsize=14, fontweight="bold", y=1.01)
 
 for ax, scheme in zip(axes.flatten(), SCHEMES):
     mat = np.zeros((len(ATTRS_7), len(ATTRS_7)))
@@ -592,14 +592,14 @@ for ax, scheme in zip(axes.flatten(), SCHEMES):
         linewidths=0.5, linecolor=BG,
         annot_kws={"size": 7, "color": "black"})
     ax.set_title(
-        scheme, color="white",
+        scheme, color="black",
         fontsize=11, fontweight="bold", pad=6)
-    ax.tick_params(colors="white", labelsize=7)
+    ax.tick_params(colors="black", labelsize=7)
     ax.set_xticklabels(
-        ATTRS_7, color="white",
+        ATTRS_7, color="black",
         rotation=35, ha="right", fontsize=7)
     ax.set_yticklabels(
-        ATTRS_7, color="white",
+        ATTRS_7, color="black",
         rotation=0, fontsize=7)
 
 plt.tight_layout(pad=2)
@@ -650,10 +650,10 @@ axes[0, 0].set_ylabel("R_norm  [0, 1]", fontsize=11)
 axes[0, 0].set_title(
     "R_norm vs Population Size",
     fontsize=12, fontweight="bold", pad=8)
-axes[0, 0].grid(alpha=0.15, color="white")
+axes[0, 0].grid(alpha=0.15, color="black")
 axes[0, 0].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 # Convergence rate
 for scheme in SCHEMES:
@@ -674,10 +674,10 @@ axes[0, 1].set_ylabel("|ΔR_norm| (log scale)", fontsize=11)
 axes[0, 1].set_title(
     "Convergence Rate",
     fontsize=12, fontweight="bold", pad=8)
-axes[0, 1].grid(alpha=0.15, color="white")
+axes[0, 1].grid(alpha=0.15, color="black")
 axes[0, 1].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 # Residual risk floor at N=100K
 floors = [scale_norm[s][-1] for s in SCHEMES]
@@ -686,7 +686,7 @@ bars   = axes[1, 0].bar(
     color=[COLORS[s] for s in SCHEMES],
     edgecolor=EDGE, lw=1.2, width=0.6)
 axes[1, 0].set_xticks(range(len(SCHEMES)))
-axes[1, 0].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[1, 0].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[1, 0].set_ylabel("R_norm at N=100,000", fontsize=11)
 axes[1, 0].set_title(
     "Residual Risk Floor at Scale",
@@ -696,9 +696,9 @@ for bar, val in zip(bars, floors):
     axes[1, 0].text(
         bar.get_x() + bar.get_width() / 2,
         val + 0.003, f"{val:.3f}",
-        ha="center", color="white",
+        ha="center", color="black",
         fontsize=9, fontweight="bold")
-axes[1, 0].grid(axis="y", alpha=0.15, color="white")
+axes[1, 0].grid(axis="y", alpha=0.15, color="black")
 
 # Relative risk vs ZKP baseline
 zkp_floor = scale_norm["ZKP Token"][-1]
@@ -708,7 +708,7 @@ bars2     = axes[1, 1].bar(
     color=[COLORS[s] for s in SCHEMES],
     edgecolor=EDGE, lw=1.2, width=0.6)
 axes[1, 1].set_xticks(range(len(SCHEMES)))
-axes[1, 1].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[1, 1].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[1, 1].set_ylabel("Risk relative to ZKP Token", fontsize=11)
 axes[1, 1].set_title(
     "Relative Risk Floor  (ZKP = 1.0 baseline)",
@@ -718,13 +718,13 @@ for bar, val in zip(bars2, relative):
     axes[1, 1].text(
         bar.get_x() + bar.get_width() / 2,
         val + 0.04, f"{val:.1f}×",
-        ha="center", color="white",
+        ha="center", color="black",
         fontsize=9, fontweight="bold")
-axes[1, 1].grid(axis="y", alpha=0.15, color="white")
+axes[1, 1].grid(axis="y", alpha=0.15, color="black")
 
 plt.suptitle(
     "Analysis 5: Population Scalability  |  6 Schemes  |  m=7",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a5_scalability.png",
@@ -782,20 +782,20 @@ for i, scheme in enumerate(SCHEMES):
         x + offsets[i] * w, vals,
         width=w * 0.9,
         color=COLORS[scheme], label=scheme,
-        edgecolor=BG, lw=0.3, alpha=0.92)
+        edgecolor="black", lw=0.3, alpha=0.92)
 axes[0].set_xticks(x)
 axes[0].set_xticklabels(
-    mit_names, color="white", fontsize=8)
+    mit_names, color="black", fontsize=8)
 axes[0].set_ylabel("R_norm  [0, 1]", fontsize=11)
 axes[0].set_title(
     "R_norm by Mitigation Strategy",
     fontsize=12, fontweight="bold", pad=8)
 axes[0].set_ylim(0, 1.0)
 axes[0].axhline(0.5, color="yellow", lw=1, ls=":", alpha=0.5)
-axes[0].grid(axis="y", alpha=0.15, color="white")
+axes[0].grid(axis="y", alpha=0.15, color="black")
 axes[0].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8, ncol=2)
+    labelcolor="black", fontsize=8, ncol=2)
 
 red_data = []
 for scheme in SCHEMES:
@@ -817,17 +817,17 @@ sns.heatmap(
 axes[1].set_title(
     "Risk Reduction (%) per Mitigation per Scheme",
     fontsize=12, fontweight="bold", pad=8)
-axes[1].tick_params(colors="white", labelsize=9)
+axes[1].tick_params(colors="black", labelsize=9)
 axes[1].set_xticklabels(
     axes[1].get_xticklabels(),
-    color="white", rotation=25, ha="right")
+    color="black", rotation=25, ha="right")
 axes[1].set_yticklabels(
-    SCHEMES, color="white", rotation=0)
+    SCHEMES, color="black", rotation=0)
 
 plt.suptitle(
     "Analysis 7: Mitigation Effectiveness  |  "
     "6 Schemes  |  m=7  |  Nepal Controls Included",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a7_mitigation.png",
@@ -874,7 +874,7 @@ for scheme in SCHEMES:
         lw=2.5, marker="o", ms=5, label=scheme)
 axes[0].set_xticks(m_vals)
 axes[0].set_xticklabels(
-    ATTR_LABELS, color="white",
+    ATTR_LABELS, color="black",
     fontsize=9, rotation=25, ha="right")
 axes[0].set_ylabel("R_norm  [0, 1]", fontsize=11)
 axes[0].set_title(
@@ -885,10 +885,10 @@ axes[0].axvline(5.5, color="cyan", lw=1.5, ls="--", alpha=0.7)
 axes[0].text(5.6, 0.85, "Nepal\nattrs",
              color="cyan", fontsize=8)
 axes[0].set_ylim(0, 1.05)
-axes[0].grid(alpha=0.15, color="white")
+axes[0].grid(alpha=0.15, color="black")
 axes[0].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 r_max_vals = [R_max(m) for m in m_vals]
 axes[1].plot(
@@ -898,17 +898,17 @@ for m, rmax in zip(m_vals, r_max_vals):
     axes[1].annotate(
         f"R_max={rmax}", (m, rmax),
         textcoords="offset points", xytext=(4, 5),
-        color="white", fontsize=8)
+        color="black", fontsize=8)
 axes[1].set_xticks(m_vals)
 axes[1].set_xticklabels(
-    ATTR_LABELS, color="white",
+    ATTR_LABELS, color="black",
     fontsize=9, rotation=25, ha="right")
 axes[1].set_ylabel("R_max = m + C(m,2)", fontsize=11)
 axes[1].set_title(
     "R_max Growth as m Increases\n(normalisation ceiling)",
     fontsize=11, fontweight="bold", pad=8)
 axes[1].axvline(5.5, color="cyan", lw=1.5, ls="--", alpha=0.7)
-axes[1].grid(alpha=0.15, color="white")
+axes[1].grid(alpha=0.15, color="black")
 
 for scheme in SCHEMES:
     marginal = [
@@ -921,7 +921,7 @@ for scheme in SCHEMES:
         lw=2.5, marker="s", ms=4, label=scheme)
 axes[2].set_xticks(m_vals)
 axes[2].set_xticklabels(
-    ATTR_LABELS, color="white",
+    ATTR_LABELS, color="black",
     fontsize=9, rotation=25, ha="right")
 axes[2].set_ylabel("ΔR_norm per attribute added", fontsize=11)
 axes[2].set_title(
@@ -929,15 +929,15 @@ axes[2].set_title(
     "(contribution of each addition)",
     fontsize=11, fontweight="bold", pad=8)
 axes[2].axvline(5.5, color="cyan", lw=1.5, ls="--", alpha=0.7)
-axes[2].grid(alpha=0.15, color="white")
+axes[2].grid(alpha=0.15, color="black")
 axes[2].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 plt.suptitle(
     "Analysis 8: m-Attribute Sensitivity  |  "
     "6 Schemes  |  Cyan = Nepal attributes begin",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a8_m_sensitivity.png",
@@ -981,9 +981,9 @@ axes[0].bar(
     yerr=[2 * s for s in stds],
     color=[COLORS[s] for s in SCHEMES],
     edgecolor=EDGE, lw=1.2, width=0.6,
-    error_kw={"ecolor": "white", "capsize": 5, "lw": 2})
+    error_kw={"ecolor": "black", "capsize": 5, "lw": 2})
 axes[0].set_xticks(range(len(SCHEMES)))
-axes[0].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[0].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[0].set_ylabel("R_norm  (mean ± 2σ)", fontsize=11)
 axes[0].set_title(
     "R_norm Stability Across 30 Seeds\n(error bars = ±2σ)",
@@ -993,8 +993,8 @@ for i, (mu, sd) in enumerate(zip(means, stds)):
     axes[0].text(
         i, mu + 2 * sd + 0.012,
         f"σ={sd:.4f}", ha="center",
-        color="white", fontsize=8)
-axes[0].grid(axis="y", alpha=0.15, color="white")
+        color="black", fontsize=8)
+axes[0].grid(axis="y", alpha=0.15, color="black")
 
 seed_data = [seed_results[s] for s in SCHEMES]
 vp = axes[1].violinplot(
@@ -1004,20 +1004,20 @@ vp = axes[1].violinplot(
 for body, scheme in zip(vp["bodies"], SCHEMES):
     body.set_facecolor(COLORS[scheme])
     body.set_alpha(0.7)
-vp["cmeans"].set_color("white")
+vp["cmeans"].set_color("black")
 vp["cmedians"].set_color("yellow")
 axes[1].set_xticks(range(len(SCHEMES)))
-axes[1].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[1].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[1].set_ylabel("R_norm distribution", fontsize=11)
 axes[1].set_title(
     "Distribution Across 30 Seeds\n(white=mean, yellow=median)",
     fontsize=11, fontweight="bold", pad=8)
 axes[1].set_ylim(0, 1.0)
-axes[1].grid(axis="y", alpha=0.15, color="white")
+axes[1].grid(axis="y", alpha=0.15, color="black")
 
 plt.suptitle(
     "Analysis 9: Seed Sensitivity  |  30 Seeds  |  m=7  |  N=1,000",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a9_seed_sensitivity.png",
@@ -1062,7 +1062,7 @@ for scheme in SCHEMES:
 axes[0].set_xticks(N_micro)
 axes[0].set_xticklabels(
     [str(n) for n in N_micro],
-    color="white", fontsize=9)
+    color="black", fontsize=9)
 axes[0].set_ylabel("R_norm  [0, 1]", fontsize=11)
 axes[0].set_xlabel("Population N", fontsize=11)
 axes[0].set_title(
@@ -1075,10 +1075,10 @@ axes[0].axvline(
 axes[0].text(
     52, 0.9, "N=50\nVDC pilot",
     color="yellow", fontsize=8)
-axes[0].grid(alpha=0.15, color="white")
+axes[0].grid(alpha=0.15, color="black")
 axes[0].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 vals_50 = [micro_norm[s][2] for s in SCHEMES]
 bars = axes[1].bar(
@@ -1086,7 +1086,7 @@ bars = axes[1].bar(
     color=[COLORS[s] for s in SCHEMES],
     edgecolor=EDGE, lw=1.2, width=0.6)
 axes[1].set_xticks(range(len(SCHEMES)))
-axes[1].set_xticklabels(LABELS, color="white", fontsize=8)
+axes[1].set_xticklabels(LABELS, color="black", fontsize=8)
 axes[1].set_ylabel("R_norm at N=50", fontsize=11)
 axes[1].set_title(
     "Risk at VDC Pilot Scale\n(N=50 users)",
@@ -1096,14 +1096,14 @@ for bar, val in zip(bars, vals_50):
     axes[1].text(
         bar.get_x() + bar.get_width() / 2,
         val + 0.01, f"{val:.3f}",
-        ha="center", color="white",
+        ha="center", color="black",
         fontsize=9, fontweight="bold")
-axes[1].grid(axis="y", alpha=0.15, color="white")
+axes[1].grid(axis="y", alpha=0.15, color="black")
 
 plt.suptitle(
     "Analysis 10: Micro-Scale Population Test  |  "
     "Village-Level CBDC Pilot  |  m=7",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a10_microscale.png",
@@ -1228,10 +1228,10 @@ axes[0].set_title(
     "Plain Hash Token — amount × wallet pair",
     fontsize=11, fontweight="bold", pad=8)
 axes[0].set_ylim(0, 1.05)
-axes[0].grid(alpha=0.15, color="white")
+axes[0].grid(alpha=0.15, color="black")
 axes[0].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 # ZKP lambda sensitivity
 axes[1].plot(
@@ -1254,15 +1254,15 @@ axes[1].set_title(
     "ZKP Token — wallet × timestamp pair",
     fontsize=11, fontweight="bold", pad=8)
 axes[1].set_ylim(0, 1.05)
-axes[1].grid(alpha=0.15, color="white")
+axes[1].grid(alpha=0.15, color="black")
 axes[1].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 plt.suptitle(
     "Analysis 11: Lambda Sensitivity  |  "
     "Effect of Interaction Coefficient on R_norm  |  m=7",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a11_lambda_sensitivity.png",
@@ -1350,7 +1350,7 @@ bars = axes[0].bar(
     edgecolor=EDGE, lw=1.2, width=0.6)
 axes[0].set_xticks(range(len(all_labels)))
 axes[0].set_xticklabels(
-    all_labels, color="white", fontsize=8)
+    all_labels, color="black", fontsize=8)
 axes[0].set_ylabel("R_norm  [0, 1]", fontsize=11)
 axes[0].set_title(
     "All Schemes vs Worst Case\nvs Theoretical Maximum",
@@ -1364,12 +1364,12 @@ for bar, val in zip(bars, all_r_norms):
     axes[0].text(
         bar.get_x() + bar.get_width() / 2,
         val + 0.01, f"{val:.3f}",
-        ha="center", color="white",
+        ha="center", color="black",
         fontsize=8, fontweight="bold")
-axes[0].grid(axis="y", alpha=0.15, color="white")
+axes[0].grid(axis="y", alpha=0.15, color="black")
 axes[0].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 # s(ai) comparison — worst case vs Plain Hash vs ZKP
 x_pos           = np.arange(len(ATTRS_7))
@@ -1396,11 +1396,11 @@ for i, (sc, col, lab) in enumerate(zip(
         x_pos + (i - 1) * w_bar, vals,
         width=w_bar * 0.9,
         color=col, label=lab,
-        edgecolor=BG, lw=0.3, alpha=0.92)
+        edgecolor="black", lw=0.3, alpha=0.92)
 
 axes[1].set_xticks(x_pos)
 axes[1].set_xticklabels(
-    ATTRS_7, color="white",
+    ATTRS_7, color="black",
     fontsize=8, rotation=25, ha="right")
 axes[1].set_ylabel("s(ai) — attribute uniqueness", fontsize=11)
 axes[1].set_title(
@@ -1408,15 +1408,15 @@ axes[1].set_title(
     "Plain Hash vs ZKP vs Worst Case",
     fontsize=11, fontweight="bold", pad=8)
 axes[1].set_ylim(0, 1.1)
-axes[1].grid(axis="y", alpha=0.15, color="white")
+axes[1].grid(axis="y", alpha=0.15, color="black")
 axes[1].legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=8)
+    labelcolor="black", fontsize=8)
 
 plt.suptitle(
     "Analysis 12: Worst-Case Scenario  |  "
     "R_norm Approaching Theoretical Maximum  |  m=7",
-    color="white", fontsize=13, fontweight="bold", y=1.01)
+    color="black", fontsize=13, fontweight="bold", y=1.01)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/a12_worst_case.png",
@@ -1465,19 +1465,19 @@ ax.set_ylim(0, 1.0)
 ax.axhline(0.5, color="yellow", lw=1, ls=":", alpha=0.5)
 ax.set_xlabel(
     "Population N (log scale)",
-    color="white", fontsize=12)
+    color="black", fontsize=12)
 ax.set_ylabel(
     "R_norm  [0, 1]",
-    color="white", fontsize=12)
+    color="black", fontsize=12)
 ax.set_title(
     "Combined: Scheme × Scalability × Mitigation  "
     "|  6 Schemes  |  m=7",
-    color="white", fontsize=13,
+    color="black", fontsize=13,
     fontweight="bold", pad=12)
-ax.grid(alpha=0.15, color="white")
+ax.grid(alpha=0.15, color="black")
 ax.legend(
     facecolor=AX, edgecolor=EDGE,
-    labelcolor="white", fontsize=7, ncol=2)
+    labelcolor="black", fontsize=7, ncol=2)
 plt.tight_layout(pad=2)
 plt.savefig(
     f"{OUTPUT_DIR}/combined.png",

@@ -72,22 +72,22 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ── Output directory ──────────────────────────────────────────────
-OUTPUT_DIR = "charts_final"
+OUTPUT_DIR = "figures"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ── Plot styling ──────────────────────────────────────────────────
-BG   = "#0D1117"
-AX   = "#161B22"
-EDGE = "#30363D"
+BG   = "white"
+AX   = "white"
+EDGE = "black"
 
 def sax(ax):
-    """Apply dark theme styling to a matplotlib axis."""
+    """Apply light theme styling to a matplotlib axis."""
     ax.set_facecolor(AX)
-    ax.tick_params(colors="white")
+    ax.tick_params(colors="black")
     ax.spines[:].set_color(EDGE)
-    ax.yaxis.label.set_color("white")
-    ax.xaxis.label.set_color("white")
-    ax.title.set_color("white")
+    ax.yaxis.label.set_color("black")
+    ax.xaxis.label.set_color("black")
+    ax.title.set_color("black")
 
 # Scheme colours and line styles
 COLORS = {
