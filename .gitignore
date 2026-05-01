@@ -9,6 +9,9 @@ AGENTS.md
 figures_backup/
 charts_final/
 
+# Generated output files
+figures/master_summary.csv
+
 # LaTeX auxiliary files
 *.aux
 *.log
