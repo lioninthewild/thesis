@@ -1,6 +1,14 @@
 # Artifacts
 artifacts/
 
+# Documentation (local only, not pushed to GitHub)
+TUTOR.md
+AGENTS.md
+
+# Backup directories
+figures_backup/
+charts_final/
+
 # LaTeX auxiliary files
 *.aux
 *.log
