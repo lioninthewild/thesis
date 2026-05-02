@@ -83,7 +83,7 @@ measurably distinct privacy outcome.
 \textbf{Wallet dominance.} Across all six schemes, the wallet
 attribute is the single largest contributor to $\Rnorm$. Even
 ZKP Token, with its nullifier pool of size $N \times 100$,
-shows $s(\text{wallet}) = 0.982$ --- nearly every user has a
+shows $s(\text{wallet}) = 0.982$, nearly every user has a
 unique nullifier at $N = 1{,}000$. The critical difference
 between schemes is not whether the wallet is unique but whether
 it is \textit{linkable} across transactions. Stealth Address
@@ -101,8 +101,8 @@ to a full ring signature construction.
 
 \textbf{Nepal-specific attributes.} Payment channel and
 transaction zone show $s(a_i) = 0.000$ across all schemes at
-$N = 1{,}000$. Nepal's skewed demographic distributions ---
-60\% mobile wallet, 35\% Kathmandu valley --- mean most users
+$N = 1{,}000$. Nepal's skewed demographic distributions:
+60\% mobile wallet, 35\% Kathmandu valley, mean most users
 share these attribute values and are not uniquely identifiable
 on them individually. The Nepal-specific attributes do not
 contribute to $\Rnorm$ at this scale.
@@ -160,8 +160,8 @@ ZKP Token baseline (bottom right). $m = 7$.}
 \subsection{Discussion}
 
 \textbf{Scale cannot substitute for cryptographic design.}
-Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$
---- 5.5 times the risk of ZKP Token at the same scale. A
+Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$,
+5.5 times the risk of ZKP Token at the same scale. A
 national NRB deployment with Plain Hash Token would leave
 approximately 19\% of all users structurally vulnerable to
 re-identification from their transaction metadata, regardless
@@ -171,7 +171,7 @@ design itself.
 
 \textbf{ZKP Token is scale-independent.} ZKP Token is the
 only scheme whose $\Rnorm$ is completely flat across all
-population sizes --- 0.035 at $N = 100$ and 0.035 at
+population sizes, 0.035 at $N = 100$ and 0.035 at
 $N = 100{,}000$. This occurs because ZKP's nullifier pool
 scales proportionally with population ($N \times 100$),
 maintaining constant relative uniqueness. For a national
@@ -379,8 +379,8 @@ $m = 7$, $N = 1{,}000$.}
 
 \textbf{The scheme ranking is statistically robust.} Across
 all 30 seeds, no seed produces a result where a weaker scheme
-outperforms a stronger one. The ordinal ranking --- ZKP,
-Hybrid/Ring, Stealth, Blind, Plain Hash --- is preserved in
+outperforms a stronger one. The ordinal ranking: ZKP,
+Hybrid/Ring, Stealth, Blind, Plain Hash, is preserved in
 every trial. The conclusions of this thesis are not sensitive
 to the choice of random seed.
 

@@ -59,8 +59,8 @@ requirement by the European Central Bank.
 
 Morales-Resendiz et al. \cite{moralesresendiz2021}
 provide a detailed peer review of three retail CBDC pilot
-programs --- the Bahamas Sand Dollar, Uruguay's e-Peso, and
-Sweden's e-Krona --- drawing common lessons on design,
+programs, specifically the Bahamas Sand Dollar, Uruguay's e-Peso, and
+Sweden's e-Krona, drawing common lessons on design,
 operation, and implementation. Their analysis highlights that
 despite differences in motivation and technical architecture,
 all three pilots converge on the importance of a hybrid
@@ -114,7 +114,7 @@ bank has no record of who holds which banknote or what it
 was used to purchase.
 
 \textit{Pseudonymity} means that transactions are linked to
-a persistent identifier --- a pseudonym --- rather than a
+a persistent identifier, namely a pseudonym, rather than a
 real name. The system operator may or may not know the
 mapping between pseudonym and real identity. Hyperledger
 Fabric operates on this model: each user has an X.509
@@ -131,9 +131,9 @@ transaction amounts.
 The critical insight motivating this thesis is that
 pseudonymity without metadata privacy is insufficient. Garratt
 and van Oordt \cite{garratt2020} argue that privacy in
-digital payments should be treated as a public good --- one
+digital payments should be treated as a public good, one
 that market mechanisms alone will not provide at the socially
-optimal level --- and that central bank design choices have
+optimal level, and that central bank design choices have
 a direct role in determining how much metadata privacy
 citizens receive. They distinguish between operational
 privacy, which concerns who can see transaction data, and
@@ -146,8 +146,8 @@ from it.
 
 The metadata problem arises because even when names are
 removed from transaction records, the combination of
-observable fields --- amount, time, merchant, wallet
-address, frequency --- creates a unique behavioural
+observable fields (amount, time, merchant, wallet
+address, frequency) creates a unique behavioural
 fingerprint. A user who pays NPR 4,738 at a specific
 merchant at 2:47am in a hill rural zone has produced a
 transaction record that may be unique to exactly one person
@@ -176,8 +176,8 @@ guarantees.
 cryptographic hash of the token serial number as the token
 identifier. SHA-256 is the standard hash function used in
 practice. This design provides no metadata hiding: all
-transaction fields --- amount, timestamp, merchant, wallet
-address --- are recorded exactly on the ledger. It is
+transaction fields (amount, timestamp, merchant, wallet
+address) are recorded exactly on the ledger. It is
 included in this thesis as the baseline worst-case scheme.
 
 \textbf{Blind Signature.} The blind signature scheme was
@@ -229,9 +229,9 @@ the value itself. Groth and Kohlweiss \cite{groth2015}
 introduced one-out-of-many proofs that enable efficient
 membership proofs used in CBDC privacy schemes. In a ZKP
 token, all sensitive attributes are reduced to coarse
-disclosure bands --- amount to a set of denominations,
-timestamp to day of week, merchant to broad sector category
---- and a nullifier-based wallet provides transaction
+disclosure bands (amount to a set of denominations,
+timestamp to day of week, merchant to broad sector category),
+and a nullifier-based wallet provides transaction
 unlinkability. ZKP tokens provide the strongest metadata
 privacy of all six schemes but carry the highest
 computational cost.
@@ -256,8 +256,8 @@ knowing just eight movie ratings for a target user was
 sufficient to identify that user in the dataset with high
 confidence, by correlating the anonymous Netflix records with
 public ratings on the Internet Movie Database. The key
-finding was that the \textit{combination} of attributes ---
-even individually innocuous ones --- created a unique
+finding was that the \textit{combination} of attributes,
+even individually innocuous ones, created a unique
 behavioural fingerprint. This result directly motivates the
 pairwise interaction coefficient $\lambda_{ij}$ in this
 thesis, which models exactly this amplification effect.
@@ -302,7 +302,7 @@ means that record is unique and fully identifiable. The
 connection to this thesis is direct: the single-attribute
 uniqueness score $s(a_i)$ in the model of this thesis
 measures the fraction of users for whom $k=1$ on attribute
-$a_i$. A user who is unique on an attribute --- $k=1$ ---
+$a_i$. A user who is unique on an attribute ($k=1$)
 has zero protection from k-anonymity on that attribute.
 $s(a_i)$ is therefore the k-anonymity failure rate for
 attribute $a_i$.
@@ -345,8 +345,8 @@ differing in one record and any output $S$:
 The privacy budget $\varepsilon$ controls the strength of
 the guarantee. Differential privacy is enforced by adding
 calibrated noise to query outputs. In the CBDC context,
-differential privacy on transaction amounts --- implemented
-by adding noise to the recorded amount --- is one of the
+differential privacy on transaction amounts: implemented
+by adding noise to the recorded amount, is one of the
 mitigation strategies evaluated in Chapter~\ref{ch:results}.
 The model in this thesis measures the effect of such
 mitigation by applying a multiplier to $s(a_i)$, which
@@ -489,9 +489,9 @@ measurement tool. De-anonymization attack literature
 demonstrates the threat empirically but does not generalise
 to a measurement framework.
 
-This thesis fills that gap by deriving $R_{\mathrm{norm}}$
---- a normalised metadata de-anonymization risk score with
+This thesis fills that gap by deriving $R_{\mathrm{norm}}$:
+a normalised metadata de-anonymization risk score with
 a proven theoretical upper bound, applicable to any
 token-based CBDC attribute set and cryptographic scheme
-configuration --- and applying it to six schemes in Nepal's
+configuration, and applying it to six schemes in Nepal's
 domestic CBDC deployment context.

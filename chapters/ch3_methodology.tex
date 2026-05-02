@@ -9,11 +9,11 @@
 
 This chapter presents the complete theoretical framework and
 implementation of the metadata de-anonymization risk model.
-It is structured in two parts. The first part --- Sections
-\ref{sec:system_model} through \ref{sec:mitigation} ---
+It is structured in two parts. The first part: Sections
+\ref{sec:system_model} through \ref{sec:mitigation},
 derives the mathematical model from first principles. The
-second part --- Sections \ref{sec:fabric_context} through
-\ref{sec:implementation} --- describes the system design and
+second part: Sections \ref{sec:fabric_context} through
+\ref{sec:implementation}, describes the system design and
 Python implementation through which the model is applied to
 Nepal's domestic CBDC context.
 
@@ -61,8 +61,8 @@ depends on the attribute:
     finite set of five denomination bands.
 
     \item For \textit{timestamp}, $V_i \subset \mathbb{Z}$,
-    the integers. The granularity --- from fine-grained
-    Unix-style integers to day-of-week only --- depends on
+the integers. The granularity: from fine-grained
+Unix-style integers to day-of-week only, depends on
     the cryptographic scheme.
 
     \item For \textit{merchant}, \textit{payment channel},
@@ -95,7 +95,7 @@ represented as a matrix $\mathbf{A}$ of dimension $N \times m$,
 where entry $\mathbf{A}_{u,i} = a_i(u)$ is the value of
 attribute $i$ for user $u$. Each row corresponds to a user's
 transaction fingerprint. The adversary's goal is to identify
-which row corresponds to a target individual --- that is,
+which row corresponds to a target individual, that is,
 to invert the mapping from observable metadata to real
 identity.
 
@@ -126,15 +126,15 @@ model in cryptographic privacy literature. The adversary:
     regardless of computational cost.
 
     \item \textbf{Has one goal}: given a transaction record
-    --- a row of $\mathbf{A}$ --- identify which user
+    --- a row of $\mathbf{A}$, identify which user
     $u \in U$ produced it.
 \end{itemize}
 
 \subsection{Why Unlimited Computation}
 
 The unlimited computation assumption is deliberate and
-important. Computational hardness assumptions --- the basis
-of most cryptographic security proofs --- are time-dependent.
+important. Computational hardness assumptions: the basis
+of most cryptographic security proofs, are time-dependent.
 What is computationally infeasible today may become feasible
 with advances in hardware, algorithms, or quantum computing.
 By assuming unlimited computation, this model produces
@@ -155,8 +155,8 @@ realistic threat scenarios in Nepal's CBDC context.
 
 \textbf{The compromised insider.} A Nepal Rastra Bank
 employee with read access to the transaction database. They
-have not broken any cryptographic system --- they have
-legitimate access --- but they attempt to use transaction
+have not broken any cryptographic system, they have
+legitimate access, but they attempt to use transaction
 patterns to build behavioural profiles of specific users.
 This is not a theoretical risk: central bank data breaches
 have occurred in Bangladesh, Ecuador, and multiple other
@@ -171,8 +171,8 @@ without any attack.
 
 \textbf{The merchant coalition.} Multiple merchants
 independently see their own transactions with users. By
-sharing transaction data --- amounts, times, wallet
-addresses --- they can construct a combined view of user
+sharing transaction data: amounts, times, wallet
+addresses, they can construct a combined view of user
 behaviour across platforms. Nepal's dominant payment
 platforms eSewa and Khalti already hold significant
 transaction data on the same user populations that would
@@ -186,7 +186,7 @@ break cryptographic primitives by brute force or algorithm.
 Those threat categories are outside the scope of this
 thesis and represent a separate research problem. The
 passive metadata analysis threat is chosen because it is
-the realistic and immediate risk for a CBDC deployment ---
+the realistic and immediate risk for a CBDC deployment,
 no sophisticated attack is required, only the ability to
 read and analyse what is already publicly visible on the
 ledger.
@@ -216,7 +216,7 @@ other user in $U$ shares the same attribute value:
 
 The indicator function $\mathbb{I}_i(u)$ equals 1 if and
 only if user $u$ is the sole occupant of their attribute
-value --- no other user shares it. The uniqueness score is
+value, no other user shares it. The uniqueness score is
 then the population-weighted average of this indicator:
 
 \begin{equation}
@@ -266,7 +266,7 @@ to the k-anonymity framework introduced by Sweeney
 \citeyear{sweeney2002}. A user satisfies k-anonymity
 on attribute $a_i$ with $k \geq 2$ if they share their
 attribute value with at least $k-1$ other users. A user
-who is unique --- $k=1$ --- has zero k-anonymity protection
+who is unique, $k=1$, has zero k-anonymity protection
 on that attribute.
 
 The uniqueness score $s(a_i)$ is precisely the
@@ -290,11 +290,11 @@ Consider a population of $N = 5$ users and the attribute
 \toprule
 \textbf{User} & \textbf{Zone} & \textbf{Unique?} \\
 \midrule
-Alice  & Kathmandu valley & No --- shared with Carol, Eve \\
-Bob    & Hill rural       & Yes --- sole occupant \\
-Carol  & Kathmandu valley & No --- shared with Alice, Eve \\
-David  & Terai urban      & Yes --- sole occupant \\
-Eve    & Kathmandu valley & No --- shared with Alice, Carol \\
+Alice  & Kathmandu valley & No, shared with Carol, Eve \\
+Bob    & Hill rural       & Yes, sole occupant \\
+Carol  & Kathmandu valley & No, shared with Alice, Eve \\
+David  & Terai urban      & Yes, sole occupant \\
+Eve    & Kathmandu valley & No, shared with Alice, Carol \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -319,7 +319,7 @@ Single-attribute uniqueness captures only part of the
 privacy risk. Consider a user who is not unique on zone
 alone and not unique on payment channel alone. If the
 combination of their zone and payment channel values is
-unique --- shared by no other user --- they are fully
+unique, they are fully identifiable from the pair
 identifiable from the pair of attributes even though
 neither attribute exposes them individually. This is the
 attribute combination effect demonstrated empirically by
@@ -350,7 +350,7 @@ both attributes to be considered non-unique.
 
 If attributes $a_i$ and $a_j$ were statistically
 independent, the expected joint uniqueness under
-independence would be $s(a_i) \times s(a_j)$ --- the
+independence would be $s(a_i) \times s(a_j)$, the
 product of the individual uniqueness scores. The pairwise
 interaction coefficient $\lambda_{ij}$ measures how much
 the actual joint uniqueness deviates from this
@@ -378,7 +378,7 @@ The three cases of $\lambda_{ij}$ have clear interpretations:
     is the Netflix effect.
 
     \item $\lambda_{ij} < 1$: \textit{suppressed risk}.
-    The attributes are redundant --- they carry overlapping
+    The attributes are redundant, they carry overlapping
     information. The combination identifies fewer additional
     users than independence predicts.
 \end{itemize}
@@ -399,8 +399,8 @@ of the pair to the risk score $\Rraw$:
 
 If either $s(a_i) = 0$ or $s(a_j) = 0$, this product
 equals zero regardless of $\lambda_{ij}$. Setting
-$\lambda_{ij} = 0$ produces the correct result --- zero
-pair contribution --- without division by zero. In the
+$\lambda_{ij} = 0$ produces the correct result, zero
+pair contribution, without division by zero. In the
 Python implementation this is handled as:
 
 \begin{lstlisting}

@@ -14,7 +14,7 @@
 Money has existed for thousands of years, but its form has
 changed dramatically over time. From barter to coins, from
 coins to paper notes, and now from paper notes to digital
-payments --- each transition has brought new conveniences
+payments, each transition has brought new conveniences
 alongside new challenges. The latest and perhaps most
 significant transition is the move toward fully digital
 currency issued directly by central banks, known as Central
@@ -23,7 +23,7 @@ Bank Digital Currency, or CBDC.
 A CBDC is a digital form of a country's official currency,
 issued and backed by the central bank, just as physical
 banknotes are. Unlike private digital payment platforms such
-as eSewa or Khalti, a CBDC is legal tender --- it carries the
+as eSewa or Khalti, a CBDC is legal tender, it carries the
 full authority of the government and the central bank behind
 it. Unlike cryptocurrencies such as Bitcoin or Ethereum, a
 CBDC is not decentralised. It is issued, managed, and
@@ -31,7 +31,7 @@ overseen by the central bank of the issuing country.
 
 To understand why CBDCs are being explored worldwide, it helps
 to understand the limitations of existing payment systems.
-Physical cash is anonymous --- when a person pays for groceries
+Physical cash is anonymous, when a person pays for groceries
 with a banknote, no record is created linking that person to
 that purchase. However, cash is inefficient for large
 transactions, easily lost or stolen, and impossible to use
@@ -41,7 +41,7 @@ creates a data record. This record includes who paid, how
 much, when, where, and to whom. These details are collectively
 referred to as transaction metadata.
 
-Transaction metadata is enormously valuable --- to banks for
+Transaction metadata is enormously valuable, to banks for
 fraud detection, to governments for tax compliance, and to
 regulators for anti-money laundering monitoring. However, the
 same metadata that serves legitimate purposes also creates
@@ -53,7 +53,7 @@ physical cash provided.
 
 This is the core tension at the heart of every CBDC design:
 how do you build a digital currency that is efficient,
-compliant with regulations, and inclusive --- while also
+compliant with regulations, and inclusive, while also
 protecting the privacy of the citizens who use it? There is
 no simple answer, and different cryptographic approaches offer
 different tradeoffs between privacy and transparency. The
@@ -67,7 +67,7 @@ billions of yuan in transactions. The European Central Bank
 is advancing the digital euro project, with privacy described
 as a core design requirement. The Eastern Caribbean Currency
 Union launched the DCash system, and the Bahamas operates the
-Sand Dollar --- the world's first fully deployed retail CBDC.
+Sand Dollar, the world's first fully deployed retail CBDC.
 These projects represent a broad consensus that digital
 currency is not a distant possibility but an imminent reality
 for financial systems worldwide.
@@ -133,8 +133,8 @@ while offline token systems are being explored for low
 connectivity rural deployment.
 
 This mobile-first reality means that in a CBDC deployment,
-the payment channel --- whether a transaction was made via
-mobile wallet, QR code, NFC, or offline token --- is a
+the payment channel, whether a transaction was made via
+mobile wallet, QR code, NFC, or offline token, is a
 metadata field that is observable at the network level. As
 this thesis will demonstrate, this attribute is relevant to
 privacy risk modelling in Nepal's specific context and has
@@ -150,24 +150,24 @@ densities, merchant concentrations, and transaction
 frequencies:
 
 \begin{itemize}
-    \item \textbf{Kathmandu Valley} --- the capital region,
+    \item \textbf{Kathmandu Valley}: the capital region,
     accounting for approximately 35\% of all digital
     transactions despite being a small geographic area.
     High merchant density, high transaction frequency.
 
-    \item \textbf{Hill Urban} --- secondary cities such as
+    \item \textbf{Hill Urban}: secondary cities such as
     Pokhara, Biratnagar, and Dharan. Moderate transaction
     density and growing digital payment adoption.
 
-    \item \textbf{Hill Rural} --- the largest rural segment
+    \item \textbf{Hill Rural}: the largest rural segment
     by population. Low merchant density, low transaction
     frequency, and limited connectivity in many areas.
 
-    \item \textbf{Terai Urban} --- urban centres in Nepal's
+    \item \textbf{Terai Urban}: urban centres in Nepal's
     southern plains. Growing commercial activity and
     cross-border trade influence.
 
-    \item \textbf{Terai Rural} --- rural southern plains
+    \item \textbf{Terai Rural}: rural southern plains
     with significant agricultural activity and informal
     economic transactions.
 \end{itemize}
@@ -226,9 +226,9 @@ domestic model.
 The problem this thesis addresses can be stated plainly:
 when a CBDC transaction is recorded on a digital ledger,
 it leaves behind a set of observable metadata fields.
-These fields --- the amount, the time, the merchant, the
+These fields, the amount, the time, the merchant, the
 wallet identifier, the transaction frequency, the payment
-channel, and the geographic zone --- do not contain the
+channel, and the geographic zone, do not contain the
 user's name. But the combination of these fields may be
 sufficient to identify the user anyway.
 
@@ -260,7 +260,7 @@ CBDC context, operates with a permissioned identity model.
 Every participant has an X.509 certificate issued by the
 Membership Service Provider (MSP). The Nepal Rastra Bank,
 as the network operator, knows the real-world identity
-behind every wallet address. This is by design --- KYC
+behind every wallet address. This is by design, KYC
 and AML compliance requires it.
 
 However, this does not mean the privacy problem disappears.
@@ -269,9 +269,9 @@ may include financial institutions, payment processors,
 and merchant organisations who are channel participants
 but who should not have access to the complete transaction
 history of every citizen. Furthermore, if the transaction
-log is ever separated from the identity mapping --- through
+log is ever separated from the identity mapping, through
 a data breach, an insider threat, or a regulatory
-disclosure --- the richness of the metadata alone may be
+disclosure, the richness of the metadata alone may be
 sufficient to re-identify users without ever consulting
 the identity table.
 
@@ -281,7 +281,7 @@ transaction metadata is rich enough, the pseudonym itself
 becomes identifying. The wallet address of a user who
 always pays at the same four merchants, always at the
 same times, and always in amounts consistent with a
-specific income level is effectively a name --- it just
+specific income level is effectively a name, it just
 uses numbers instead of letters.
 
 \subsection{The Measurement Gap}
@@ -322,8 +322,8 @@ questions such as:
 
 Without answers to these questions, scheme selection
 is either arbitrary or driven by factors other than
-privacy --- such as implementation cost or familiarity
---- with no formal basis for claiming that the chosen
+privacy, such as implementation cost or familiarity,
+with no formal basis for claiming that the chosen
 scheme provides adequate privacy protection.
 
 This thesis provides the mathematical framework,
@@ -351,10 +351,10 @@ research questions that structure the analysis:
 
 \begin{enumerate}
 
-    \item \textbf{Scheme comparison.} Across six
-    cryptographic schemes --- Plain Hash Token, Blind
+\item \textbf{Scheme comparison.} Across six
+cryptographic schemes: Plain Hash Token, Blind
     Signature, Hybrid Scheme, Ring Signature, Stealth
-    Address, and ZKP Token --- what are the relative
+    Address, and ZKP Token, what are the relative
     metadata privacy risk levels at a baseline population
     of $N = 1{,}000$ users?
 
@@ -365,17 +365,17 @@ research questions that structure the analysis:
     $N = 100{,}000$ users? Does scale improve privacy,
     and if so, by how much and for which schemes?
 
-    \item \textbf{Mitigation effectiveness.} How
-    effectively do privacy-enhancing technical
-    mitigations --- differential privacy on amounts,
+\item \textbf{Mitigation effectiveness.} How
+effectively do privacy-enhancing technical
+mitigations: differential privacy on amounts,
     timestamp suppression, wallet unlinkability, and
-    Nepal-specific controls --- reduce the risk score
+    Nepal-specific controls: reduce the risk score
     of each scheme, and which mitigations provide the
     greatest return?
 
     \item \textbf{Nepal-specific context.} How do
-    Nepal-specific metadata attributes --- payment
-    channel and transaction zone --- affect the risk
+    Nepal-specific metadata attributes: payment
+    channel and transaction zone, affect the risk
     model, and what does the model reveal about the
     privacy implications of Nepal's specific demographic
     and geographic structure?
@@ -414,9 +414,9 @@ against which it is normalised.
 
 The second objective is to model six cryptographic schemes
 that represent the realistic spectrum of token-based CBDC
-privacy designs. These schemes --- Plain Hash Token, Blind
+privacy designs. Specifically, these schemes are Plain Hash Token, Blind
 Signature, Hybrid Scheme, Ring Signature, Stealth Address,
-and ZKP Token --- span from the weakest to the strongest
+and ZKP Token, which span from the weakest to the strongest
 available privacy guarantees. Each scheme must be modelled
 in terms of how it transforms the value domain of each
 observable metadata attribute, so that differences in
@@ -454,7 +454,7 @@ selection that can inform NRB's CBDC deployment decision.
 % ================================================================
 
 Every research model operates within a defined boundary.
-Being explicit about that boundary is not a weakness --- it
+Being explicit about that boundary is not a weakness, it
 is a requirement for honest and reproducible science. This
 section defines what this thesis does and does not cover,
 and why each boundary was drawn where it was.
@@ -465,8 +465,8 @@ This thesis models a domestic, token-based CBDC under the
 jurisdiction of the Nepal Rastra Bank. The reference
 deployment platform is Hyperledger Fabric, a permissioned
 enterprise blockchain framework. The model operates on
-transaction metadata --- the observable fields associated
-with a completed transaction --- and measures the risk that
+transaction metadata, specifically the observable fields associated
+with a completed transaction, and measures the risk that
 this metadata can be used to re-identify users.
 
 The model covers seven metadata attributes: transaction
@@ -502,7 +502,7 @@ and explicitly excluded on these grounds.
 
 \textbf{Pairwise interactions only.} The model captures
 interaction effects between pairs of attributes. Higher-order
-interactions --- triplets, quadruplets, and beyond --- are
+interactions (triplets, quadruplets, and beyond) are
 not modelled. For most practical deployment scenarios,
 pairwise interactions capture the dominant amplification
 effects. However, in datasets with strong higher-order
@@ -541,8 +541,8 @@ academic, policy, and societal.
 At the academic level, this thesis makes a contribution
 to the formal privacy measurement literature by introducing
 a normalised metric specifically designed for the CBDC
-metadata context. Existing privacy frameworks --- k-anonymity,
-l-diversity, and differential privacy --- were not developed
+metadata context. Specifically, existing privacy frameworks (k-anonymity,
+l-diversity, and differential privacy) were not developed
 with CBDC metadata in mind and do not directly address the
 multi-scheme comparison problem this thesis solves.
 The derivation of $R_{\mathrm{max}}(m) = m + \binom{m}{2}$
@@ -572,7 +572,7 @@ certain communities particularly vulnerable to
 re-identification from transaction metadata. The
 micro-scale analysis in this thesis demonstrates that
 at a village pilot scale of $N = 50$ users, all schemes
-except ZKP Token produce $R_{\mathrm{norm}} > 0.48$ ---
+except ZKP Token produce $R_{\mathrm{norm}} > 0.48$,
 meaning nearly half of pilot participants are potentially
 re-identifiable from their transaction metadata alone.
 This finding has direct implications for how NRB should
@@ -580,7 +580,7 @@ approach any community-level CBDC pilot, regardless of
 which scheme is ultimately selected for national deployment.
 
 Furthermore, Nepal is not alone in this context. Many
-developing economies share Nepal's characteristics ---
+developing economies share Nepal's characteristics, including
 mobile-first infrastructure, geographic stratification,
 high remittance dependency, and a large unbanked population
 entering the digital economy. The framework developed in
@@ -603,7 +603,7 @@ This report is organised into five chapters, each building
 on the previous to construct a complete argument from
 problem identification through to policy recommendation.
 
-Chapter~\ref{ch:introduction} --- the present chapter ---
+Chapter~\ref{ch:introduction}, the present chapter,
 establishes the background, context, and motivation for
 the research. It introduces the CBDC privacy problem,
 situates it within Nepal's specific deployment context,

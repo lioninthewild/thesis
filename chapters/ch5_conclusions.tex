@@ -30,9 +30,9 @@ theoretical upper bound $\Rmax(m) = m + \binom{m}{2}$, enabling
 direct comparison across schemes, attribute sets, and population
 sizes.
 
-The model was applied to six cryptographic schemes --- Plain Hash
+The model was applied to six cryptographic schemes: Plain Hash
 Token, Blind Signature, Hybrid Scheme, Ring Signature, Stealth
-Address, and ZKP Token --- across seven metadata attributes
+Address, and ZKP Token, across seven metadata attributes
 including two Nepal-specific fields: payment channel and
 transaction zone. Eight analyses were conducted covering baseline
 scheme comparison, population scalability, mitigation
@@ -59,7 +59,7 @@ and calibrated against a worst-case scenario achieving
 $\Rnorm = 0.9994$, confirming the normalisation is correctly
 calibrated at 99.9\% of the theoretical maximum.
 
-\textbf{Secondary question 1 --- Scheme comparison:}
+\textbf{Secondary question 1: Scheme comparison}:
 At baseline ($N = 1{,}000$, $m = 7$), the six schemes produce
 the following $\Rnorm$ values: Plain Hash Token 0.317, Blind
 Signature 0.174, Stealth Address 0.107, Ring Signature 0.069,
@@ -68,7 +68,7 @@ a clean, non-overlapping risk ladder. ZKP Token is 9.1 times
 safer than Plain Hash Token. Hybrid Scheme and Ring Signature
 are statistically equivalent at $N = 1{,}000$.
 
-\textbf{Secondary question 2 --- Population scalability:}
+\textbf{Secondary question 2: Population scalability}:
 Scale does not resolve the privacy problem for weak schemes.
 Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$
 --- 5.5 times the risk of ZKP Token at the same scale. ZKP Token
@@ -77,7 +77,7 @@ flat at 0.035 from $N = 100$ to $N = 100{,}000$. This formally
 disproves the assumption that population growth can substitute
 for cryptographic privacy design.
 
-\textbf{Secondary question 3 --- Mitigation effectiveness:}
+\textbf{Secondary question 3: Mitigation effectiveness}:
 A full mitigation stack reduces risk substantially across all
 schemes. Ring Signature with full mitigation reaches
 $\Rnorm = 0.002$, within 0.001 of ZKP Token with full mitigation.
@@ -87,7 +87,7 @@ risk reduction at $N = 1{,}000$ because Nepal's demographic
 clustering already suppresses uniqueness on payment channel and
 transaction zone.
 
-\textbf{Secondary question 4 --- Nepal-specific context:}
+\textbf{Secondary question 4: Nepal-specific context}:
 Adding Nepal-specific attributes counterintuitively
 \textit{decreases} $\Rnorm$ for all schemes because $\Rmax$
 grows by 6 then 7 as each attribute is added, while $\Rraw$
@@ -105,7 +105,7 @@ technical mitigation at domestic scale.
 This thesis makes five contributions to the existing body of
 knowledge.
 
-\textbf{Contribution 1 --- Formal normalised privacy risk metric.}
+\textbf{Contribution 1: Formal normalised privacy risk metric.}
 The $\Rnorm$ metric provides the first formally derived,
 normalised privacy risk score for token-based CBDC metadata.
 Unlike k-anonymity and differential privacy, which were not
@@ -115,7 +115,7 @@ scheme, attribute set, and population size. The derivation of
 $\Rmax(m) = m + \binom{m}{2}$ as the proven theoretical upper
 bound is an original mathematical contribution.
 
-\textbf{Contribution 2 --- Quantitative six-scheme comparison.}
+\textbf{Contribution 2: Quantitative six-scheme comparison.}
 This thesis provides the first quantitative comparison of six
 CBDC cryptographic schemes on a common privacy risk metric. Prior
 to this work, inter-scheme comparisons were qualitative. The risk
@@ -123,7 +123,7 @@ ladder spanning $\Rnorm = 0.317$ to $\Rnorm = 0.035$ gives
 policymakers specific numbers for the privacy cost of each design
 choice.
 
-\textbf{Contribution 3 --- Formal disproof of scale substitution.}
+\textbf{Contribution 3: Formal disproof of scale substitution.}
 The population scalability analysis formally disproves the
 assumption that deploying a CBDC across a larger population
 provides meaningful privacy improvement for weak schemes. Plain
@@ -131,13 +131,13 @@ Hash Token's residual risk floor of 0.191 at $N = 100{,}000$
 demonstrates that cryptographic design, not population size, is
 the determinant of long-run privacy risk.
 
-\textbf{Contribution 4 --- Nepal-specific deployment analysis.}
+\textbf{Contribution 4: Nepal-specific deployment analysis.}
 By incorporating payment channel and transaction zone as
 Nepal-specific attributes grounded in Nepal's payment
 infrastructure, this thesis provides the first formal privacy risk
 analysis specifically designed for Nepal's domestic CBDC context.
 
-\textbf{Contribution 5 --- Micro-scale pilot risk quantification.}
+\textbf{Contribution 5: Micro-scale pilot risk quantification.}
 The micro-scale analysis demonstrates that at VDC pilot scale
 ($N = 50$), all schemes except ZKP Token exceed
 $\Rnorm = 0.48$. This finding directly informs how NRB should
@@ -151,44 +151,44 @@ approach any community-level CBDC pilot.
 Based on the findings of this thesis, the following specific
 recommendations are made to the Nepal Rastra Bank.
 
-\textbf{Recommendation 1 --- Do not deploy Plain Hash Token at
+\textbf{Recommendation 1: Do not deploy Plain Hash Token at
 any scale.} Plain Hash Token produces $\Rnorm = 0.317$ at pilot
 scale and 0.191 at national scale. Both values represent
 unacceptable citizen re-identification risk under Nepal's
 constitutional right to privacy. The scheme should be excluded
 from all deployment consideration.
 
-\textbf{Recommendation 2 --- Adopt Ring Signature as the minimum
+\textbf{Recommendation 2: Adopt Ring Signature as the minimum
 acceptable scheme for national deployment.} Ring Signature
 achieves $\Rnorm = 0.069$ at baseline and 0.002 with a full
-mitigation stack --- near-ZKP performance at significantly lower
+mitigation stack, near-ZKP performance at significantly lower
 computational cost.
 
-\textbf{Recommendation 3 --- Consider Hybrid Scheme for
+\textbf{Recommendation 3: Consider Hybrid Scheme for
 resource-constrained deployment.} Hybrid Scheme
 ($\Rnorm = 0.067$) is statistically equivalent to Ring Signature
 ($\Rnorm = 0.069$) at $N = 1{,}000$ and may be implementable at
 lower computational cost on Nepal's low-end rural devices.
 
-\textbf{Recommendation 4 --- Prioritise wallet unlinkability in
+\textbf{Recommendation 4: Prioritise wallet unlinkability in
 any mitigation stack.} Wallet unlinkability produces the largest
 single reduction in $\Rnorm$ across all schemes. Any deployed
 CBDC wallet should generate fresh addresses per transaction or
 implement nullifier-based unlinkability.
 
-\textbf{Recommendation 5 --- Do not rely on Nepal Controls as a
+\textbf{Recommendation 5: Do not rely on Nepal Controls as a
 substitute for cryptographic privacy.} Nepal Controls produce
 zero risk reduction at $N = 1{,}000$. Mitigation resources should
 be focused on amount, timestamp, and wallet attributes where
 marginal reduction is largest.
 
-\textbf{Recommendation 6 --- Use ZKP Token only if computational
+\textbf{Recommendation 6: Use ZKP Token only if computational
 constraints can be resolved.} ZKP Token is the only scheme with
 scale-independent risk. If NRB can resolve its computational
 requirements through tiered CBDC architecture or offline ZKP
 verification, it should be the target deployment scheme.
 
-\textbf{Recommendation 7 --- Conduct any village pilot under
+\textbf{Recommendation 7: Conduct any village pilot under
 Ring Signature or better.} At $N = 50$, all schemes except ZKP
 Token exceed $\Rnorm = 0.48$. Any NRB community-level pilot must
 deploy Ring Signature or above to protect pilot participants from
