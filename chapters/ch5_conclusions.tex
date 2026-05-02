@@ -70,8 +70,8 @@ are statistically equivalent at $N = 1{,}000$.
 
 \textbf{Secondary question 2: Population scalability}:
 Scale does not resolve the privacy problem for weak schemes.
-Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$
---- 5.5 times the risk of ZKP Token at the same scale. ZKP Token
+Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$,
+5.5 times the risk of ZKP Token at the same scale. ZKP Token
 is the only scheme whose $\Rnorm$ is scale-independent, remaining
 flat at 0.035 from $N = 100$ to $N = 100{,}000$. This formally
 disproves the assumption that population growth can substitute
@@ -212,7 +212,7 @@ The adversary model covers passive observation only. Active
 attacks are outside scope.
 
 Several Hyperledger Fabric-specific metadata fields are not
-modelled --- transaction ID linkability, endorsing peer identity,
+modelled, transaction ID linkability, endorsing peer identity,
 and certificate metadata. Including these would increase $m$ and
 likely increase $\Rnorm$ for all schemes.
 

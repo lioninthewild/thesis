@@ -443,7 +443,7 @@ $m = 7$.}
 \subsection{Discussion}
 
 \textbf{Village pilots are the highest-risk deployment
-scenario.} At $N = 50$ --- a realistic VDC pilot size ---
+scenario.} At $N = 50$, a realistic VDC pilot size,
 all schemes except ZKP Token exceed $\Rnorm = 0.48$. This
 means nearly half of pilot participants are structurally
 vulnerable to re-identification from their transaction
@@ -460,7 +460,7 @@ pilot, ZKP Token is the only scheme that provides adequate
 privacy protection at that scale.
 
 \textbf{Risk is dramatically elevated at very small N.}
-At $N = 10$, Plain Hash Token reaches $\Rnorm = 0.932$ ---
+At $N = 10$, Plain Hash Token reaches $\Rnorm = 0.932$,
 93.2\% of the theoretical maximum. With only 10 users,
 transaction patterns are nearly fully identifying. This
 illustrates the risk of any CBDC deployment where the
@@ -521,7 +521,7 @@ Plain Hash Token.} Increasing $\lambda$ from 1 to 10
 doubles $\Rnorm$ from 0.202 to 0.520. At $\lambda = 25$,
 $\Rnorm$ exceeds 1.0, which is only possible when
 $R_{\mathrm{max}}$ uses the independence-assumption
-ceiling --- the actual joint uniqueness $s(a_i, a_j)$ is
+ceiling, the actual joint uniqueness $s(a_i, a_j)$ is
 still bounded at 1.0 per pair, but the inflated $\lambda$
 pushes $\Rraw$ above $R_{\mathrm{max}}$.
 
@@ -599,19 +599,19 @@ worst-case configuration (right). $m = 7$, $N = 1{,}000$.}
 \subsection{Discussion}
 
 \textbf{The normalisation is correctly calibrated.}
-The worst-case configuration achieves $\Rnorm = 0.999$
---- 99.9\% of the theoretical maximum. The gap of 0.001
+The worst-case configuration achieves $\Rnorm = 0.999$,
+99.9\% of the theoretical maximum. The gap of 0.001
 from the ceiling exists because the amount attribute uses
 an exponential distribution rather than perfectly distinct
 values, leaving a tiny fraction of users sharing amounts.
 This calibration confirms that $R_{\mathrm{max}} = 28$ is
-not an overestimate --- it is genuinely achievable under
+not an overestimate, it is genuinely achievable under
 worst-case conditions.
 
 \textbf{All deployed schemes are far below the ceiling.}
 Even Plain Hash Token at $\Rnorm = 0.317$ is at only 31.7\%
 of the theoretical maximum. This does not mean Plain Hash
-Token is acceptable --- 31.7\% of the maximum still means
+Token is acceptable, 31.7\% of the maximum still means
 31.7\% of users are structurally vulnerable to
 re-identification. But it demonstrates that the schemes
 evaluated represent a realistic operating range, not an
@@ -620,7 +620,7 @@ artificially inflated set of values.
 \textbf{ZKP Token at 3.5\% of maximum is the standard to
 target.} The worst-case configuration demonstrates what
 zero cryptographic privacy engineering produces. ZKP Token's
-$\Rnorm = 0.035$ --- 3.5\% of this worst case --- represents
+$\Rnorm = 0.035$, 3.5\% of this worst case, represents
 the state-of-the-art achievable with current cryptographic
 technology in a regulatory-compliant CBDC.
 
@@ -649,7 +649,7 @@ at every population size. Second, the full mitigation stack
 compresses all schemes into a narrow band near $\Rnorm = 0$
 regardless of baseline. Third, Plain Hash Token is the only
 scheme that continues declining at $N = 100{,}000$ without
-reaching a floor --- all other schemes have effectively
+reaching a floor, all other schemes have effectively
 converged by that point. Together these three observations
 confirm that cryptographic scheme selection, not population
 scale or mitigation alone, is the primary determinant of

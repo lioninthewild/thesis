@@ -125,8 +125,8 @@ model in cryptographic privacy literature. The adversary:
     inferred from the structure of the observable data,
     regardless of computational cost.
 
-    \item \textbf{Has one goal}: given a transaction record
-    --- a row of $\mathbf{A}$, identify which user
+    \item \textbf{Has one goal}: given a transaction record,
+a row of $\mathbf{A}$, identify which user
     $u \in U$ produced it.
 \end{itemize}
 
@@ -513,7 +513,7 @@ The first sum accumulates individual attribute leakage
 across all $m$ attributes. The second sum accumulates
 pairwise amplification effects across all $\binom{m}{2}$
 distinct pairs. The condition $j > i$ ensures each pair
-$(i,j)$ is counted exactly once --- the pair
+$(i,j)$ is counted exactly once, the pair
 $(\text{amount}, \text{wallet})$ is counted when $i =
 \text{amount}$ and $j = \text{wallet}$ but not again
 when $i = \text{wallet}$ and $j = \text{amount}$, since
@@ -550,15 +550,15 @@ distinct pairs is:
 
 The seven individual terms plus the 21 pair terms give
 a total of 28 terms in $\Rraw$. This figure is not
-coincidental --- it equals $R_{\mathrm{max}}(7) = 28$,
+coincidental, it equals $R_{\mathrm{max}}(7) = 28$,
 derived in the following section.
 
 \subsection{Why Most Terms Vanish in Practice}
 
 In the results of this thesis, most pair terms contribute
 approximately zero to $\Rraw$. This occurs because the
-Nepal-specific attributes --- payment channel and
-transaction zone --- have $s(a_i) \approx 0$ due to
+Nepal-specific attributes, payment channel and
+transaction zone, have $s(a_i) \approx 0$ due to
 their skewed distributions. Any pair term involving an
 attribute with $s(a_i) = 0$ contributes
 $\lambda_{ij} \times 0 \times s(a_j) = 0$ regardless
@@ -603,7 +603,7 @@ To interpret it, we need to know the maximum value
 $\Rraw$ could possibly reach.
 
 $R_{\mathrm{max}}$ is the \textit{theoretical upper bound}
-on $\Rraw$ --- the value it achieves under the
+on $\Rraw$, the value it achieves under the
 worst-case configuration of all attributes simultaneously.
 Deriving $R_{\mathrm{max}}$ from first principles is a
 core contribution of this thesis.
@@ -632,7 +632,7 @@ $\lambda_{ij} \times s(a_i) \times s(a_j)
 
 \subsection{Why $\lambda_{ij} = 1$ Gives the Maximum}
 
-This may appear counterintuitive --- surely $\lambda_{ij}
+This may appear counterintuitive, surely $\lambda_{ij}
 > 1$ would give larger pair terms? The answer is no,
 because of the bound on $s(a_i, a_j)$.
 
@@ -691,7 +691,7 @@ R_{\mathrm{max}}(7) = 7 + \frac{7 \times 6}{2} = 7 + 21 = 28
 \subsection{Quadratic Growth and Its Implication}
 
 $R_{\mathrm{max}}$ grows quadratically in $m$. Each new
-attribute added increases $R_{\mathrm{max}}$ by $m$ ---
+attribute added increases $R_{\mathrm{max}}$ by $m$:
 adding the $m$-th attribute introduces one new individual
 term and $m-1$ new pair terms, for a total increase of
 $m$. This quadratic growth is the formal explanation for
@@ -752,7 +752,7 @@ $R_{\mathrm{norm}}$ satisfies the following properties
 for any $m$, $N$, and cryptographic scheme.
 \end{proposition}
 
-\textbf{Property 1 --- Boundedness:}
+\textbf{Property 1: Boundedness}:
 $R_{\mathrm{norm}} \in [0, 1]$.
 
 This follows directly from the theorem in
@@ -760,7 +760,7 @@ Section~\ref{sec:r_max}: $0 \leq \Rraw
 \leq R_{\mathrm{max}}$, and dividing by $R_{\mathrm{max}}
 > 0$ preserves the bounds.
 
-\textbf{Property 2 --- Zero case:}
+\textbf{Property 2: Zero case}:
 $R_{\mathrm{norm}} = 0$ if and only if $s(a_i) = 0$
 for all $i = 1, \ldots, m$.
 
@@ -771,7 +771,7 @@ This represents the privacy ideal: no user is
 uniquely identifiable on any attribute or any
 combination of attributes.
 
-\textbf{Property 3 --- Maximum case:}
+\textbf{Property 3: Maximum case}:
 $R_{\mathrm{norm}} = 1$ if and only if
 $\Rraw = R_{\mathrm{max}}$, achieved when $s(a_i) = 1$
 for all $i$ and $\lambda_{ij} = 1$ for all pairs.
@@ -779,7 +779,7 @@ This represents maximum possible risk: every user is
 uniquely identifiable on every attribute and every
 combination.
 
-\textbf{Property 4 --- Cross-$m$ comparability:}
+\textbf{Property 4: Cross-$m$ comparability}:
 $R_{\mathrm{norm}}$ is directly comparable across
 different values of $m$, because both the numerator
 and denominator scale with $m$ through the same
@@ -789,7 +789,7 @@ on $R_{\mathrm{norm}}$ without adjustment. This
 property makes the m-sensitivity analysis in
 Chapter~\ref{ch:results} formally valid.
 
-\textbf{Property 5 --- Monotonicity:}
+\textbf{Property 5: Monotonicity}:
 $R_{\mathrm{norm}}$ is non-decreasing in each
 $s(a_i)$ and in each $\lambda_{ij}$, holding all
 other quantities fixed. Increasing any individual
@@ -887,9 +887,7 @@ s_{\mathrm{mit}}(a_i) = \mu_i \times s(a_i)
 \label{eq:mitigation}
 \end{equation}
 
-A multiplier of $\mu_i = 1.0$ means no mitigation ---
-the attribute is observed at full precision. A multiplier
-of $\mu_i = 0.0$ means perfect suppression --- the
+A multiplier of $\mu_i = 1.0$ means no mitigation:the attribute is observed at full precision. A multiplierof $\mu_i = 0.0$ means perfect suppression:
 attribute contributes zero uniqueness. Intermediate values
 represent partial mitigation. The joint uniqueness under
 mitigation is approximated as:
@@ -943,7 +941,7 @@ shows the multiplier configuration of each strategy.
 \textbf{Strategy} & \textbf{Multipliers applied} \\
 \midrule
 No Mitigation &
-All $\mu_i = 1.00$. Baseline --- no controls applied. \\
+All $\mu_i = 1.00$. Baseline: no controls applied. \\
 
 Differential Privacy on Amount &
 $\mu_{\mathrm{amount}} = 0.20$, all others $= 1.00$.
@@ -1027,38 +1025,38 @@ channel members. In a CBDC chaincode, the following fields
 are directly observable:
 
 \begin{itemize}
-    \item \textbf{Transaction amount} --- the token transfer
+    \item \textbf{Transaction amount}: the token transfer
     value, recorded as a chaincode argument.
 
-    \item \textbf{Timestamp} --- the block orderer timestamp,
+    \item \textbf{Timestamp}: the block orderer timestamp,
     recorded in the block header with the precision of the
     ordering service clock.
 
-    \item \textbf{Merchant (recipient)} --- the recipient
+    \item \textbf{Merchant (recipient)}: the recipient
     organisation ID or wallet address, recorded as a chaincode
     argument.
 
-    \item \textbf{Wallet (sender)} --- the sender's MSP
+    \item \textbf{Wallet (sender)}: the sender's MSP
     identity or token address, recorded in the transaction
     proposal header.
 
-    \item \textbf{Frequency} --- not a single-field value,
+    \item \textbf{Frequency}: not a single-field value,
     but derivable by any channel participant who counts
     transactions from a given wallet address across the
     ledger history.
 
-    \item \textbf{Payment channel} --- derivable from the
+    \item \textbf{Payment channel}: derivable from the
     chaincode ID, which differs between mobile wallet,
     QR code, NFC, and offline token chaincodes.
 
-    \item \textbf{Transaction zone} --- derivable from the
+    \item \textbf{Transaction zone}: derivable from the
     endorsing peer's organisation, whose geographic MSP
     configuration identifies its zone.
 \end{itemize}
 
 These seven fields map directly to the $m = 7$ attributes
 in this model. The choice of attributes is therefore not
-arbitrary --- it reflects what a passive observer with read
+not arbitrary, it reflects what a passive observer with read
 access to a Fabric CBDC channel can observe without any
 cryptographic attack.
 
@@ -1070,7 +1068,7 @@ wallet address. This is by design: KYC and AML compliance
 require it. However, this does not eliminate the privacy
 problem addressed in this thesis. As argued in
 Chapter~\ref{ch:introduction}, the metadata privacy problem
-exists at a different level --- it concerns what other
+exists at a different level, it concerns what other
 channel participants, insiders with partial access, and
 adversaries who obtain the transaction log without the
 identity mapping can infer from observable metadata alone.
@@ -1126,10 +1124,10 @@ dominance of eSewa and Khalti in Nepal's mobile payment
 ecosystem:
 
 \begin{itemize}
-    \item 0 = Mobile wallet (60\%) --- eSewa and Khalti
-    \item 1 = QR code (25\%) --- rapid adoption at merchants
-    \item 2 = NFC (10\%) --- urban smartphone users
-    \item 3 = Offline token (5\%) --- rural low-connectivity
+    \item 0 = Mobile wallet (60\%): eSewa and Khalti
+    \item 1 = QR code (25\%): rapid adoption at merchants
+    \item 2 = NFC (10\%): urban smartphone users
+    \item 3 = Offline token (5\%): rural low-connectivity
 \end{itemize}
 
 NFC and offline token users form small, identifiable
@@ -1142,11 +1140,11 @@ Transaction zone takes five values reflecting Nepal's
 geographic population distribution:
 
 \begin{itemize}
-    \item 0 = Kathmandu valley (35\%) --- capital region
-    \item 1 = Hill urban (20\%) --- Pokhara, Biratnagar
-    \item 2 = Hill rural (25\%) --- largest rural segment
-    \item 3 = Terai urban (12\%) --- southern plains cities
-    \item 4 = Terai rural (8\%) --- southern plains rural
+    \item 0 = Kathmandu valley (35\%): capital region
+    \item 1 = Hill urban (20\%): Pokhara, Biratnagar
+    \item 2 = Hill rural (25\%): largest rural segment
+    \item 3 = Terai urban (12\%): southern plains cities
+    \item 4 = Terai rural (8\%): southern plains rural
 \end{itemize}
 
 Hill rural and Terai rural users form the smallest
