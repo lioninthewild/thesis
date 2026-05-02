@@ -1,64 +1,13 @@
 """
-===================================================================
-CBDC Metadata De-Anonymization Risk Model
-Final Implementation — Nepal Context
-===================================================================
+CBDC Nepal Final
+================
+My thesis implementation - quantifies privacy risk in token-based CBDC
 
-Title:  Quantifying Privacy Risk in Token-Based CBDC:
-        A Normalised Metadata De-Anonymization Framework for Nepal
+Key: m=7 attributes, R_max=28, 6 schemes compared
+- Nepal-specific: payment_channel, transaction_zone
+- Main analyses: A3 (comparison), A5 (scalability), A7-A12 (sensitivity)
 
-University:  Kathmandu University, School of Science
-
-===================================================================
-MODEL OVERVIEW
-===================================================================
-
-Population:  N users (variable, default N=1,000)
-Scope:       Domestic token-based CBDC under NRB jurisdiction
-Platform:    Hyperledger Fabric (reference architecture)
-
-6 Cryptographic Schemes:
-    1. Plain Hash Token     — all metadata fully exposed
-    2. Blind Signature      — wallet randomised, timestamp coarsened
-    3. Hybrid Scheme        — blind sig wallet + ring sig amounts
-    4. Ring Signature       — ring anonymity set, bucketed amounts
-    5. Stealth Address      — one-time wallet per transaction
-    6. ZKP Token            — zero-knowledge proofs, nullifier wallet
-
-7 Attributes (m=7, R_max=28):
-    Standard:  amount, timestamp, merchant, wallet, frequency
-    Nepal:     payment_channel, transaction_zone
-
-Excluded:  remittance_corridor
-    Justification: thesis scope is domestic CBDC only.
-    Cross-border remittances involve separate settlement rails
-    outside NRB's domestic CBDC mandate.
-
-===================================================================
-ANALYSES
-===================================================================
-
-    A3  — Six-scheme comparison        (m=7, N=1,000)
-    A5  — Population scalability       (m=7, N=100 to N=100K)
-    A7  — Mitigation effectiveness     (m=7, N=1,000)
-    A8  — m-Attribute sensitivity      (m=1 to m=7)
-    A9  — Seed sensitivity             (30 seeds, m=7, N=1,000)
-    A10 — Micro-scale pilot test       (N=10 to N=1,000)
-    A11 — Lambda sensitivity           (λ=0 to λ=100)
-    A12 — Worst-case scenario          (R_norm approaching 1.0)
-
-===================================================================
-ADVERSARY MODEL
-===================================================================
-
-    Type:       Passive, honest-but-curious observer
-    Access:     All 7 metadata fields for every transaction
-    Capability: Unlimited computation (information-theoretic)
-    Goal:       Re-identify user u from transaction metadata
-    Covers:     NRB insider, network eavesdropper,
-                merchant coalition
-
-===================================================================
+Author: Prashish Dahal, KU School of Science
 """
 
 import numpy as np
@@ -118,70 +67,27 @@ print("="*65)
 # ===================================================================
 
 def s_single(vals):
-    """
-    Single-attribute uniqueness score.
-
-    s(a_i) = (1/N) * sum over all users of I_i(u)
-
-    where I_i(u) = 1 if user u is unique on attribute a_i,
-                   0 otherwise.
-
-    A user is unique if no other user shares their attribute value.
-    Returns a float in [0, 1].
-    """
+    """s(a_i) = fraction of users unique on attribute a_i."""
     n      = len(vals)
     counts = pd.Series(vals).value_counts()
     return (counts == 1).sum() / n
 
 
 def s_joint(a, b):
-    """
-    Joint uniqueness score for two attributes.
-
-    s(a_i, a_j) = fraction of users who are unique on the
-    COMBINATION of attributes a_i and a_j together.
-
-    A user is jointly unique if no other user shares both
-    their a_i value AND their a_j value simultaneously.
-    Returns a float in [0, 1].
-    """
+    """s(a_i, a_j) = fraction of users unique on both attributes."""
     n      = len(a)
     counts = pd.Series(list(zip(a, b))).value_counts()
     return (counts == 1).sum() / n
 
 
 def lam(si, sj, sij):
-    """
-    Pairwise interaction coefficient.
-
-    lambda_ij = s(a_i, a_j) / (s(a_i) * s(a_j))
-
-    Measures amplification beyond statistical independence:
-        lambda = 1  -> independent (no amplification)
-        lambda > 1  -> amplified risk (combination more identifying)
-        lambda < 1  -> suppressed risk (attributes redundant)
-
-    Special case: if s(a_i) * s(a_j) = 0, return 0.0
-    because the pair contributes nothing to R_raw regardless.
-    Symmetry: lambda_ij = lambda_ji always holds.
-    """
+    """lambda = s(a_i,a_j) / (s(a_i)*s(a_j)) - interaction coefficient."""
     d = si * sj
     return 0.0 if d < 1e-12 else sij / d
 
 
 def R_raw(s, lmat, attrs):
-    """
-    Un-normalised risk score.
-
-    R_raw = sum_i s(a_i)
-          + sum_{i<j} lambda_ij * s(a_i) * s(a_j)
-
-    First term:  individual attribute leakage (m terms)
-    Second term: pairwise amplification (C(m,2) terms)
-
-    The j>i condition via combinations() ensures each pair
-    is counted exactly once.
-    """
+    """R_raw = sum s(a_i) + sum lambda_ij * s(a_i) * s(a_j)."""
     R = sum(s[a] for a in attrs)
     for ai, aj in combinations(attrs, 2):
         R += lmat[ai].get(aj, 0.0) * s[ai] * s[aj]
@@ -189,24 +95,7 @@ def R_raw(s, lmat, attrs):
 
 
 def R_max(m):
-    """
-    Theoretical maximum of R_raw for m attributes.
-
-    R_max(m) = m + C(m,2) = m + m*(m-1)/2
-
-    Achieved when:
-        s(a_i) = 1 for all i         (all users unique on every attr)
-        lambda_ij = 1 for all pairs  (all pairs independent)
-
-    Under these conditions each of the m individual terms = 1
-    and each of the C(m,2) pair terms = 1 * 1 * 1 = 1.
-
-    Proof that R_raw <= R_max:
-        Each pair term = lambda_ij * s_i * s_j = s(a_i, a_j) <= 1
-        Each individual term = s(a_i) <= 1
-        Sum of maximums = m + C(m,2) = R_max
-        Therefore R_raw <= R_max for any valid input.
-    """
+    """R_max = m + C(m,2) = m + m*(m-1)//2."""
     return m + m * (m - 1) // 2
 
 
@@ -278,17 +167,9 @@ ZONE_PROBS    = [0.35, 0.20, 0.25, 0.12, 0.08]
 
 def gen(N, scheme, seed=42):
     """
-    Generate synthetic CBDC transaction metadata for N users
-    under a given cryptographic scheme.
-
-    The value domain of each attribute is determined by the
-    cryptographic scheme — this models how each scheme
-    transforms observable metadata in practice.
-
-    Nepal-specific attributes (payment_channel, transaction_zone)
-    are generated identically across all schemes — they are
-    observable at the network level regardless of which
-    cryptographic scheme is deployed on the token layer.
+    Generate synthetic CBDC transaction metadata for N users under given cryptographic scheme.
+    
+    Nepal-specific (payment_channel, transaction_zone) are identical across all schemes.
     """
     rng = np.random.default_rng(seed)
 
@@ -297,11 +178,7 @@ def gen(N, scheme, seed=42):
     zone    = rng.choice(5, N, p=ZONE_PROBS)
 
     if scheme == "Plain Hash Token":
-        # All transaction metadata fully exposed.
-        # SHA-256 hash of token provides no metadata hiding.
-        # Wallet = sequential address, permanently linked.
-        # Timestamp = fine-grained Unix-style integer.
-        # Amount = exact float value.
+        # Baseline - nothing hidden
         amount    = np.round(rng.exponential(500, N), 2)
         timestamp = rng.integers(0, N * 10, N)
         merchant  = rng.choice(200, N)
@@ -309,11 +186,7 @@ def gen(N, scheme, seed=42):
         frequency = rng.integers(1, 100, N)
 
     elif scheme == "Blind Signature":
-        # Chaum blind signature protocol:
-        # - Wallet randomised (bank signs without seeing serial)
-        # - Timestamp coarsened to hour of day (24 values)
-        # - Amount remains exact (no range proof)
-        # - Merchant granularity unchanged
+        # Chaum blind signature - wallet randomisation, timestamp to hour
         amount    = np.round(rng.exponential(500, N), 2)
         timestamp = rng.integers(0, 24, N)
         merchant  = rng.choice(200, N)
@@ -321,11 +194,7 @@ def gen(N, scheme, seed=42):
         frequency = rng.integers(1, 50, N)
 
     elif scheme == "Hybrid Scheme":
-        # Combines Blind Signature wallet blinding with
-        # Ring Signature amount bucketing.
-        # Models the digital euro's proposed tiered privacy design.
-        # Sits between Blind Signature and Ring Signature
-        # on the risk ladder.
+        # Blind + ring - amounts bucketed, wallet randomised
         amount    = np.round(rng.exponential(500, N) / 100) * 100
         timestamp = rng.integers(0, 24, N)
         merchant  = rng.choice(100, N)
@@ -333,10 +202,7 @@ def gen(N, scheme, seed=42):
         frequency = rng.integers(1, 35, N)
 
     elif scheme == "Ring Signature":
-        # Ring anonymity set hides true signer among k members.
-        # Amounts bucketed to NPR 100 increments.
-        # Merchant coarsened to broad categories (20 values).
-        # Wallet drawn from larger pool than Blind Signature.
+        # Ring anonymity, amounts -> NPR 100, merchant coarse
         amount    = np.round(rng.exponential(500, N) / 100) * 100
         timestamp = rng.integers(0, 24, N)
         merchant  = rng.choice(20, N)
@@ -344,12 +210,7 @@ def gen(N, scheme, seed=42):
         frequency = rng.integers(1, 20, N)
 
     elif scheme == "Stealth Address":
-        # One-time wallet address generated per transaction.
-        # Wallet is completely unlinkable across transactions.
-        # Critical distinction: wallet unlinkability != wallet
-        # randomisation. Each transaction produces a fresh
-        # address with no mathematical link to prior addresses.
-        # Amounts and timestamps still fully visible (no ZKP).
+        # One-time wallet per tx - unlinkable
         amount    = np.round(rng.exponential(500, N), 2)
         timestamp = rng.integers(0, 24, N)
         merchant  = rng.choice(20, N)
@@ -357,13 +218,7 @@ def gen(N, scheme, seed=42):
         frequency = rng.integers(1, 15, N)
 
     elif scheme == "ZKP Token":
-        # Zero-knowledge proofs hide exact values.
-        # All attributes reduced to coarse disclosure bands.
-        # Nullifier-based wallet: fresh nullifier per spend,
-        # drawn from pool of size N*100.
-        # Amount: 5 bands only {0, 100, 500, 1000, 5000}
-        # Timestamp: day of week only (7 values)
-        # Merchant: 5 broad economic sectors
+        # ZKP - all attrs to coarse bands
         amount    = rng.choice([0, 100, 500, 1000, 5000], N)
         timestamp = rng.choice(7, N)
         merchant  = rng.choice(5, N)
