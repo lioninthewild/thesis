@@ -1,17 +1,15 @@
 \documentclass[12pt,a4paper,oneside,openany]{report}
 \usepackage[utf8]{inputenc}
-\usepackage{times}
-\usepackage{geometry}
-\geometry{a4paper,top=25mm,bottom=20mm,left=30mm,right=20mm}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage[left=3cm, right=2cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage{setspace}
-\onehalfspacing
-\usepackage{parskip}
+\setstretch{1.5}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \graphicspath{{figures/}}
-\usepackage{float}
 \usepackage{booktabs,longtable,array,multirow,caption}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 \usepackage{listings}
 \lstset{language=Python,basicstyle=\ttfamily\small,
   keywordstyle=\color{blue},commentstyle=\color{gray},
@@ -19,9 +17,10 @@
   numbers=left,numberstyle=\tiny\color{gray},xleftmargin=15pt,
   extendedchars=true,inputencoding=utf8}
 \usepackage{fancyhdr}
-\usepackage{chngcntr}
-\counterwithin{figure}{chapter}
-\counterwithin{table}{chapter}
+\usepackage{enumitem}
+\usepackage{pdfpages}
+\usepackage{subcaption}
+\usepackage{float}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyfoot[C]{\thepage}
@@ -49,10 +48,15 @@
 }
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{definition}{Definition}[chapter]
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{proposition}{proposition}[chapter]
 \newcommand{\Rnorm}{R_{\mathrm{norm}}}
 \newcommand{\Rraw}{R_{\mathrm{raw}}}
 \newcommand{\Rmax}{R_{\mathrm{max}}}
+\AtBeginDocument{%
+  \renewcommand{\contentsname}{\centering TABLE OF CONTENTS}%
+  \renewcommand{\listfigurename}{\centering LIST OF FIGURES}%
+  \renewcommand{\listtablename}{\centering LIST OF TABLES}%
+}
 \begin{document}
 \pagenumbering{roman}
 \pagestyle{plain}
@@ -71,8 +75,6 @@
 \clearpage
 \pagenumbering{arabic}
 \pagestyle{fancy}
-\counterwithin{figure}{chapter}
-\counterwithin{table}{chapter}
 \clearpage
 \input{chapters/ch1_introduction}
 \input{chapters/ch2_literature}
