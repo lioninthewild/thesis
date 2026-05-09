@@ -1,0 +1,954 @@
+\documentclass[12pt,a4paper,oneside,openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{geometry}
+\geometry{a4paper,top=25mm,bottom=20mm,left=30mm,right=20mm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{parskip}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs,longtable,array,multicol,caption}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black}
+\usepackage{mathtools}
+
+% Custom commands for consistent formatting
+\newcommand{\Rnorm}{R_{\mathrm{norm}}}
+\newcommand{\Rraw}{R_{\mathrm{raw}}}
+\newcommand{\Rmax}{R_{\mathrm{max}}}
+\newcommand{\s}[1]{s(#1)}
+
+\begin{document}
+
+% ================================================================
+% TITLE PAGE
+% ================================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Large\textbf{UNDERSTANDING MY MODEL}}
+
+\vspace{2cm}
+
+{\normalsize A comprehensive mathematical guide to the}
+\\
+{\normalsize Metadata De-Anonymization Risk Model}
+
+\vspace{3cm}
+
+{\normalsize This document explains every mathematical formulation,}
+\\
+{\normalsize every term, and the complete thought process behind}
+\\
+{\normalsize the normalised privacy risk framework for token-based CBDC.}
+
+\end{titlepage}
+
+% ================================================================
+% TABLE OF CONTENTS (Optional - removing per user request)
+% ================================================================
+
+% ================================================================
+% CHAPTER 1: INTRODUCTION
+% ================================================================
+\chapter{Introduction}
+\label{chap:intro}
+
+This document provides a complete mathematical understanding of the metadata de-anonymization risk model developed in this thesis. By the end of this tutorial, you will be able to explain the model to others completely, including the thought process behind each design decision.
+
+The model answers a fundamental question: \textbf{How can we measure and compare the privacy risk of different CBDC cryptographic schemes using a single, normalised metric?}
+
+% ================================================================
+% CHAPTER 2: BEGINNER MATH SECTION
+% ================================================================
+\chapter{Mathematical Foundations}
+\label{chap:foundations}
+
+Before diving into the model, let's build the mathematical foundation. This section is designed for someone who may not have a strong mathematics background but wants to understand the model completely.
+
+% ----------------------------------------------------------------
+\section{What Does "Uniqueness" Mean Mathematically?}
+\label{sec:uniqueness}
+
+Imagine you have a list of 1,000 people and their favorite colors. If 500 people like blue, 300 like red, and 200 like green, we say:
+\begin{itemize}
+    \item Blue has frequency 500/1000 = 0.5
+    \item Red has frequency 300/1000 = 0.3
+    \item Green has frequency 200/1000 = 0.2
+\end{itemize}
+
+Now, suppose we ask: "How many people have a \textbf{unique} favorite color?"
+
+A person is unique if their favorite color is not shared by anyone else. If only 1 person likes green, then that person is unique. If 300 people like red, none of them are unique on this attribute.
+
+\textbf{Mathematically,} if $N$ is the total number of people, and $c_v$ is the count of people with value $v$, then:
+\begin{equation}
+\text{Number of unique people} = \sum_{v} \mathbb{I}(c_v = 1)
+\end{equation}
+where $\mathbb{I}$ is the indicator function (equals 1 if true, 0 otherwise).
+
+The \textbf{uniqueness score} is this count divided by total people:
+\begin{equation}
+s = \frac{\text{Number of unique people}}{N}
+\end{equation}
+
+This $s$ always falls between 0 and 1:
+\begin{itemize}
+    \item $s = 0$: Everyone shares the same value (no one is unique)
+    \item $s = 1$: Everyone has a different value (everyone is unique)
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{What Does "Risk" Mean in This Context?}
+\label{sec:risk}
+
+In our CBDC context, "risk" means the probability that someone can be re-identified from their transaction metadata.
+
+Think of it this way:
+\begin{itemize}
+    \item If $s(a_i) = 1$ for an attribute, that attribute alone can identify the user 100\% of the time
+    \item If $s(a_i) = 0$, the attribute provides no identification information
+    \item If $s(a_i) = 0.3$, then 30\% of users are uniquely identifiable by that attribute alone
+\end{itemize}
+
+The higher the uniqueness score, the higher the risk.
+
+% ----------------------------------------------------------------
+\section{Why Do We Need "Pairwise Interactions"?}
+\label{sec:interactions}
+
+Here's a subtle but crucial point: sometimes two attributes, each with low uniqueness, can \textbf{together} identify someone.
+
+Example:
+\begin{itemize}
+    \item Attribute 1 (Transaction Amount): Low uniqueness - many people spend around Rs. 500
+    \item Attribute 2 (Time of Day): Low uniqueness - many people transact in the morning
+\end{itemize}
+
+But: \textbf{Person A spends Rs. 523 at 6:47 AM at Merchant X}
+
+This combination might be unique even though each attribute alone is common.
+
+We need a term that captures this "amplification effect." This is what $\lambda_{ij}$ represents - it measures how much more identifying two attributes are together versus separately.
+
+% ----------------------------------------------------------------
+\section{Basic Probability Notation You'll Need}
+\label{sec:notation}
+
+This tutorial uses some standard notation. Here's what each means:
+
+\begin{itemize}
+    \item \textbf{Sets}: $U$ means "the set of all users"
+    \item \textbf{Cardinality}: $|U|$ means "number of elements in set U" (same as $N$)
+    \item \textbf{Summation}: $\sum_{i=1}^{n} x_i$ means "add up all $x_i$ for i from 1 to n"
+    \item \textbf{Combination}: $\binom{n}{k}$ means "ways to choose k items from n items" = $\frac{n!}{k!(n-k)!}$
+    \item \textbf{Indicator}: $\mathbb{I}(condition)$ equals 1 if condition is true, 0 otherwise
+    \item \textbf{Functions}: $f: X \rightarrow Y$ means "function f maps set X to set Y"
+\end{itemize}
+
+% ================================================================
+% CHAPTER 3: THE CORE MODEL
+% ================================================================
+\chapter{The Mathematical Model}
+\label{chap:model}
+
+Now let's build the complete model step by step. Each section explains:
+\begin{itemize}
+    \item What the concept is
+    \item The mathematical formulation
+    \item Why we use this formulation
+    \item A worked example with numbers
+    \item What the result means
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{Population and Users}
+\label{sec:population}
+
+\textbf{What is this?} We start by defining the set of all users in the CBDC system.
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+U = \{u_1, u_2, \ldots, u_N\}
+\end{equation}
+where:
+\begin{itemize}
+    \item $U$ = the set of all users
+    \item $u$ = an individual user
+    \item $N$ = the total number of users ($|U|$)
+\end{itemize}
+
+\textbf{Why do we need this?} The model needs to know the total population size because uniqueness is calculated as a fraction of the total. $s(a_i) = 0.1$ means 10\% of the population is unique - but 10% of 100 people is very different from 10% of 100,000 people.
+
+\textbf{Worked example:} If $N = 1,000$, and we're looking at the "transaction amount" attribute, we need to know there are 1,000 users to calculate what fraction of them are unique.
+
+% ----------------------------------------------------------------
+\section{Attributes and Value Domains}
+\label{sec:attributes}
+
+\textbf{What is this?} Every transaction has observable metadata - information that can be seen on the blockchain. Each type of information is called an "attribute."
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+a_i : U \rightarrow V_i
+\end{equation}
+where:
+\begin{itemize}
+    \item $a_i$ = the $i$-th attribute (e.g., amount, timestamp, wallet)
+    \item $U$ = the set of users
+    \item $V_i$ = the set of all possible values that attribute $a_i$ can take (called the "value domain")
+\end{itemize}
+
+\textbf{What are our attributes?} In this model, we have 7 attributes ($m = 7$):
+\begin{enumerate}
+    \item \textbf{amount} - Transaction value (NPR)
+    \item \textbf{timestamp} - When the transaction occurred
+    \item \textbf{merchant} - Where the transaction happened
+    \item \textbf{wallet} - The user's wallet address
+    \item \textbf{frequency} - How often the user transacts
+    \item \textbf{payment\_channel} - How the transaction was made (mobile, QR, etc.)
+    \item \textbf{transaction\_zone} - Geographic region (Kathmandu, Terai, etc.)
+\end{enumerate}
+
+\textbf{Why do value domains matter?} Different cryptographic schemes \textbf{transform} the value domain:
+\begin{itemize}
+    \item Plain Hash Token: $V_{\text{amount}} = \mathbb{R}^+$ (all positive numbers)
+    \item ZKP Token: $V_{\text{amount}} = \{0, 100, 500, 1000, 5000\}$ (only 5 denominations)
+\end{itemize}
+
+If the value domain is smaller (like only 5 amounts in ZKP), fewer people will be unique on that attribute - reducing risk!
+
+\textbf{Worked example - Plain Hash Token:}
+\begin{itemize}
+    \item $V_{\text{amount}} = \{1, 2, 3, \ldots, \infty\}$ (any amount)
+    \item User A spends Rs. 523.47
+    \item User B spends Rs. 523.48
+    \item These are different values - high uniqueness!
+\end{itemize}
+
+\textbf{Worked example - ZKP Token (amount bucketed to 5 values):}
+\begin{itemize}
+    \item $V_{\text{amount}} = \{0, 100, 500, 1000, 5000\}$
+    \item User A spends Rs. 523 $\rightarrow$ recorded as 500
+    \item User B spends Rs. 487 $\rightarrow$ recorded as 500
+    \item Both are in same bucket - low uniqueness!
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{Single-Attribute Uniqueness Score $s(a_i)$}
+\label{sec:single}
+
+This is the first and most fundamental component of the model.
+
+\textbf{What is it?} $s(a_i)$ measures what fraction of users are uniquely identifiable using just one attribute $a_i$.
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+s(a_i) = \frac{1}{N} \sum_{u \in U} \mathbb{I}\left( a_i(u) \text{ is unique} \right)
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $N$ = total number of users
+    \item $a_i(u)$ = the value of attribute $a_i$ for user $u$
+    \item $\mathbb{I}(\text{condition})$ = 1 if the condition is true, 0 otherwise
+    \item "is unique" means no other user has the same value
+\end{itemize}
+
+More simply written as:
+\begin{equation}
+s(a_i) = \frac{\text{Number of users unique on } a_i}{N}
+\end{equation}
+
+\textbf{Step-by-step calculation:}
+\begin{enumerate}
+    \item For each attribute $a_i$, collect all values from all users
+    \item Count how many times each value appears
+    \item Identify values that appear exactly once (these are "unique" values)
+    \item Count how many users have these unique values
+    \item Divide by total users $N$
+\end{enumerate}
+
+\textbf{Worked example:} Suppose we have $N = 10$ users and attribute = "wallet address":
+\begin{table}[H]
+\centering
+\begin{tabular}{cccc}
+User & Wallet Address & Times Appears & Unique? \\
+\hline
+1 & ABC123 & 1 & Yes \\
+2 & DEF456 & 1 & Yes \\
+3 & GHI789 & 2 & No \\
+4 & GHI789 & 2 & No \\
+5 & JKL012 & 1 & Yes \\
+6 & MNO345 & 1 & Yes \\
+7 & PQR678 & 1 & Yes \\
+8 & STU901 & 2 & No \\
+9 & STU901 & 2 & No \\
+10 & VWX234 & 1 & Yes \\
+\end{tabular}
+\end{table}
+
+Unique users: 1, 2, 5, 6, 7, 10 = 6 users
+
+$s(\text{wallet}) = 6/10 = 0.6$
+
+This means 60\% of users are uniquely identifiable by their wallet address alone!
+
+\textbf{What does $s(a_i)$ tell us?}
+\begin{itemize}
+    \item $s(a_i) \rightarrow 0$: Attribute provides almost no identification information
+    \item $s(a_i) \rightarrow 1$: Attribute alone can identify almost everyone
+    \item $s(a_i) = 0$: Everyone shares the same value - zero risk from this attribute
+    \item $s(a_i) = 1$: Everyone has a unique value - maximum risk from this attribute
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{Pairwise Interaction Coefficient $\lambda_{ij}$}
+\label{sec:lambda}
+
+This is the key innovation that makes the model powerful - it captures the "amplification effect" when two attributes combine.
+
+\textbf{What is it?} $\lambda_{ij}$ measures how much more (or less) identifying the combination of attributes $a_i$ and $a_j$ is, compared to using them separately.
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+\lambda_{ij} = \frac{s(a_i, a_j)}{s(a_i) \cdot s(a_j)}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $s(a_i, a_j)$ = joint uniqueness of attributes $a_i$ and $a_j$ together
+    \item $s(a_i)$ = single-attribute uniqueness of $a_i$
+    \item $s(a_j)$ = single-attribute uniqueness of $a_j$
+\end{itemize}
+
+\textbf{What does $\lambda_{ij}$ mean?}
+
+\begin{itemize}
+    \item $\lambda_{ij} = 1$: The attributes are \textbf{independent}. Using them together provides exactly what we'd expect from adding their individual effects.
+    
+    \item $\lambda_{ij} > 1$: The attributes have \textbf{positive interaction}. They amplify each other's identifying power. The combination is MORE identifying than expected.
+    
+    \item $\lambda_{ij} < 1$: The attributes have \textbf{negative interaction}. They overlap in their identifying information. The combination is LESS identifying than expected.
+    
+    \item $\lambda_{ij} = 0$: One of the attributes has zero uniqueness, so the product is zero.
+\end{itemize}
+
+\textbf{Worked example:}
+
+Suppose we have:
+\begin{itemize}
+    \item $s(\text{amount}) = 0.3$ (30% of users have unique amounts)
+    \item $s(\text{timestamp}) = 0.2$ (20% of users have unique timestamps)
+    \item $s(\text{amount, timestamp}) = 0.15$ (15% unique on BOTH together)
+\end{itemize}
+
+Then:
+\begin{equation}
+\lambda_{ij} = \frac{0.15}{0.3 \times 0.2} = \frac{0.15}{0.06} = 2.5
+\end{equation}
+
+This means the combination is 2.5× MORE identifying than we'd expect from adding the individual effects! If someone spends a unique amount AT a unique time, they're very easy to identify.
+
+\textbf{Why do we need this?} Without $\lambda_{ij}$, we'd underestimate risk. The model captures real-world patterns where certain attribute combinations are particularly revealing.
+
+% ----------------------------------------------------------------
+\section{Raw Risk Score $R_{\mathrm{raw}}$}
+\label{sec:raw}
+
+Now we combine everything into a single risk score.
+
+\textbf{What is it?} $R_{\mathrm{raw}}$ is the total accumulated risk from all single attributes and all pairwise attribute combinations.
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+R_{\mathrm{raw}} = \underbrace{\sum_{i=1}^{m} s(a_i)}_{\text{Single attributes}} + \underbrace{\sum_{i=1}^{m} \sum_{j=i+1}^{m} \lambda_{ij} \cdot s(a_i) \cdot s(a_j)}_{\text{Pairwise interactions}}
+\end{equation}
+
+Simplified:
+\begin{equation}
+R_{\mathrm{raw}} = \sum_{i=1}^{m} s(a_i) + \sum_{i<j} \lambda_{ij} \cdot s(a_i) \cdot s(a_j)
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $m$ = number of attributes (in our model, $m = 7$)
+    \item The first sum runs over all single attributes
+    \item The double sum runs over all unique pairs of attributes ($i$ and $j$ where $i < j$)
+\end{itemize}
+
+\textbf{Why this formula?}
+
+The first term $\sum s(a_i)$ captures the baseline risk from each attribute acting alone.
+
+The second term $\sum \lambda_{ij} \cdot s(a_i) \cdot s(a_j)$ captures the additional risk from attribute pairs interacting.
+
+The $\lambda_{ij}$ multiplier adjusts for whether the interaction is stronger ($\lambda > 1$), weaker ($\lambda < 1$), or neutral ($\lambda = 1$) than expected.
+
+\textbf{Number of terms:} With $m = 7$ attributes:
+\begin{itemize}
+    \item Single attributes: 7 terms
+    \item Unique pairs: $\binom{7}{2} = \frac{7 \times 6}{2} = 21$ terms
+    \item Total: $7 + 21 = 28$ terms
+\end{itemize}
+
+\textbf{Worked example (simplified, 3 attributes):}
+
+Suppose we have 3 attributes with:
+\begin{itemize}
+    \item $s(a_1) = 0.3$, $s(a_2) = 0.2$, $s(a_3) = 0.1$
+    \item $\lambda_{12} = 2.0$, $\lambda_{13} = 1.5$, $\lambda_{23} = 1.0$
+\end{itemize}
+
+Then:
+\begin{align}
+R_{\mathrm{raw}} &= (0.3 + 0.2 + 0.1) \\
+&\quad + (2.0 \times 0.3 \times 0.2) + (1.5 \times 0.3 \times 0.1) + (1.0 \times 0.2 \times 0.1) \\
+&= 0.6 + (0.12) + (0.045) + (0.02) \\
+&= 0.785
+\end{align}
+
+So the raw risk score is 0.785. But what does this mean? We need to put it in context - that's where $R_{\mathrm{max}}$ comes in.
+
+% ----------------------------------------------------------------
+\section{Theoretical Maximum $R_{\mathrm{max}}$}
+\label{sec:max}
+
+This is perhaps the most important mathematical contribution of the thesis - proving the theoretical upper bound.
+
+\textbf{What is it?} $R_{\mathrm{max}}$ is the maximum possible value of $R_{\mathrm{raw}}$ that can occur, no matter what the data looks like.
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+\Rmax(m) = m + \binom{m}{2} = m + \frac{m(m-1)}{2}
+\end{equation}
+
+Where $m$ is the number of attributes.
+
+\textbf{Theorem (Proof):}
+
+We prove that $R_{\mathrm{raw}} \leq m + \binom{m}{2}$ for any possible dataset.
+
+Step 1: Single attribute terms
+\begin{itemize}
+    \item Each $s(a_i) \leq 1$ by definition (max is when everyone is unique)
+    \item So $\sum_{i=1}^{m} s(a_i) \leq m$
+\end{itemize}
+
+Step 2: Pairwise interaction terms
+\begin{itemize}
+    \item Each $s(a_i, a_j) \leq 1$ (max is when all pairs are unique)
+    \item The interaction term for pair $(i,j)$ is $\lambda_{ij} \cdot s(a_i) \cdot s(a_j)$
+    \item The maximum occurs when $\lambda_{ij} = 1$ (assuming independence) and $s(a_i) = s(a_j) = 1$
+    \item So each pair term $\leq 1 \times 1 \times 1 = 1$
+    \item There are $\binom{m}{2}$ pairs
+    \item So $\sum_{i<j} \lambda_{ij} \cdot s(a_i) \cdot s(a_j) \leq \binom{m}{2}$
+\end{itemize}
+
+Step 3: Combine
+\begin{align}
+\Rraw &= \sum_{i} s(a_i) + \sum_{i<j} \lambda_{ij} \cdot s(a_i) \cdot s(a_j) \\
+&\leq m + \binom{m}{2} \\
+&= \Rmax(m)
+\end{align}
+
+\textbf{For our model:} With $m = 7$ attributes:
+\begin{equation}
+\Rmax(7) = 7 + \binom{7}{2} = 7 + 21 = 28
+\end{equation}
+
+So $R_{\mathrm{raw}}$ can never exceed 28, regardless of the data!
+
+\textbf{Why is this important?} Without a theoretical maximum, we couldn't compare different scenarios. $R_{\mathrm{raw}} = 10$ might be high for one configuration but low for another. By normalising against $R_{\mathrm{max}}$, we get a universal scale.
+
+% ----------------------------------------------------------------
+\section{Normalised Risk Score $R_{\mathrm{norm}}$}
+\label{sec:norm}
+
+This is the final metric that enables comparison across any configuration.
+
+\textbf{What is it?} $R_{\mathrm{norm}}$ scales $R_{\mathrm{raw}}$ to always fall between 0 and 1, representing the fraction of the theoretical maximum risk that has been achieved.
+
+\textbf{Mathematical formulation:}
+\begin{equation}
+\Rnorm = \frac{\Rraw}{\Rmax(m)}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $\Rraw$ = the calculated raw risk score
+    \item $\Rmax(m) = m + \binom{m}{2}$ = theoretical maximum
+    \item $m$ = number of attributes
+\end{itemize}
+
+For our model with $m = 7$:
+\begin{equation}
+\Rnorm = \frac{\Rraw}{28}
+\end{equation}
+
+\textbf{Why normalisation is essential:}
+
+\begin{enumerate}
+    \item \textbf{Scale independence:} A score of 0.3 means the same thing regardless of whether there are 100 users or 100,000 users.
+    
+    \item \textbf{Comparison across configurations:} We can now compare a 7-attribute model to a 3-attribute model fairly.
+    
+    \item \textbf{Scheme comparison:} Different schemes produce different $R_{\mathrm{raw}}$ values, but $R_{\mathrm{norm}}$ puts them on the same scale.
+    
+    \item \textbf{Interpretability:} $R_{\mathrm{norm}} = 0.35$ means "35\% of the maximum possible risk" - immediately understandable.
+\end{enumerate}
+
+\textbf{Worked example:}
+
+Suppose for Plain Hash Token at $N = 1,000$:
+\begin{itemize}
+    \item $R_{\mathrm{raw}} = 8.886$
+    \item $R_{\mathrm{max}}(7) = 28$
+    \item $R_{\mathrm{norm}} = 8.886 / 28 = 0.317$
+\end{itemize}
+
+Interpretation: Plain Hash Token achieves 31.7\% of the theoretical maximum risk.
+
+For ZKP Token at the same scale:
+\begin{itemize}
+    \item $R_{\mathrm{raw}} = 0.982$
+    \item $R_{\mathrm{norm}} = 0.982 / 28 = 0.035$
+\end{itemize}
+
+Interpretation: ZKP Token achieves only 3.5\% of the theoretical maximum risk - much safer!
+
+The difference: 0.317 / 0.035 = 9.1× - Plain Hash is about 9 times riskier than ZKP!
+
+% ================================================================
+% CHAPTER 4: CRYPGRAPHIC SCHEMES
+% ================================================================
+\chapter{How Cryptographic Schemes Affect the Model}
+\label{chap:schemes}
+
+This chapter explains mathematically how each cryptographic scheme transforms the attributes, thereby changing the $s(a_i)$ values and ultimately $R_{\mathrm{norm}}$.
+
+% ----------------------------------------------------------------
+\section{Plain Hash Token (Baseline - Worst Case)}
+\label{sec:plain}
+
+\textbf{Description:} The simplest token design. The token identifier is a SHA-256 hash of the serial number. All metadata is recorded exactly as-is.
+
+\textbf{Mathematical effect on value domains:}
+\begin{itemize}
+    \item $V_{\text{amount}} = \mathbb{R}^+$ (any positive amount - continuous)
+    \item $V_{\text{timestamp}}$ = exact timestamp (down to second)
+    \item $V_{\text{merchant}}$ = exact merchant ID
+    \item $V_{\text{wallet}}$ = wallet address
+    \item $V_{\text{frequency}}$ = exact transaction count
+    \item $V_{\text{payment\_channel}}$ = exact channel used
+    \item $V_{\text{transaction\_zone}}$ = exact zone
+\end{itemize}
+
+\textbf{Result:} All $s(a_i)$ values are at their maximum possible (or near-maximum), except for attributes that have naturally skewed distributions in Nepal (payment\_channel, transaction\_zone).
+
+\textbf{Typical values at $N = 1,000$:}
+\begin{align*}
+s(\text{amount}) &= 0.988 \\
+s(\text{timestamp}) &= 0.892 \\
+s(\text{merchant}) &= 0.006 \\
+s(\text{wallet}) &= 1.000 \\
+s(\text{frequency}) &= 0.000 \\
+s(\text{payment\_channel}) &= 0.000 \\
+s(\text{transaction\_zone}) &= 0.000
+\end{align*}
+
+\textbf{Risk:} $R_{\mathrm{norm}} = 0.317$ (31.7\% of maximum) - HIGH RISK
+
+% ----------------------------------------------------------------
+\section{Blind Signature}
+\label{sec:blind}
+
+\textbf{Description:} Introduced by David Chaum (1983). The bank can sign a token without seeing its content, providing unlinkability between issuance and spending.
+
+\textbf{Mathematical effect on value domains:}
+\begin{itemize}
+    \item $V_{\text{amount}}$ = exact amount (unchanged)
+    \item $V_{\text{timestamp}}$ = coarse to day-of-week only
+    \item $V_{\text{merchant}}$ = exact merchant (unchanged)
+    \item $V_{\text{wallet}}$ = from a large pool (randomised addresses)
+    \item $V_{\text{frequency}}$ = exact count (unchanged)
+    \item $V_{\text{payment\_channel}}$ = unchanged
+    \item $V_{\text{transaction\_zone}}$ = unchanged
+\end{itemize}
+
+\textbf{Key change:} The wallet attribute now has many possible addresses, reducing the probability any two users share the same address. The timestamp is coarsened to reduce uniqueness.
+
+\textbf{Typical values at $N = 1,000$:}
+\begin{align*}
+s(\text{amount}) &= 0.988 \quad (\text{unchanged})\\
+s(\text{timestamp}) &= 0.000 \quad (\text{now day-of-week only})\\
+s(\text{wallet}) &= 0.889 \quad (\text{reduced from 1.000})
+\end{align*}
+
+\textbf{Risk:} $R_{\mathrm{norm}} = 0.174$ (17.4\% of maximum) - MEDIUM RISK
+
+% ----------------------------------------------------------------
+\section{Ring Signature}
+\label{sec:ring}
+
+\textbf{Description:} A transaction is signed by any member of a set (ring) without revealing which specific member signed. Provides an anonymity set for the wallet.
+
+\textbf{Mathematical effect on value domains:}
+\begin{itemize}
+    \item $V_{\text{amount}}$ = bucketed into ranges
+    \item $V_{\text{timestamp}}$ = coarsened
+    \item $V_{\text{merchant}}$ = bucketed into categories
+    \item $V_{\text{wallet}}$ = in a ring of $k$ users (anonymity set)
+    \item $V_{\text{frequency}}$ = bucketed
+    \item $V_{\text{payment\_channel}}$ = unchanged
+    \item $V_{\text{transaction\_zone}}$ = unchanged
+\end{itemize}
+
+\textbf{Key change:} The wallet is no longer uniquely identifying - it could be any of $k$ members in the ring.
+
+\textbf{Typical values at $N = 1,000$:}
+\begin{align*}
+s(\text{amount}) &= 0.006 \quad (\text{bucketed to ranges})\\
+s(\text{wallet}) &= 0.938 \quad (\text{reduced but not eliminated})
+\end{align*}
+
+\textbf{Risk:} $R_{\mathrm{norm}} = 0.069$ (6.9\% of maximum) - LOW RISK
+
+% ----------------------------------------------------------------
+\section{Hybrid Scheme}
+\label{sec:hybrid}
+
+\textbf{Description:} Combines multiple cryptographic primitives. In this model: blind signature wallet randomisation + ring signature amount bucketing.
+
+\textbf{Mathematical effect:} Similar to Ring Signature but with additional wallet protection.
+
+\textbf{Risk:} $R_{\mathrm{norm}} = 0.067$ (6.7\% of maximum) - LOW RISK
+
+% ----------------------------------------------------------------
+\section{Stealth Address}
+\label{sec:stealth}
+
+\textbf{Description:} Generates a cryptographically fresh, unlinkable address for every transaction. No two transactions from the same user can be linked.
+
+\textbf{Mathematical effect on value domains:}
+\begin{itemize}
+    \item $V_{\text{amount}}$ = unchanged
+    $V_{\text{timestamp}}$ = coarsened
+    $V_{\text{merchant}}$ = exact
+    \item $V_{\text{wallet}}$ = one-time address (never reused)
+    $V_{\text{frequency}}$ = unchanged
+    $V_{\text{payment\_channel}}$ = unchanged
+    $V_{\text{transaction\_zone}}$ = unchanged
+\end{itemize}
+
+\textbf{Key change:} Every transaction gets a new wallet address, breaking the link between consecutive transactions from the same user.
+
+\textbf{Risk:} $R_{\mathrm{norm}} = 0.107$ (10.7\% of maximum) - LOW-MEDIUM RISK
+
+% ----------------------------------------------------------------
+\section{ZKP Token (Best Case)}
+\label{sec:zkp}
+
+\textbf{Description:} Zero-knowledge proofs allow proving knowledge of values without revealing the values themselves. The strongest privacy guarantee.
+
+\textbf{Mathematical effect on value domains:}
+\begin{itemize}
+    \item $V_{\text{amount}} = \{0, 100, 500, 1000, 5000\}$ (5 denomination bands)
+    \item $V_{\text{timestamp}} = \{0, 1, 2, 3, 4, 5, 6\}$ (day of week only)
+    \item $V_{\text{merchant}}$ = category only (e.g., "grocery", not specific store)
+    \item $V_{\text{wallet}}$ = nullifier in pool of size $N \times 100$ (one-time per tx)
+    \item $V_{\text{frequency}}$ = bucketed
+    \item $V_{\text{payment\_channel}}$ = unchanged
+    $V_{\text{transaction\_zone}}$ = unchanged
+\end{itemize}
+
+\textbf{Key change:} ALL attributes are reduced to coarse disclosure bands. The nullifier pool is so large that even if two users transact at the same time for the same amount, their nullifiers are almost certainly different.
+
+\textbf{Typical values at $N = 1,000$:}
+\begin{align*}
+s(\text{amount}) &= 0.000 \quad (\text{all amounts in 5 buckets})\\
+s(\text{timestamp}) &= 0.000 \quad (\text{only day-of-week})\\
+s(\text{wallet}) &= 0.982 \quad (\text{but unlinkable across transactions})
+\end{align*}
+
+Note: $s(\text{wallet}) = 0.982$ sounds high, but the key is that the wallet is UNLINKABLE - you can't tell if two transactions are from the same user!
+
+\textbf{Risk:} $R_{\mathrm{norm}} = 0.035$ (3.5\% of maximum) - VERY LOW RISK
+
+% ================================================================
+% CHAPTER 5: WHY THE MODEL WORKS
+% ================================================================
+\chapter{Why Does This Model Work?}
+\label{chap:why}
+
+This chapter explains the intuition behind why the mathematical formulations accurately capture privacy risk.
+
+% ----------------------------------------------------------------
+\section{The Core Insight}
+\label{sec:insight}
+
+The model works because it captures the fundamental relationship between:
+
+\begin{enumerate}
+    \item \textbf{Uniqueness} - How easily can someone be identified by their attribute values?
+    \item \textbf{Interaction} - How much do attribute combinations amplify identification risk?
+    \item \textbf{Scale} - Does adding more people make it harder to identify individuals?
+\end{enumerate}
+
+Let's address each:
+
+% ----------------------------------------------------------------
+\section{Uniqueness is the Right Metric}
+\label{sec:why_unique}
+
+Why use $s(a_i)$ instead of something like entropy or mutual information?
+
+Because uniqueness directly measures what we care about: can an adversary identify this person?
+
+Entropy measures uncertainty in the distribution, but:
+\begin{itemize}
+    \item High entropy + skewed distribution can still have low uniqueness
+    \item Uniqueness tells us exactly what fraction of users are at risk
+    \item Uniqueness scales properly: at $N = 50$, uniqueness matters more than at $N = 100,000$
+\end{itemize}
+
+The $s(a_i)$ formulation is intuitive: "If I see this attribute value, how likely am I to uniquely identify the user?"
+
+% ----------------------------------------------------------------
+\section{Pairwise Interactions Capture Real Effects}
+\label{sec:why_interact}
+
+Why do we need $\lambda_{ij}$? Why not just add $s(a_i)$ values?
+
+Because in real data, attributes are not independent:
+
+\begin{itemize}
+    \item A wealthy person might always shop at expensive merchants
+    \item Someone who transacts at 3 AM might have a specific routine
+    \item In a village, the only person who transacts at a certain time at a certain merchant might be identifiable
+\end{itemize}
+
+The $\lambda_{ij}$ coefficient captures this. When $\lambda_{ij} > 1$, the combination is MORE identifying than the sum of parts. When $\lambda_{ij} < 1$, there's overlap.
+
+In the Nepal data, we found $\lambda_{ij} \approx 1$ for most pairs (near independence), but the framework allows for correlations when they exist.
+
+% ----------------------------------------------------------------
+\section{Normalisation Makes Comparison Possible}
+\label{sec:why_norm}
+
+Why divide by $R_{\mathrm{max}}$?
+
+Without normalisation:
+\begin{itemize}
+    \item $R_{\mathrm{raw}} = 8.8$ for 7 attributes vs $R_{\mathrm{raw}} = 3$ for 3 attributes
+    \item Can't tell which is "worse" - maybe 3 attributes with all unique is worse than 7 with some shared
+\end{itemize}
+
+With normalisation:
+\begin{itemize}
+    \item 7 attributes: $8.8 / 28 = 0.31$
+    \item 3 attributes: $3 / 6 = 0.50$
+    \item Now we can compare: 0.50 > 0.31, so 3-attribute scenario is relatively riskier
+\end{itemize}
+
+The $R_{\mathrm{max}} = m + \binom{m}{2}$ formula is the key - it accounts for both single attributes AND all possible pairs.
+
+% ----------------------------------------------------------------
+\section{Why $m + \binom{m}{2}$?}
+\label{sec:why_formula}
+
+The formula $m + \binom{m}{2}$ comes from counting:
+
+\begin{itemize}
+    \item There are $m$ single attributes, each can contribute at most 1 to $R_{\mathrm{raw}}$
+    \item There are $\binom{m}{2}$ unique pairs of attributes, each can contribute at most 1
+    \item Total maximum contribution = $m + \binom{m}{2}$
+\end{itemize}
+
+This is tight - it's achievable when every single attribute AND every pair is unique (the "worst case" scenario).
+
+In our empirical data, the closest we got was $R_{\mathrm{norm}} = 0.999$ (99.9%) - validating that the formula is correct.
+
+% ================================================================
+% CHAPTER 6: APPLICATION TO NEPAL
+% ================================================================
+\chapter{The Model in Nepal's Context}
+\label{chap:nepal}
+
+This chapter explains why the model produces specific results for Nepal.
+
+% ----------------------------------------------------------------
+\section{Why Payment Channel Has $s = 0$}
+\label{sec:nepal_payment}
+
+In Nepal, the payment channel distribution is:
+\begin{itemize}
+    \item 60\% - Mobile Wallet (eSewa, Khalti)
+    \item 35\% - QR Code
+    \item 5\% - Other
+\end{itemize}
+
+With $N = 1,000$ users:
+\begin{itemize}
+    \item 600 use mobile wallet
+    \item 350 use QR code
+    \item 50 use other
+\end{itemize}
+
+No value has count = 1 (no one is unique)! Therefore $s(\text{payment\_channel}) = 0$.
+
+This is actually GOOD for privacy - the population concentration provides passive protection!
+
+% ----------------------------------------------------------------
+\section{Why Transaction Zone Has $s = 0$}
+\label{sec:nepal_zone}
+
+In Nepal, the transaction zone distribution is:
+\begin{itemize}
+    \item 35\% - Kathmandu Valley
+    \item 25\% - Terai Urban
+    \item 20\% - Hill Urban
+    \item 12\% - Terai Rural
+    \item 8\% - Hill Rural
+\end{itemize}
+
+Same logic - no zone has only one user. Therefore $s(\text{transaction\_zone}) = 0$.
+
+% ----------------------------------------------------------------
+\section{The Counterintuitive Finding}
+\label{sec:nepal_counterintuitive}
+
+Here's something surprising: adding more attributes can DECREASE $R_{\mathrm{norm}}$!
+
+When we add payment\_channel (attribute 6) and transaction\_zone (attribute 7):
+\begin{itemize}
+    \item $R_{\mathrm{raw}}$ increases by $0 + 0 = 0$ (both have $s = 0$)
+    \item But $R_{\mathrm{max}}$ increases by $6 + 7 = 13$ (from 15 to 28)
+    \item So $R_{\mathrm{norm}} = R_{\mathrm{raw}} / R_{\mathrm{max}}$ actually DECREASES!
+\end{itemize}
+
+This mathematically proves that Nepal's demographic structure provides passive privacy protection - a valuable finding for policy!
+
+% ================================================================
+% CHAPTER 7: SUMMARY
+% ================================================================
+\chapter{Summary and Key Takeaways}
+\label{chap:summary}
+
+This final chapter consolidates everything into a memorable form.
+
+% ----------------------------------------------------------------
+\section{All Formulas in One Place}
+\label{sec:formulas}
+
+\begin{enumerate}
+    \item \textbf{Single-attribute uniqueness:}
+    \begin{equation}
+    s(a_i) = \frac{1}{N} \sum_{u \in U} \mathbb{I}\left( a_i(u) \text{ is unique} \right)
+    \end{equation}
+    
+    \item \textbf{Pairwise interaction coefficient:}
+    \begin{equation}
+    \lambda_{ij} = \frac{s(a_i, a_j)}{s(a_i) \cdot s(a_j)}
+    \end{equation}
+    
+    \item \textbf{Raw risk score:}
+    \begin{equation}
+    R_{\mathrm{raw}} = \sum_{i=1}^{m} s(a_i) + \sum_{i<j} \lambda_{ij} \cdot s(a_i) \cdot s(a_j)
+    \end{equation}
+    
+    \item \textbf{Theoretical maximum:}
+    \begin{equation}
+    R_{\mathrm{max}}(m) = m + \binom{m}{2}
+    \end{equation}
+    
+    \item \textbf{Normalised risk score:}
+    \begin{equation}
+    R_{\mathrm{norm}} = \frac{R_{\mathrm{raw}}}{R_{\mathrm{max}}(m)}
+    \end{equation}
+\end{enumerate}
+
+% ----------------------------------------------------------------
+\section{What Each Term Means}
+\label{sec:terms}
+
+\begin{itemize}
+    \item $U$ - Set of all users in the CBDC system
+    \item $N$ - Total number of users ($|U|$)
+    \item $m$ - Number of metadata attributes being modelled
+    \item $a_i$ - The $i$-th attribute (amount, timestamp, wallet, etc.)
+    \item $V_i$ - The value domain (set of possible values) for attribute $a_i$
+    \item $s(a_i)$ - Fraction of users unique on attribute $a_i$ alone
+    \item $\lambda_{ij}$ - Interaction coefficient between attributes $i$ and $j$
+    \item $R_{\mathrm{raw}}$ - Total accumulated risk before normalisation
+    \item $R_{\mathrm{max}}$ - Maximum possible $R_{\mathrm{raw}}$ (proven: $m + \binom{m}{2}$)
+    \item $R_{\mathrm{norm}}$ - Normalised risk score in $[0, 1]$
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{Key Results Summary}
+\label{sec:results}
+
+At $N = 1,000$ with $m = 7$ attributes:
+
+\begin{tabular}{lcc}
+\textbf{Scheme} & $R_{\mathrm{norm}}$ & \textbf{Risk Level} \\
+\hline
+Plain Hash Token & 0.317 & HIGH \\
+Blind Signature & 0.174 & MEDIUM \\
+Hybrid Scheme & 0.067 & LOW \\
+Ring Signature & 0.069 & LOW \\
+Stealth Address & 0.107 & LOW-MEDIUM \\
+ZKP Token & 0.035 & VERY LOW \\
+\end{tabular}
+
+\textbf{Key insights:}
+\begin{itemize}
+    \item ZKP is 9× safer than Plain Hash
+    \item Population scale doesn't help weak schemes
+    \item Village pilots (N=50) are highest risk - only ZKP is safe
+    \item Nepal's demographics provide passive protection
+    \item Wallet is the dominant risk driver
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{How to Explain This to Others}
+\label{sec:explain}
+
+When explaining the model to someone, follow this structure:
+
+\begin{enumerate}
+    \item \textbf{Start with the problem:} "We need to measure CBDC privacy risk"
+    \item \textbf{Define uniqueness:} "If you see my transaction amount, how likely can you identify me?"
+    \item \textbf{Introduce interaction:} "Sometimes two attributes together are more revealing than either alone"
+    \item \textbf{Show normalisation}: "We divide by a theoretical maximum so we can compare any scenario"
+    \item \textbf{Connect to schemes}: "Different cryptographic schemes change what data is visible, thus changing the risk"
+    \item \textbf{Conclude with results}: "ZKP Token provides the best protection at only 3.5\% of maximum risk"
+\end{enumerate}
+
+% ----------------------------------------------------------------
+\section{The Thought Process}
+\label{sec:thought}
+
+Here's the complete thought process behind developing this model:
+
+\begin{enumerate}
+    \item \textbf{Question:} How do we measure CBDC metadata privacy risk?
+    \item \textbf{Initial thought:} Use k-anonymity?
+    \item \textbf{Problem:} k-anonymity doesn't produce a continuous score, doesn't handle schemes well
+    \item \textbf{Alternative:} Derive from first principles using uniqueness
+    \item \textbf{Key insight:} Single attributes aren't enough - need pairwise interactions
+    \item \textbf{Challenge:} How to compare different attribute counts?
+    \item \textbf{Solution:} Prove theoretical maximum = $m + \binom{m}{2}$
+    \item \textbf{Validate:} Test on synthetic Nepal data
+    \item \textbf{Refine:} Add mitigation strategies, scalability analysis
+    \item \textbf{Result:} The $R_{\mathrm{norm}}$ framework!
+\end{enumerate}
+
+This model provides the first quantitative tool for CBDC cryptographic scheme comparison - something that didn't exist before this thesis.
+
+\end{document}

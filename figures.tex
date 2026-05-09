@@ -1,0 +1,709 @@
+\documentclass[12pt,a4paper,oneside,openany]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{geometry}
+\geometry{a4paper,top=25mm,bottom=20mm,left=30mm,right=20mm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{parskip}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{float}
+\usepackage{booktabs,longtable,array,multicol,caption}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{language=Python,basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},commentstyle=\color{gray},
+  stringstyle=\color{orange},breaklines=true,frame=single,
+  numbers=left,numberstyle=\tiny\color{gray},xleftmargin=15pt,
+  extendedchars=true,inputencoding=utf8}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\def\headrulewidth{0pt}
+\def\footrulewidth{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\def\headrulewidth{0pt}}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\begin{document}
+
+% ================================================================
+% TITLE PAGE
+% ================================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Large\textbf{UNDERSTANDING FIGURES}}
+
+\vspace{2cm}
+
+{\normalsize A comprehensive guide to the figures in}
+\\
+{\normalsize ``Quantifying Privacy Risk in Token-Based CBDC: A}
+\\
+{\normalsize Normalised Metadata De-Anonymization Framework for Nepal''}
+
+\vspace{3cm}
+
+\end{titlepage}
+
+% ================================================================
+% ANALYSIS 3 - SIX-SCHEME COMPARISON
+% ================================================================
+\chapter{Analysis 3: Six-Scheme Comparison}
+\label{chap:a3}
+
+This chapter explains Figure 4.1 (a3\_comparison.png) and Figure 4.2 (a3\_lambda.png).
+
+% ----------------------------------------------------------------
+\section{Figure 4.1a: R\_norm Bar Chart}
+\label{sec:f4.1a}
+
+\subsection{What Type of Figure This Is}
+This is a **vertical bar chart** (also known as a column chart). It displays the normalised privacy risk score ($R_{\mathrm{norm}}$) for six different cryptographic schemes used in the CBDC system.
+
+\subsection{What Is Being Shown}
+The x-axis shows the six cryptographic schemes:
+\begin{itemize}
+    \item Plain Hash Token
+    \item Blind Signature
+    \item Hybrid Scheme
+    \item Ring Signature
+    \item Stealth Address
+    \item ZKP Token
+\end{itemize}
+
+The y-axis shows the $R_{\mathrm{norm}}$ value ranging from 0 to 0.4 (representing the normalized risk score between 0 and 1).
+
+Each bar is colored differently to distinguish the schemes:
+\begin{itemize}
+    \item Red: Plain Hash Token (highest risk)
+    \item Orange: Blind Signature
+    \item Yellow: Hybrid Scheme
+    \item Green: Ring Signature
+    \item Cyan: Stealth Address
+    \item Blue: ZKP Token (lowest risk)
+\end{itemize}
+
+\subsection{Why This Graph Type Was Chosen}
+A bar chart is the ideal choice here because:
+\begin{enumerate}
+    \item It allows easy comparison between categorical variables (the six schemes)
+    \item The length of each bar directly corresponds to the risk value, making visual comparison intuitive
+    \item It clearly shows the ranking from highest to lowest risk
+    \item The color coding adds an additional visual cue for quick identification
+\end{enumerate}
+
+\subsection{Code Explanation}
+The following Python code generates this figure:
+
+\begin{lstlisting}[language=Python]
+# Create figure with 3 subplots
+fig, axes = plt.subplots(1, 3, figsize=(18, 7))
+
+# Subplot 1: R_norm bar chart
+bars = axes[0].bar(
+    range(len(SCHEMES)), R_norm_vals,
+    color=[COLORS[s] for s in SCHEMES],
+    edgecolor=EDGE, linewidth=1.2, width=0.6)
+axes[0].set_xticks(range(len(SCHEMES)))
+axes[0].set_xticklabels(LABELS, color="black", fontsize=10)
+axes[0].set_ylabel("R_norm  [0, 1]", fontsize=12)
+axes[0].set_title("R_norm Comparison", fontsize=12, fontweight="bold")
+axes[0].set_ylim(0, 0.4)
+\end{lstlisting}
+
+\textbf{Line-by-line explanation:}
+\begin{itemize}
+    \item \texttt{fig, axes = plt.subplots(1, 3, figsize=(18, 7))} - Creates a figure with 1 row and 3 columns of subplots, with size 18x7 inches
+    \item \texttt{bars = axes[0].bar(...)} - Creates a bar chart in the first subplot (axes[0])
+    \item \texttt{range(len(SCHEMES))} - Creates x-positions for each scheme (0, 1, 2, 3, 4, 5)
+    \item \texttt{R\_norm\_vals} - The actual risk values to plot
+    \item \texttt{color=[COLORS[s] for s in SCHEMES]} - Assigns colors to each bar based on the COLORS dictionary
+    \item \texttt{edgecolor=EDGE} - Sets the border color of each bar
+    \item \texttt{axes[0].set\_xticks(...)} - Sets the x-axis tick positions
+    \item \texttt{axes[0].set\_xticklabels(...)} - Sets the labels for each tick (scheme names)
+    \item \texttt{axes[0].set\_ylabel(...)} - Sets the y-axis label
+    \item \texttt{axes[0].set\_ylim(0, 0.4)} - Sets the y-axis limits from 0 to 0.4
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+This figure demonstrates that:
+\begin{enumerate}
+    \item \textbf{Plain Hash Token has the highest risk} ($R_{\mathrm{norm}} = 0.317$) - This is expected because it provides no metadata privacy; all attributes are fully exposed.
+    \item \textbf{ZKP Token has the lowest risk} ($R_{\mathrm{norm}} = 0.035$) - Zero-knowledge proofs provide the strongest privacy guarantees.
+    \item \textbf{There is a clear ranking} - The schemes form a non-overlapping risk ladder from highest to lowest.
+    \item \textbf{The difference between best and worst is ~9x} - ZKP Token is approximately 9 times safer than Plain Hash Token.
+\end{enumerate}
+
+\subsection{Possible Exam Questions}
+\begin{enumerate}
+    \item \textbf{Question:} Why does Plain Hash Token have the highest $R_{\mathrm{norm}}$ value?
+    \item \textbf{Answer:} Because it provides no cryptographic privacy protection. All metadata attributes (amount, timestamp, merchant, wallet, etc.) are recorded exactly as they are, making users easily re-identifiable.
+
+    \item \textbf{Question:} What does the bar chart tell us about the effectiveness of different cryptographic schemes?
+    \item \textbf{Answer:} It shows that scheme choice has a dramatic impact on privacy risk. The 9x difference between Plain Hash Token and ZKP Token demonstrates that cryptographic design is the primary determinant of metadata privacy.
+
+    \item \textbf{Question:} If you were advising NRB on CBDC deployment, which scheme would you recommend based on this figure?
+    \item \textbf{Answer:} ZKP Token provides the best privacy protection. However, if computational resources are limited, Ring Signature or Hybrid Scheme (both around 0.06-0.07) are reasonable alternatives.
+\end{enumerate}
+
+% ----------------------------------------------------------------
+\section{Figure 4.1b: Attribute Contribution Stacked Bar Chart}
+\label{sec:f4.1b}
+
+\subsection{What Type of Figure This Is}
+This is a **stacked bar chart** showing how each metadata attribute contributes to the overall $R_{\mathrm{norm}}$ score for each cryptographic scheme.
+
+\subsection{What Is Being Shown}
+The x-axis shows the six cryptographic schemes (same as Figure 4.1a).
+
+The y-axis shows the cumulative $s(a_i)$ values - the single-attribute uniqueness scores added together.
+
+Each bar is divided into segments, with each segment representing a different attribute:
+\begin{itemize}
+    \item amount (blue)
+    \item timestamp (orange)
+    \item merchant (green)
+    \item wallet (red)
+    \item frequency (purple)
+    \item payment\_channel (cyan - Nepal-specific)
+    \item transaction\_zone (yellow - Nepal-specific)
+\end{itemize}
+
+The height of each bar shows the total contribution from all attributes.
+
+\subsection{Why This Graph Type Was Chosen}
+A stacked bar chart was chosen because:
+\begin{enumerate}
+    \item It shows both the total risk \textbf{and} the composition of that risk
+    \item It allows comparison of which attributes contribute most to risk for each scheme
+    \item It clearly shows whether risk is concentrated in one attribute or distributed across multiple
+\end{enumerate}
+
+\subsection{What This Graph Signifies}
+Key observations:
+\begin{enumerate}
+    \item \textbf{Wallet dominates} - For most schemes, the wallet attribute (red segment) contributes the most to total risk, often being the largest segment in the stack.
+    \item \textbf{Scheme affects attribute contribution} - Different schemes "hide" different attributes. For example, Blind Signature reduces the timestamp segment to near-zero.
+    \item \textbf{Nepal-specific attributes show zero contribution} - The payment\_channel and transaction\_zone segments are zero for all schemes because these attributes have $s(a_i) = 0$ due to Nepal's demographic clustering.
+\end{enumerate}
+
+% ----------------------------------------------------------------
+\section{Figure 4.1c: Nepal-Specific Attributes}
+\label{sec:f4.1c}
+
+\subsection{What Type of Figure This Is}
+This is a simple bar chart showing the $s(a_i)$ values for Nepal-specific attributes only: payment\_channel and transaction\_zone.
+
+\subsection{What It Shows}
+The figure displays a single dotted horizontal line at $y = 0$ for all six schemes. This represents that both payment\_channel and transaction\_zone have $s(a_i) = 0$ (zero uniqueness) for all cryptographic schemes.
+
+\subsection{Why It Looks Like This}
+This figure appears as a flat line at zero because:
+
+\textbf{The underlying data:}
+\begin{itemize}
+    \item $s(\text{payment\_channel}) = 0.000$ for all schemes
+    \item $s(\text{transaction\_zone}) = 0.000$ for all schemes
+\end{itemize}
+
+\textbf{Why these values are zero:}
+
+In Nepal's specific context:
+\begin{enumerate}
+    \item \textbf{Payment Channel Distribution:} 60\% mobile wallet, 35\% QR code, 5\% other - most users share the same payment channel values, so no one is unique on this attribute.
+    \item \textbf{Transaction Zone Distribution:} 35\% Kathmandu Valley, 25\% Terai Urban, 20\% Hill Urban, 12\% Terai Rural, 8\% Hill Rural - the population is heavily concentrated in certain zones, making uniqueness on this attribute essentially zero.
+\end{enumerate}
+
+The combination of these skewed distributions means that when calculating $s(a_i)$ (the fraction of users who are unique on attribute $a_i$), the result is zero because most users share the same values.
+
+\textbf{Code Logic:}
+\begin{lstlisting}[language=Python]
+# In the generate_attributes function:
+if attribute == "payment_channel":
+    # 60% mobile wallet, 35% QR code, 5% other
+    return np.random.choice([0, 1, 2], N, p=[0.60, 0.35, 0.05])
+
+if attribute == "transaction_zone":
+    # 35% Kathmandu, 25% Terai Urban, 20% Hill Urban, etc.
+    return np.random.choice([0, 1, 2, 3, 4], N, p=[0.35, 0.25, 0.20, 0.12, 0.08])
+\end{lstlisting}
+
+Because these probability distributions are heavily skewed, the probability of any single user being unique (having a value no one else has) is effectively zero.
+
+\textbf{Is it correctly formed?} Yes. The dotted horizontal line at $y=0$ correctly represents that there is zero contribution from Nepal-specific attributes to the overall risk score. This is actually a \textit{good thing} - it means Nepal's demographic structure provides passive privacy protection on these attributes.
+
+\textbf{The dotted line style} is used to indicate that there is no meaningful data to display (the bars would all be at height 0), while still making it clear that this was intentionally calculated.
+
+% ----------------------------------------------------------------
+\section{Figure 4.2: Lambda Heatmaps}
+\label{sec:f4.2}
+
+\subsection{What Type of Figure This Is}
+This is a **heatmap matrix** showing the pairwise interaction coefficient $\lambda_{ij}$ for each pair of attributes, for each of the six cryptographic schemes.
+
+A heatmap uses color intensity to represent numerical values - darker colors indicate higher values.
+
+\subsection{What Is Being Shown}
+The figure contains 6 subplots (2 rows × 3 columns), one for each cryptographic scheme.
+
+Each subplot is a 7×7 matrix where:
+\begin{itemize}
+    \item Rows and columns represent the 7 metadata attributes
+    \item Each cell shows the $\lambda_{ij}$ value (interaction coefficient) between that pair of attributes
+    \item Color intensity represents the value: darker red/orange = higher interaction, lighter = lower
+\end{itemize}
+
+The diagonal cells (where row = column) are empty because $\lambda_{ij}$ is not defined for the same attribute pair.
+
+The color scale (legend) on the right shows the values, ranging from 0 to 100 (capped at 100 for display).
+
+\subsection{Why This Graph Type Was Chosen}
+A heatmap is ideal here because:
+\begin{enumerate}
+    \item It can display a large matrix of values (7×7 = 49 values) in a compact, readable format
+    \item Color allows quick visual identification of which attribute pairs have the highest interaction
+    \item It enables comparison across all 6 schemes in a single figure
+    \item The matrix format directly maps to the mathematical $\lambda_{ij}$ concept
+\end{enumerate}
+
+\subsection{Code Explanation}
+\begin{lstlisting}[language=Python]
+# Create 2x3 subplot grid
+fig, axes = plt.subplots(2, 3, figsize=(20, 14))
+
+for ax, scheme in zip(axes.flatten(), SCHEMES):
+    # Create empty matrix for this scheme
+    mat = np.zeros((len(ATTRS_7), len(ATTRS_7)))
+    
+    # Fill matrix with lambda values
+    for i, ai in enumerate(ATTRS_7):
+        for j, aj in enumerate(ATTRS_7):
+            if i != j:
+                mat[i][j] = min(res3[scheme]["lmat"].get(ai, {}).get(aj, 0.0), 100)
+    
+    # Create heatmap
+    sns.heatmap(mat, ax=ax,
+        xticklabels=ATTRS_7, yticklabels=ATTRS_7,
+        annot=True, fmt=".1f", cmap="YlOrRd",
+        annot_kws={"size": 9})
+\end{lstlisting}
+
+\textbf{Key lines explained:}
+\begin{itemize}
+    \item \texttt{mat = np.zeros((7, 7))} - Creates a 7×7 matrix initialized to zeros
+    \item \texttt{for i, ai in enumerate(ATTRS\_7)} - Iterates through all attribute pairs
+    \item \texttt{mat[i][j] = min(..., 100)} - Stores the lambda value, capped at 100 for display
+    \item \texttt{sns.heatmap(...)} - Creates the heatmap with color scale "YlOrRd" (Yellow-Orange-Red)
+    \item \texttt{annot=True, fmt=".1f"} - Shows numerical values in each cell with 1 decimal place
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{Wallet-timestamp and wallet-amount interactions are often high} - These pairs typically show the darkest colors, indicating strong interaction effects
+    \item \textbf{ZKP Token shows minimal interaction} - The heatmap is much lighter because ZKP reduces all attribute uniqueness to near-zero
+    \item \textbf{Plain Hash Token shows diverse interactions} - Multiple attribute pairs show high lambda values
+    \item \textbf{Diagonal is empty} - Lambda is only defined for pairs (i ≠ j), so diagonal cells are left blank
+\end{enumerate}
+
+\chapter{Analysis 5: Population Scalability}
+\label{chap:a5}
+
+This chapter explains Figure 4.3 (a5\_scalability.png).
+
+% ================================================================
+\section{Figure 4.3: Population Scalability}
+\label{sec:f4.3}
+
+\subsection{What Type of Figure This Is}
+This is a **dual-panel figure**:
+\begin{itemize}
+    \item Left panel: Line graph showing how $R_{\mathrm{norm}}$ changes as population size $N$ increases
+    \item Right panel: Bar chart comparing risk ratios relative to ZKP Token at $N=100,000$
+\end{itemize}
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel (Line Graph):}
+\begin{itemize}
+    \item X-axis: Population size $N$ (log scale: 100, 1,000, 10,000, 100,000)
+    \item Y-axis: $R_{\mathrm{norm}}$ (0 to 0.6)
+    \item 6 lines, one for each cryptographic scheme
+    \item X-axis is logarithmic (each tick represents a 10× increase in population)
+\end{itemize}
+
+\textbf{Right Panel (Bar Chart):}
+\begin{itemize}
+    \item X-axis: The six cryptographic schemes
+    \item Y-axis: Risk relative to ZKP Token (how many times riskier than ZKP)
+    \item At $N=100,000$ (national scale)
+\end{itemize}
+
+A vertical dashed line at $N=50$ indicates the VDC (village) pilot scale.
+
+\subsection{Why This Graph Type Was Chosen}
+\begin{enumerate}
+    \item \textbf{Log scale on x-axis} is necessary because population ranges from 100 to 100,000 (3 orders of magnitude)
+    \item \textbf{Dual panel} shows two different but related insights: how risk changes with scale (left), and relative comparison at national scale (right)
+    \item \textbf{Line graph} best shows trends over a continuous variable (population size)
+    \item \textbf{Bar chart} enables direct comparison of the final ratios
+\end{enumerate}
+
+\subsection{What This Graph Signifies}
+
+Key findings from this figure:
+
+\begin{enumerate}
+    \item \textbf{Plain Hash Token does not improve with scale} - The red line remains high even at $N=100,000$, showing that population size cannot substitute for cryptographic design
+    \item \textbf{ZKP Token is scale-independent} - The blue line is flat at 0.035 across all population sizes
+    \item \textbf{Ring Signature and Hybrid Scheme plateau early} - Both reach their minimum around $N=1,000$ and stay flat
+    \item \textbf{Plain Hash at N=100,000 is 5.5× riskier than ZKP} - The right panel shows this ratio explicitly
+    \item \textbf{Micro-scale (N=50) is shown} - The vertical line indicates village pilot scale, where all schemes except ZKP have very high risk
+\end{enumerate}
+
+\chapter{Analysis 7: Mitigation Effectiveness}
+\label{chap:a7}
+
+This chapter explains Figure 4.4 (a7\_mitigation.png).
+
+% ================================================================
+\section{Figure 4.4: Mitigation Effectiveness}
+\label{sec:f4.4}
+
+\subsection{What Type of Figure This Is}
+This is a **dual-panel grouped bar chart**:
+\begin{itemize}
+    \item Left: Before and after mitigation comparison
+    \item Right: Percentage reduction achieved by each mitigation strategy
+\end{itemize}
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel (Before/After):}
+\begin{itemize}
+    \item X-axis: The six schemes
+    \item Y-axis: $R_{\mathrm{norm}}$ (0 to 0.35)
+    \item Two bars per scheme: dark (before mitigation), light (after full mitigation)
+    \item Shows the dramatic reduction in risk when all mitigations are applied
+\end{itemize}
+
+\textbf{Right Panel (Reduction by Strategy):}
+\begin{itemize}
+    \item X-axis: Five mitigation strategies
+    \item Y-axis: Percentage reduction in $R_{\mathrm{norm}}$
+    \item Shows how much each individual strategy contributes to the total reduction
+\end{itemize}
+
+The five mitigation strategies are:
+\begin{enumerate}
+    \item Amount bucketing (grouping transaction amounts into ranges)
+    \item Timestamp coarsening (reducing time precision to day-of-week only)
+    \item Merchant categorisation (grouping merchants into sectors)
+    \item Wallet unlinkability (breaking the link between consecutive transactions)
+    \item Frequency smoothing (adding random noise to transaction frequency)
+\end{enumerate}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{Full mitigation reduces risk by 91-97\%} for all schemes
+    \item \textbf{Wallet unlinkability is the most effective single strategy} - shown in the right panel as the highest bar
+    \item \textbf{Ring Signature with full mitigation achieves near-ZKP levels} - both reach approximately 0.002
+    \item \textbf{No scheme is immune to mitigation} - all benefit significantly
+    \item \textbf{Plain Hash Token still has residual risk} - even with mitigation, it has $R_{\mathrm{norm}} = 0.017$
+\end{enumerate}
+
+\chapter{Analysis 8: m-Attribute Sensitivity}
+\label{chap:a8}
+
+This chapter explains Figure 4.5 (a8\_m\_sensitivity.png).
+
+% ================================================================
+\section{Figure 4.5: m-Attribute Sensitivity}
+\label{sec:f4.5}
+
+\subsection{What Type of Figure This Is}
+This is a **triple-panel figure**:
+\begin{enumerate}
+    \item Left: Line graph showing $R_{\mathrm{norm}}$ as attributes are added one by one
+    \item Center: Line graph showing $R_{\mathrm{max}}$ as attributes are added
+    \item Right: Bar chart showing the marginal contribution of each new attribute
+\end{enumerate}
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel ($R_{\mathrm{norm}}$ vs m):}
+\begin{itemize}
+    \item X-axis: Number of attributes (m = 1 to 7)
+    \item Y-axis: $R_{\mathrm{norm}}$
+    \item Shows how risk changes as more attributes are modelled
+    \item The vertical dashed line at m=5 separates standard attributes (1-5) from Nepal-specific attributes (6-7)
+\end{itemize}
+
+\textbf{Center Panel ($R_{\mathrm{max}}$ vs m):}
+\begin{itemize}
+    \item X-axis: Number of attributes (m = 1 to 7)
+    \item Y-axis: $R_{\mathrm{max}}$ (theoretical maximum)
+    \item Shows formula: $R_{\mathrm{max}}(m) = m + \binom{m}{2}$
+    \item Values shown: m=1→1, m=2→3, m=3→6, m=4→10, m=5→15, m=6→21, m=7→28
+\end{itemize}
+
+\textbf{Right Panel (Delta $R_{\mathrm{norm}}$):}
+\begin{itemize}
+    \item X-axis: Attributes (added in order)
+    \item Y-axis: Change in $R_{\mathrm{norm}}$ when that attribute is added
+    \item Shows the "cost" of each additional attribute in terms of privacy risk
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{Adding Nepal-specific attributes actually DECREASES $R_{\mathrm{norm}}$} - When payment\_channel (m=6) and transaction\_zone (m=7) are added, $R_{\mathrm{norm}}$ goes down because $R_{\mathrm{max}}$ grows faster than $R_{\mathrm{raw}}$
+    \item \textbf{Wallet is the highest-risk attribute} - Adding it first causes the largest jump in $R_{\mathrm{norm}}$
+    \item \textbf{$R_{\mathrm{max}}$ grows quadratically} - The center panel shows the formula $m + \binom{m}{2}$ in action
+    \item \textbf{Nepal's demographic structure provides passive protection} - The counterintuitive decrease proves that Nepal's skewed distributions act as natural privacy
+\end{enumerate}
+
+\chapter{Analysis 9: Seed Sensitivity}
+\label{chap:a9}
+
+This chapter explains Figure 4.6 (a9\_seed\_sensitivity.png).
+
+% ================================================================
+\section{Figure 4.6: Seed Sensitivity}
+\label{sec:f4.6}
+
+\subsection{What Type of Figure This Is}
+This is a **dual-panel figure**:
+\begin{enumerate}
+    \item Left: Line graph showing mean $R_{\mathrm{norm}}$ with error bars (2σ) across 30 random seeds
+    \item Right: Violin plot showing the distribution of $R_{\mathrm{norm}}$ values for each scheme
+\end{itemize}
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel (Mean ± 2σ):}
+\begin{itemize}
+    \item X-axis: The six schemes
+    \item Y-axis: $R_{\mathrm{norm}}$ (0 to 0.4)
+    \item Points show mean value across 30 runs
+    \item Error bars show ±2 standard deviations (covering ~95\% of runs)
+    \item Error bars on some schemes are barely visible (very low variance)
+\end{itemize}
+
+\textbf{Right Panel (Violin Plot):}
+\begin{itemize}
+    \item X-axis: The six schemes  
+    \item Y-axis: Distribution of $R_{\mathrm{norm}}$ values
+    \item The "violin" shape shows the density distribution
+    \item White dot shows median, yellow dot shows mean
+\end{itemize}
+
+Key statistics shown:
+\begin{itemize}
+    \item Plain Hash Token: mean=0.323, CV=7.8\%
+    \item Blind Signature: mean=0.175, CV=0.3\%
+    \item Hybrid Scheme: mean=0.070, CV=21.0\%
+    \item Ring Signature: mean=0.069, CV=9.4\%
+    \item Stealth Address: mean=0.107, CV=0.1\%
+    \item ZKP Token: mean=0.035, CV=0.3\%
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{The scheme ranking is robust} - No seed produces a ranking reversal; ZKP is always lowest, Plain Hash always highest
+    \item \textbf{Hybrid Scheme has highest variance} (CV=21\%) - The wide violin shape shows it is sensitive to random seed
+    \item \textbf{ZKP, Blind Signature, and Stealth Address are deterministic} - Their tight error bars and narrow violins show almost no variation
+    \item \textbf{Conclusions are not sensitive to random seed choice} - This validates the reproducibility of the analysis
+\end{enumerate}
+
+\chapter{Analysis 10: Micro-Scale Pilot Analysis}
+\label{chap:a10}
+
+This chapter explains Figure 4.7 (a10\_microscale.png).
+
+% ================================================================
+\section{Figure 4.7: Micro-Scale Pilot Analysis}
+\label{sec:f4.7}
+
+\subsection{What Type of Figure This Is}
+This is a **dual-panel figure**:
+\begin{enumerate}
+    \item Left: Line graph showing $R_{\mathrm{norm}}$ at very small populations ($N$ = 10 to 1,000)
+    \item Right: Bar chart specifically for $N=50$ (village pilot scale)
+\end{enumerate}
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel (R\_norm vs N):}
+\begin{itemize}
+    \item X-axis: Population $N$ (10, 25, 50, 75, 100, 250, 500, 1,000)
+    \item Y-axis: $R_{\mathrm{norm}}$ (0 to 1.0)
+    \item 6 lines, one per scheme
+    \item Shows how risk changes at very small populations (village-level pilots)
+    \item Vertical dashed line at $N=50$ marks typical VDC pilot size
+\end{itemize}
+
+\textbf{Right Panel (N=50):}
+\begin{itemize}
+    \item X-axis: The six schemes
+    \item Y-axis: $R_{\mathrm{norm}}$ at $N=50$
+    \item Bars show risk at village pilot scale
+    \item Annotations show exact values above each bar
+\end{itemize}
+
+Key values at $N=50$:
+\begin{itemize}
+    \item Plain Hash Token: 0.674
+    \item Blind Signature: 0.607
+    \item Hybrid Scheme: 0.537
+    \item Ring Signature: 0.485
+    \item Stealth Address: 0.545
+    \item ZKP Token: 0.071
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{Village pilots (N=50) are the highest-risk scenario} - All schemes except ZKP exceed $R_{\mathrm{norm}} = 0.48$ (nearly half of users identifiable)
+    \item \textbf{ZKP Token is the ONLY safe scheme at pilot scale} - At $N=50$, ZKP has $R_{\mathrm{norm}} = 0.071$ while all others are above 0.48
+    \item \textbf{The 6.8-fold difference at N=50} is much larger than the 2-fold difference at $N=1,000$ - showing that scheme choice matters most at small scale
+    \item \textbf{At N=10, risk approaches maximum} - Plain Hash Token reaches $R_{\mathrm{norm}} = 0.932$, nearly fully identifying all users
+    \item \textbf{If NRB plans community pilots, ZKP is essential} - This figure directly supports this policy recommendation
+\end{enumerate}
+
+\chapter{Analysis 11: Lambda Sensitivity}
+\label{chap:a11}
+
+This chapter explains Figure 4.8 (a11\_lambda\_sensitivity.png).
+
+% ================================================================
+\section{Figure 4.8: Lambda Sensitivity Analysis}
+\label{sec:f4.8}
+
+\subsection{What Type of Figure This Is}
+This is a **dual-panel line graph** showing how $R_{\mathrm{norm}}$ changes as the interaction coefficient $\lambda$ varies from 0 to 100.
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel (Plain Hash Token):}
+\begin{itemize}
+    \item X-axis: $\lambda$ (amount, wallet) from 0 to 100
+    \item Y-axis: $R_{\mathrm{norm}}$ (0 to 4.0, capped at 1.0)
+    \item Shows how Plain Hash Token's risk grows as interaction strength increases
+    \item At very high $\lambda$ (>25), $R_{\mathrm{norm}}$ exceeds 1.0 (theoretical maximum)
+\end{itemize}
+
+\textbf{Right Panel (ZKP Token):}
+\begin{itemize}
+    \item X-axis: $\lambda$ (wallet, timestamp) from 0 to 100
+    \item Y-axis: $R_{\mathrm{norm}}$ (flat at 0.035)
+    \item Shows a flat horizontal line - ZKP is immune to $\lambda$ changes
+\end{itemize}
+
+Key values for Plain Hash Token:
+\begin{itemize}
+    \item $\lambda=1$: $R_{\mathrm{norm}}=0.202$
+    \item $\lambda=5$: $R_{\mathrm{norm}}=0.343$
+    \item $\lambda=10$: $R_{\mathrm{norm}}=0.520$
+    \item $\lambda=25$: $R_{\mathrm{norm}}=1.049$ (exceeds 1.0)
+    \item $\lambda=100$: $R_{\mathrm{norm}}=3.696$
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{Plain Hash Token is highly sensitive to $\lambda$} - Risk more than doubles when $\lambda$ increases from 1 to 10
+    \item \textbf{ZKP Token is completely immune} - The flat line shows $R_{\mathrm{norm}}=0.035$ regardless of $\lambda$
+    \item \textbf{At very high interaction ( $\lambda>25$ ), Plain Hash exceeds the maximum} - This is mathematically possible because the theoretical maximum assumes independence
+    \item \textbf{Empirical $\lambda$ values for Nepal are near 1} - The model's linear regime applies to real data
+    \item \textbf{ZKP's immunity comes from reducing all $s(a_i)$ to near-zero} - With near-zero base values, even high $\lambda$ produces negligible interaction
+\end{enumerate}
+
+\chapter{Analysis 12: Worst-Case Scenario}
+\label{sec:a12}
+
+This chapter explains Figure 4.9 (a12\_worst\_case.png).
+
+% ================================================================
+\section{Figure 4.9: Worst-Case Scenario}
+\label{sec:f4.9}
+
+\subsection{What Type of Figure This Is}
+This is a **dual-panel figure**:
+\begin{enumerate}
+    \item Left: Bar chart comparing all schemes to worst-case and theoretical maximum
+    \item Right: Grouped bar chart comparing $s(a_i)$ values for Plain Hash Token, ZKP Token, and worst-case
+\end{enumerate}
+
+\subsection{What Is Being Shown}
+
+\textbf{Left Panel (R\_norm Comparison):}
+\begin{itemize}
+    \item X-axis: All 6 schemes + Worst Case + Theoretical Maximum
+    \item Y-axis: $R_{\mathrm{norm}}$ (0 to 1.1)
+    \item The red dashed line at $R_{\mathrm{norm}}=1.0$ represents the theoretical maximum
+    \item Worst Case achieves 0.999 (99.9\% of maximum), validating the normalization
+\end{itemize}
+
+\textbf{Right Panel (s(ai) Comparison):}
+\begin{itemize}
+    \item X-axis: The 7 attributes
+    \item Y-axis: $s(a_i)$ values (0 to 1.0)
+    \item Three groups of bars: Plain Hash (red), ZKP Token (blue), Worst Case (magenta)
+    \item Shows how each attribute's uniqueness differs across configurations
+\end{itemize}
+
+Worst-case configuration:
+\begin{itemize}
+    \item $s(\text{amount}) = 0.984$
+    \item $s(\text{timestamp}) = 1.000$
+    \item $s(\text{merchant}) = 1.000$
+    \item $s(\text{wallet}) = 1.000$
+    \item $s(\text{frequency}) = 1.000$
+    \item $s(\text{payment\_channel}) = 1.000$
+    \item $s(\text{transaction\_zone}) = 1.000$
+    \item $R_{\mathrm{raw}} = 27.984$
+    \item $R_{\mathrm{norm}} = 0.999$ (99.9\% of maximum)
+\end{itemize}
+
+\subsection{What This Graph Signifies}
+\begin{enumerate}
+    \item \textbf{The normalization is correctly calibrated} - Worst case achieves 99.9\% of the theoretical maximum, confirming $R_{\mathrm{max}}=28$ is not an overestimate
+    \item \textbf{All deployed schemes are far below the ceiling} - Even Plain Hash at 0.317 is only 31.7\% of maximum
+    \item \textbf{ZKP achieves 3.5\% of worst case} - This represents the state-of-the-art in CBDC privacy
+    \item \textbf{Plain Hash is not acceptable despite being below ceiling} - 31.7\% of maximum still means 31.7\% of users are structurally vulnerable
+    \item \textbf{The gap of 0.001 from maximum} exists because amount follows an exponential distribution (not perfectly distinct), leaving a tiny fraction sharing values
+\end{enumerate}
+
+\chapter{Summary}
+\label{chap:summary}
+
+This tutorial has covered all figures in the thesis:
+
+\begin{enumerate}
+    \item \textbf{Figure 4.1a}: Bar chart showing $R_{\mathrm{norm}}$ ranking of six cryptographic schemes
+    \item \textbf{Figure 4.1b}: Stacked bar showing attribute contributions to risk
+    \item \textbf{Figure 4.1c}: Nepal-specific attributes showing zero contribution (due to demographic clustering)
+    \item \textbf{Figure 4.2}: Heatmaps showing $\lambda_{ij}$ interaction coefficients
+    \item \textbf{Figure 4.3}: Population scalability (N = 100 to 100,000)
+    \item \textbf{Figure 4.4}: Mitigation effectiveness (91-97\% risk reduction)
+    \item \textbf{Figure 4.5}: Attribute sensitivity (m = 1 to 7)
+    \item \textbf{Figure 4.6}: Seed sensitivity validation (30 runs)
+    \item \textbf{Figure 4.7}: Micro-scale pilot analysis (N = 10 to 1,000)
+    \item \textbf{Figure 4.8}: Lambda sensitivity ( $\lambda$ = 0 to 100)
+    \item \textbf{Figure 4.9}: Worst-case calibration (99.9\% of maximum)
+\end{enumerate}
+
+Key takeaways:
+\begin{itemize}
+    \item \textbf{Wallet is the dominant risk driver} across all schemes
+    \item \textbf{ZKP Token provides the strongest privacy} (lowest $R_{\mathrm{norm}}$) but has highest computational cost
+    \item \textbf{Nepal's demographic structure provides passive protection} on payment\_channel and transaction\_zone
+    \item \textbf{Scale cannot substitute for cryptographic design} - Plain Hash remains risky even at N=100,000
+    \item \textbf{Mitigation strategies are effective} - wallet unlinkability is the single most impactful
+    \item \textbf{Village pilots (N=50) require ZKP} - all other schemes exceed 48\% risk at this scale
+\end{itemize}
+
+\end{document}

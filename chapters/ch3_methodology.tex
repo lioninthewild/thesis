@@ -57,7 +57,7 @@ depends on the attribute:
 \begin{itemize}
     \item For \textit{amount}, $V_i \subset \mathbb{R}^+$,
     the positive reals. Under Plain Hash Token, $V_i$ is
-    effectively continuous. Under ZKP Token, $V_i$ is a
+    effectively continuous. Under Zero-Knowledge Proof Token, $V_i$ is a
     finite set of five denomination bands.
 
     \item For \textit{timestamp}, $V_i \subset \mathbb{Z}$,
@@ -84,7 +84,7 @@ refer to regions outside Nepal. The CBDC system design sets
 the precision and granularity: the chaincode records amounts
 to two decimal places under Plain Hash Token or to the
 nearest NPR 100 under Ring Signature. The cryptographic
-scheme then transforms what is actually observable: ZKP range
+scheme then transforms what is actually observable: zero-knowledge proof range
 proofs reduce the observable amount to a coarse band
 regardless of the underlying transaction value.
 
@@ -184,7 +184,7 @@ This model does not cover active adversaries who inject
 false transactions, perform Sybil attacks, or attempt to
 break cryptographic primitives by brute force or algorithm.
 Those threat categories are outside the scope of this
-thesis and represent a separate research problem. The
+work and represent a separate research problem. The
 passive metadata analysis threat is chosen because it is
 the realistic and immediate risk for a CBDC deployment,
 no sophisticated attack is required, only the ability to
@@ -541,7 +541,7 @@ measurable.
 
 \subsection{Counting the Pairs}
 
-For this thesis with $m = 7$ attributes, the number of
+For this work with $m = 7$ attributes, the number of
 distinct pairs is:
 
 \begin{equation}
@@ -555,7 +555,7 @@ derived in the following section.
 
 \subsection{Why Most Terms Vanish in Practice}
 
-In the results of this thesis, most pair terms contribute
+In the results of this work, most pair terms contribute
 approximately zero to $\Rraw$. This occurs because the
 Nepal-specific attributes, payment channel and
 transaction zone, have $s(a_i) \approx 0$ due to
@@ -606,7 +606,7 @@ $R_{\mathrm{max}}$ is the \textit{theoretical upper bound}
 on $\Rraw$, the value it achieves under the
 worst-case configuration of all attributes simultaneously.
 Deriving $R_{\mathrm{max}}$ from first principles is a
-core contribution of this thesis.
+core contribution of this work.
 
 \subsection{Worst-Case Conditions}
 
@@ -682,7 +682,7 @@ $R_{\mathrm{max}}$ \\
 \end{tabular}
 \end{table}
 
-For this thesis with $m = 7$:
+For this work with $m = 7$:
 
 \begin{equation}
 R_{\mathrm{max}}(7) = 7 + \frac{7 \times 6}{2} = 7 + 21 = 28
@@ -799,7 +799,7 @@ Privacy never improves when uniqueness increases.
 
 \subsection{Worked Example with Normalisation}
 
-Using the original worked example from the thesis
+Using the original worked example from the work
 model specification with $m = 2$ attributes,
 $N = 1{,}000$ users, $s(A) = 0.05$, $s(B) = 0.04$,
 $s(A,B) = 0.12$:
@@ -855,7 +855,7 @@ Above 35\% of maximum risk \\
 \end{table}
 
 Plain Hash Token with $R_{\mathrm{norm}} = 0.317$ falls
-in the High category. ZKP Token with
+in the High category. Zero-Knowledge Proof Token with
 $R_{\mathrm{norm}} = 0.035$ falls in the Very Low
 category. Ring Signature and Hybrid Scheme with
 $R_{\mathrm{norm}} \approx 0.069$ fall in the Low
@@ -997,7 +997,7 @@ monitoring and tax reporting obligations.
 
 \subsection{Why Hyperledger Fabric}
 
-The reference deployment platform for this thesis is
+The reference deployment platform for this work is
 Hyperledger Fabric, a permissioned enterprise blockchain
 framework maintained under the Linux Foundation's Hyperledger
 project \citep{hyperledgerfabric2023}. Fabric is chosen
@@ -1066,7 +1066,7 @@ Fabric's permissioned identity model means NRB, as the
 network operator, knows the real-world identity behind every
 wallet address. This is by design: KYC and AML compliance
 require it. However, this does not eliminate the privacy
-problem addressed in this thesis. As argued in
+problem addressed in this work. As argued in
 Chapter~\ref{ch:introduction}, the metadata privacy problem
 exists at a different level, it concerns what other
 channel participants, insiders with partial access, and
@@ -1090,7 +1090,7 @@ and is therefore excluded from the attribute set.
 
 \subsection{The m=7 Attribute Set}
 
-This thesis models seven metadata attributes: five standard
+This work models seven metadata attributes: five standard
 attributes present in any CBDC deployment, and two
 Nepal-specific attributes grounded in Nepal's payment
 infrastructure and geographic structure.
@@ -1154,7 +1154,7 @@ re-identification in small communities with limited merchants.
 \subsection{Excluded Attribute: Remittance Corridor}
 
 Remittance corridor was considered as a third Nepal-specific
-attribute but excluded on scope grounds. This thesis models
+attribute but excluded on scope grounds. This work models
 a domestic CBDC under NRB jurisdiction. Cross-border
 remittances involve separate settlement rails, foreign
 correspondent banking relationships, and regulatory
@@ -1172,7 +1172,7 @@ R_{\mathrm{max}}(7) = 7 + \binom{7}{2}
 = 7 + 21 = 28
 \end{equation}
 
-All $\Rnorm$ values in this thesis are normalised against
+All $\Rnorm$ values in this work are normalised against
 this ceiling of 28.
 
 % ================================================================
@@ -1214,7 +1214,7 @@ Stealth Address &
 One-time wallet address per transaction &
 Wallet completely unlinkable across transactions; amounts remain visible\\
 
-ZKP Token &
+Zero-Knowledge Proof Token &
 Zero-knowledge range proofs; nullifier wallet &
 All attributes reduced to coarse bands; wallet unlinkable\\
 \bottomrule
@@ -1257,7 +1257,7 @@ any mathematical relationship between them. This breaks
 the spending pattern attack entirely for the wallet
 attribute, but amounts and timestamps remain visible.
 
-\textbf{ZKP Token} applies zero-knowledge range proofs
+\textbf{Zero-Knowledge Proof Token} applies zero-knowledge range proofs
 \citep{groth2015} to reduce all attributes to coarse
 disclosure bands. Amounts are restricted to five
 denominations $\{0, 100, 500, 1000, 5000\}$ NPR.
@@ -1274,7 +1274,7 @@ set.
 
 \subsection{Justification for Synthetic Data}
 
-This thesis uses synthetically generated transaction data
+This work uses synthetically generated transaction data
 rather than real NRB transaction records. This choice is
 justified on three grounds. First, no real NRB CBDC
 transaction dataset exists, as Nepal has not yet deployed
@@ -1338,7 +1338,7 @@ Wallet: $u \times 997 + \epsilon$, $\epsilon \sim
 \text{Uniform}(0, 100{,}000)$.
 Frequency: Uniform in $[1, 14]$.\\
 
-ZKP Token &
+Zero-Knowledge Proof Token &
 Amount: Choice from $\{0, 100, 500, 1000, 5000\}$.
 Timestamp: Choice from $\{0,\ldots,6\}$ (day of week).
 Merchant: Choice from $\{0,\ldots,4\}$ (5 sectors).

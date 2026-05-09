@@ -1,10 +1,11 @@
 \documentclass[12pt,a4paper,oneside,openany]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{mathptmx}
+\usepackage{times}
 \usepackage[left=3cm, right=2cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage{setspace}
 \setstretch{1.5}
+\setlength{\parindent}{0pt}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \graphicspath{{figures/}}
@@ -23,13 +24,12 @@
 \usepackage{float}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyfoot[C]{\thepage}
 \def\headrulewidth{0pt}
 \def\footrulewidth{0pt}
-\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\def\headrulewidth{0pt}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\def\headrulewidth{0pt}\def\footrulewidth{0pt}}
 \usepackage[numbers]{natbib}
 \usepackage{url}
-\bibliographystyle{unsrt}
+\bibliographystyle{ieeetr}
 \usepackage[hidelinks,bookmarks=true,bookmarksnumbered=true,
   pdfencoding=auto]{hyperref}
 \hypersetup{
@@ -56,23 +56,65 @@
   \renewcommand{\contentsname}{\centering TABLE OF CONTENTS}%
   \renewcommand{\listfigurename}{\centering LIST OF FIGURES}%
   \renewcommand{\listtablename}{\centering LIST OF TABLES}%
+  \renewcommand{\bibname}{REFERENCES}%
 }
 \begin{document}
 \pagenumbering{roman}
+\addtocounter{page}{-1}
 \pagestyle{plain}
 \input{front/title}
 \input{front/dedication}
 \input{front/declaration}
 \input{front/certification}
-\input{front/abstract}
 \input{front/acknowledgements}
+\input{front/abstract}
 \clearpage
 \tableofcontents
 \clearpage
 \listoffigures
+\addcontentsline{toc}{chapter}{LIST OF FIGURES}
 \clearpage
 \listoftables
-\input{front/abbreviations}
+\addcontentsline{toc}{chapter}{LIST OF TABLES}
+\clearpage
+\begin{center}
+{\Large \textbf{LIST OF ABBREVIATIONS}}\\[1cm]
+\end{center}
+\addcontentsline{toc}{chapter}{LIST OF ABBREVIATIONS}
+
+\begin{tabular}{ll}
+\textbf{AML}      & Anti-Money Laundering\\
+\textbf{CBDC}     & Central Bank Digital Currency\\
+\textbf{CFT}      & Counter-Terrorism Financing\\
+\textbf{CV}       & Coefficient of Variation\\
+\textbf{DP}       & Differential Privacy\\
+\textbf{ECDSA}    & Elliptic Curve Digital Signature Algorithm\\
+\textbf{KYC}      & Know Your Customer\\
+\textbf{MSP}      & Membership Service Provider\\
+\textbf{NRB}      & Nepal Rastra Bank\\
+\textbf{NPR}      & Nepalese Rupee\\
+\textbf{QR}       & Quick Response (code)\\
+\textbf{SHA}      & Secure Hash Algorithm\\
+\textbf{TxID}     & Transaction Identifier\\
+\textbf{VDC}      & Village Development Committee\\
+\textbf{ZKP}      & Zero-Knowledge Proof\\
+\end{tabular}
+
+\vspace{1em}
+\noindent\textbf{Model Notation}
+
+\begin{tabular}{ll}
+$a_i$              & The $i$-th metadata attribute\\
+$U$                & Set of all users in the CBDC population\\
+$N$                & Total number of users ($|U|$)\\
+$m$                & Total number of attributes\\
+$s(a_i)$           & Single-attribute uniqueness score\\
+$\lambda_{ij}$     & Pairwise interaction coefficient\\
+$R_{\mathrm{raw}}$ & Un-normalised risk score\\
+$R_{\mathrm{max}}$ & Theoretical maximum of $R_{\mathrm{raw}}$\\
+$R_{\mathrm{norm}}$ & Normalised risk score $\in [0,1]$\\
+$\binom{m}{2}$     & Number of distinct attribute pairs\\
+\end{tabular}
 \clearpage
 \pagenumbering{arabic}
 \pagestyle{fancy}
@@ -83,7 +125,7 @@
 \input{chapters/ch4_results}
 \input{chapters/ch5_conclusions}
 \newpage
-\addcontentsline{toc}{chapter}{References}
+\addcontentsline{toc}{chapter}{REFERENCES}
 \bibliography{references}
 \def\appendixname{Annex}
 \appendix

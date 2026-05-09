@@ -43,7 +43,7 @@ Blind Signature   & 4.881 & 0.174 & 17.4\% & Moderate\\
 Stealth Address   & 2.986 & 0.107 & 10.7\% & Moderate\\
 Ring Signature    & 1.940 & 0.069 & 6.9\%  & Low\\
 Hybrid Scheme     & 1.887 & 0.067 & 6.7\%  & Low\\
-ZKP Token         & 0.982 & 0.035 & 3.5\%  & Very Low\\
+Zero-Knowledge Proof Token         & 0.982 & 0.035 & 3.5\%  & Very Low\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -82,12 +82,12 @@ measurably distinct privacy outcome.
 
 \textbf{Wallet dominance.} Across all six schemes, the wallet
 attribute is the single largest contributor to $\Rnorm$. Even
-ZKP Token, with its nullifier pool of size $N \times 100$,
+Zero-Knowledge Proof Token, with its nullifier pool of size $N \times 100$,
 shows $s(\text{wallet}) = 0.982$, nearly every user has a
 unique nullifier at $N = 1{,}000$. The critical difference
 between schemes is not whether the wallet is unique but whether
 it is \textit{linkable} across transactions. Stealth Address
-and ZKP Token produce per-transaction wallets with no
+and Zero-Knowledge Proof Token produce per-transaction wallets with no
 mathematical link between them, breaking the spending pattern
 attack even when $s(\text{wallet})$ is high.
 
@@ -141,7 +141,7 @@ Ring Signature   & 0.214 & 0.083 & 0.069 & 0.070 & 0.070 &
 Immediate plateau\\
 Hybrid Scheme    & 0.380 & 0.098 & 0.067 & 0.068 & 0.068 &
 Immediate plateau\\
-ZKP Token        & 0.035 & 0.035 & 0.035 & 0.035 & 0.035 &
+Zero-Knowledge Proof Token        & 0.035 & 0.035 & 0.035 & 0.035 & 0.035 &
 Completely flat\\
 \bottomrule
 \end{tabular}
@@ -153,7 +153,7 @@ Completely flat\\
 \caption{Analysis 5: $\Rnorm$ versus population size (top
 left), convergence rate (top right), residual risk floor
 at $N = 100{,}000$ (bottom left), and relative risk versus
-ZKP Token baseline (bottom right). $m = 7$.}
+Zero-Knowledge Proof Token baseline (bottom right). $m = 7$.}
 \label{fig:a5_scalability}
 \end{figure}
 
@@ -161,7 +161,7 @@ ZKP Token baseline (bottom right). $m = 7$.}
 
 \textbf{Scale cannot substitute for cryptographic design.}
 Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$,
-5.5 times the risk of ZKP Token at the same scale. A
+5.5 times the risk of Zero-Knowledge Proof Token at the same scale. A
 national NRB deployment with Plain Hash Token would leave
 approximately 19\% of all users structurally vulnerable to
 re-identification from their transaction metadata, regardless
@@ -169,10 +169,10 @@ of how large the user base grows. This is the residual risk
 floor: the irreducible risk baked into the cryptographic
 design itself.
 
-\textbf{ZKP Token is scale-independent.} ZKP Token is the
+\textbf{Zero-Knowledge Proof Token is scale-independent.} Zero-Knowledge Proof Token is the
 only scheme whose $\Rnorm$ is completely flat across all
 population sizes, 0.035 at $N = 100$ and 0.035 at
-$N = 100{,}000$. This occurs because ZKP's nullifier pool
+$N = 100{,}000$. This occurs because Zero-Knowledge Proof Token's nullifier pool
 scales proportionally with population ($N \times 100$),
 maintaining constant relative uniqueness. For a national
 CBDC whose user base grows over time, this scale independence
@@ -219,7 +219,7 @@ Full Stack         & 0.017 & 0.014 & 0.009 & 0.002 & 0.002 & 0.002\\
 \multicolumn{7}{l}{\footnotesize PHT = Plain Hash Token,
 BS = Blind Signature, SA = Stealth Address,}\\
 \multicolumn{7}{l}{\footnotesize RS = Ring Signature,
-HS = Hybrid Scheme, ZKP = ZKP Token}
+HS = Hybrid Scheme, ZKP = Zero-Knowledge Proof Token}
 \end{tabular}
 \end{table}
 
@@ -252,12 +252,12 @@ unnecessary at current scale.
 
 \textbf{Full stack convergence.} With full mitigation, Ring
 Signature ($\Rnorm = 0.002$) and Hybrid Scheme
-($\Rnorm = 0.002$) reach near-identical performance to ZKP
+($\Rnorm = 0.002$) reach near-identical performance to Zero-Knowledge Proof Token
 Token ($\Rnorm = 0.002$). The three most private schemes
 become statistically indistinguishable under comprehensive
 mitigation. This finding establishes Ring Signature with
-full mitigation as a practical alternative to ZKP Token for
-deployments where ZKP's computational cost is prohibitive.
+full mitigation as a practical alternative to Zero-Knowledge Proof Token for
+deployments where Zero-Knowledge Proof Token's computational cost is prohibitive.
 
 % ================================================================
 \section{Analysis 8: m-Attribute Sensitivity}
@@ -360,7 +360,7 @@ Blind Signature   & 0.1750 & 0.0005 & 0.3  & [0.174, 0.176]\\
 Stealth Address   & 0.1068 & 0.0001 & 0.1  & [0.107, 0.107]\\
 Ring Signature    & 0.0686 & 0.0064 & 9.4  & [0.056, 0.081]\\
 Hybrid Scheme     & 0.0702 & 0.0148 & 21.0 & [0.041, 0.100]\\
-ZKP Token         & 0.0354 & 0.0001 & 0.3  & [0.035, 0.036]\\
+Zero-Knowledge Proof Token         & 0.0354 & 0.0001 & 0.3  & [0.035, 0.036]\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -379,9 +379,9 @@ $m = 7$, $N = 1{,}000$.}
 
 \textbf{The scheme ranking is statistically robust.} Across
 all 30 seeds, no seed produces a result where a weaker scheme
-outperforms a stronger one. The ordinal ranking: ZKP,
+outperforms a stronger one. The ordinal ranking: Zero-Knowledge Proof Token,
 Hybrid/Ring, Stealth, Blind, Plain Hash, is preserved in
-every trial. The conclusions of this thesis are not sensitive
+every trial. The conclusions of this work are not sensitive
 to the choice of random seed.
 
 \textbf{Hybrid Scheme has the highest variance.} Hybrid
@@ -393,7 +393,7 @@ estimates for Hybrid Scheme should be interpreted alongside
 its confidence interval rather than as precise values.
 
 \textbf{Four schemes show excellent stability.} Blind
-Signature (CV 0.3\%), Stealth Address (CV 0.1\%), and ZKP
+Signature (CV 0.3\%), Stealth Address (CV 0.1\%), and Zero-Knowledge Proof Token
 Token (CV 0.3\%) are nearly deterministic. Their results
 are functionally independent of the random seed.
 
@@ -425,7 +425,7 @@ Blind Signature  & 0.925 & 0.752 & 0.607 & 0.450 & 0.174\\
 Hybrid Scheme    & 0.875 & 0.658 & 0.537 & 0.380 & 0.067\\
 Ring Signature   & 0.832 & 0.619 & 0.485 & 0.214 & 0.069\\
 Stealth Address  & 0.904 & 0.695 & 0.545 & 0.277 & 0.107\\
-ZKP Token        & 0.721 & 0.107 & 0.071 & 0.035 & 0.035\\
+Zero-Knowledge Proof Token        & 0.721 & 0.107 & 0.071 & 0.035 & 0.035\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -444,19 +444,19 @@ $m = 7$.}
 
 \textbf{Village pilots are the highest-risk deployment
 scenario.} At $N = 50$, a realistic VDC pilot size,
-all schemes except ZKP Token exceed $\Rnorm = 0.48$. This
+all schemes except Zero-Knowledge Proof Token Token exceed $\Rnorm = 0.48$. This
 means nearly half of pilot participants are structurally
 vulnerable to re-identification from their transaction
 metadata alone. In a small rural community where most
 residents know each other, this vulnerability is not
 theoretical.
 
-\textbf{ZKP Token is the only scheme safe at micro-scale.}
-ZKP Token drops to $\Rnorm = 0.071$ at $N = 50$, compared
+\textbf{Zero-Knowledge Proof Token is the only scheme safe at micro-scale.}
+Zero-Knowledge Proof Token drops to $\Rnorm = 0.071$ at $N = 50$, compared
 to 0.485 for Ring Signature at the same scale. The 6.8-fold
 difference at pilot scale is far larger than the 2-fold
 difference at $N = 1{,}000$. If NRB plans any community-level
-pilot, ZKP Token is the only scheme that provides adequate
+pilot, Zero-Knowledge Proof Token is the only scheme that provides adequate
 privacy protection at that scale.
 
 \textbf{Risk is dramatically elevated at very small N.}
@@ -509,7 +509,7 @@ $\lambda$ & $\Rnorm$\\
 \includegraphics[width=\textwidth]{a11_lambda_sensitivity}
 \caption{Analysis 11: $\Rnorm$ sensitivity to
 $\lambda(\text{amount, wallet})$ for Plain Hash Token
-(left) and ZKP Token (right). Yellow dashed line = $\lambda
+(left) and Zero-Knowledge Proof Token (right). Yellow dashed line = $\lambda
 = 1$ baseline. $m = 7$, $N = 1{,}000$.}
 \label{fig:a11_lambda_sensitivity}
 \end{figure}
@@ -525,13 +525,13 @@ ceiling, the actual joint uniqueness $s(a_i, a_j)$ is
 still bounded at 1.0 per pair, but the inflated $\lambda$
 pushes $\Rraw$ above $R_{\mathrm{max}}$.
 
-\textbf{ZKP Token is completely immune to lambda.}
-ZKP Token's $\Rnorm$ remains flat at 0.035 regardless of
-$\lambda$ varying from 0 to 100. This is because ZKP reduces
+\textbf{Zero-Knowledge Proof Token is completely immune to lambda.}
+Zero-Knowledge Proof Token's $\Rnorm$ remains flat at 0.035 regardless of
+$\lambda$ varying from 0 to 100. This is because Zero-Knowledge Proof Token reduces
 all attribute $s$ values to near-zero. With $s(a_i) \approx 0$
 for all attributes except wallet, the pair term
 $\lambda_{ij} \times s(a_i) \times s(a_j) \approx 0$
-regardless of $\lambda_{ij}$. This demonstrates that ZKP
+regardless of $\lambda_{ij}$. This demonstrates that Zero-Knowledge Proof Token
 Token's privacy guarantee is robust not just against observed
 interaction patterns but against any possible correlation
 structure in the transaction data.
@@ -579,7 +579,7 @@ Blind Signature     & 4.881  & 0.174\\
 Stealth Address     & 2.986  & 0.107\\
 Ring Signature      & 1.940  & 0.069\\
 Hybrid Scheme       & 1.887  & 0.067\\
-ZKP Token           & 0.982  & 0.035\\
+Zero-Knowledge Proof Token           & 0.982  & 0.035\\
 \textbf{Worst Case} & \textbf{27.984} & \textbf{0.999}\\
 Theoretical Maximum & 28.000 & 1.000\\
 \bottomrule
@@ -591,7 +591,7 @@ Theoretical Maximum & 28.000 & 1.000\\
 \includegraphics[width=\textwidth]{a12_worst_case}
 \caption{Analysis 12: all six schemes versus worst-case
 versus theoretical maximum (left); attribute uniqueness
-comparison across Plain Hash Token, ZKP Token, and
+comparison across Plain Hash Token, Zero-Knowledge Proof Token, and
 worst-case configuration (right). $m = 7$, $N = 1{,}000$.}
 \label{fig:a12_worst_case}
 \end{figure}
@@ -617,9 +617,9 @@ re-identification. But it demonstrates that the schemes
 evaluated represent a realistic operating range, not an
 artificially inflated set of values.
 
-\textbf{ZKP Token at 3.5\% of maximum is the standard to
+\textbf{Zero-Knowledge Proof Token at 3.5\% of maximum is the standard to
 target.} The worst-case configuration demonstrates what
-zero cryptographic privacy engineering produces. ZKP Token's
+zero cryptographic privacy engineering produces. Zero-Knowledge Proof Token's
 $\Rnorm = 0.035$, 3.5\% of this worst case, represents
 the state-of-the-art achievable with current cryptographic
 technology in a regulatory-compliant CBDC.

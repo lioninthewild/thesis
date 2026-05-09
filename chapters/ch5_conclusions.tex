@@ -1,7 +1,7 @@
 \chapter{Conclusions and Recommendations}
 \label{ch:conclusions}
 
-This chapter synthesises the findings of the thesis, provides
+This chapter synthesises the findings of this work, provides
 direct answers to the research questions stated in
 Chapter~\ref{ch:introduction}, summarises the contributions of
 the work, presents specific recommendations for the Nepal Rastra
@@ -12,7 +12,7 @@ Bank, and identifies directions for future research.
 \label{sec:summary}
 % ================================================================
 
-This thesis developed a formal, normalised metadata
+This work developed a formal, normalised metadata
 de-anonymization risk model for token-based Central Bank Digital
 Currency and applied it to Nepal's domestic CBDC deployment
 context under Nepal Rastra Bank jurisdiction.
@@ -32,7 +32,7 @@ sizes.
 
 The model was applied to six cryptographic schemes: Plain Hash
 Token, Blind Signature, Hybrid Scheme, Ring Signature, Stealth
-Address, and ZKP Token, across seven metadata attributes
+Address, and Zero-Knowledge Proof Token, across seven metadata attributes
 including two Nepal-specific fields: payment channel and
 transaction zone. Eight analyses were conducted covering baseline
 scheme comparison, population scalability, mitigation
@@ -63,15 +63,15 @@ calibrated at 99.9\% of the theoretical maximum.
 At baseline ($N = 1{,}000$, $m = 7$), the six schemes produce
 the following $\Rnorm$ values: Plain Hash Token 0.317, Blind
 Signature 0.174, Stealth Address 0.107, Ring Signature 0.069,
-Hybrid Scheme 0.067, and ZKP Token 0.035. The six schemes form
-a clean, non-overlapping risk ladder. ZKP Token is 9.1 times
+Hybrid Scheme 0.067, and Zero-Knowledge Proof Token 0.035. The six schemes form
+a clean, non-overlapping risk ladder. Zero-Knowledge Proof Token is 9.1 times
 safer than Plain Hash Token. Hybrid Scheme and Ring Signature
 are statistically equivalent at $N = 1{,}000$.
 
 \textbf{Secondary question 2: Population scalability}:
 Scale does not resolve the privacy problem for weak schemes.
 Plain Hash Token at $N = 100{,}000$ carries $\Rnorm = 0.191$,
-5.5 times the risk of ZKP Token at the same scale. ZKP Token
+5.5 times the risk of Zero-Knowledge Proof Token at the same scale. Zero-Knowledge Proof Token
 is the only scheme whose $\Rnorm$ is scale-independent, remaining
 flat at 0.035 from $N = 100$ to $N = 100{,}000$. This formally
 disproves the assumption that population growth can substitute
@@ -80,7 +80,7 @@ for cryptographic privacy design.
 \textbf{Secondary question 3: Mitigation effectiveness}:
 A full mitigation stack reduces risk substantially across all
 schemes. Ring Signature with full mitigation reaches
-$\Rnorm = 0.002$, within 0.001 of ZKP Token with full mitigation.
+$\Rnorm = 0.002$, within 0.001 of Zero-Knowledge Proof Token with full mitigation.
 Wallet unlinkability is the single most effective individual
 mitigation across all schemes. Nepal Controls alone produce zero
 risk reduction at $N = 1{,}000$ because Nepal's demographic
@@ -102,7 +102,7 @@ technical mitigation at domestic scale.
 \label{sec:contributions}
 % ================================================================
 
-This thesis makes five contributions to the existing body of
+This work makes five contributions to the existing body of
 knowledge.
 
 \textbf{Contribution 1: Formal normalised privacy risk metric.}
@@ -116,7 +116,7 @@ $\Rmax(m) = m + \binom{m}{2}$ as the proven theoretical upper
 bound is an original mathematical contribution.
 
 \textbf{Contribution 2: Quantitative six-scheme comparison.}
-This thesis provides the first quantitative comparison of six
+This work provides the first quantitative comparison of six
 CBDC cryptographic schemes on a common privacy risk metric. Prior
 to this work, inter-scheme comparisons were qualitative. The risk
 ladder spanning $\Rnorm = 0.317$ to $\Rnorm = 0.035$ gives
@@ -134,12 +134,12 @@ the determinant of long-run privacy risk.
 \textbf{Contribution 4: Nepal-specific deployment analysis.}
 By incorporating payment channel and transaction zone as
 Nepal-specific attributes grounded in Nepal's payment
-infrastructure, this thesis provides the first formal privacy risk
+infrastructure, this work provides the first formal privacy risk
 analysis specifically designed for Nepal's domestic CBDC context.
 
 \textbf{Contribution 5: Micro-scale pilot risk quantification.}
 The micro-scale analysis demonstrates that at VDC pilot scale
-($N = 50$), all schemes except ZKP Token exceed
+($N = 50$), all schemes except Zero-Knowledge Proof Token exceed
 $\Rnorm = 0.48$. This finding directly informs how NRB should
 approach any community-level CBDC pilot.
 
@@ -148,7 +148,7 @@ approach any community-level CBDC pilot.
 \label{sec:nrb_recommendations}
 % ================================================================
 
-Based on the findings of this thesis, the following specific
+Based on the findings of this work, the following specific
 recommendations are made to the Nepal Rastra Bank.
 
 \textbf{Recommendation 1: Do not deploy Plain Hash Token at
@@ -161,7 +161,7 @@ from all deployment consideration.
 \textbf{Recommendation 2: Adopt Ring Signature as the minimum
 acceptable scheme for national deployment.} Ring Signature
 achieves $\Rnorm = 0.069$ at baseline and 0.002 with a full
-mitigation stack, near-ZKP performance at significantly lower
+mitigation stack, near-Zero-Knowledge Proof performance at significantly lower
 computational cost.
 
 \textbf{Recommendation 3: Consider Hybrid Scheme for
@@ -182,14 +182,14 @@ zero risk reduction at $N = 1{,}000$. Mitigation resources should
 be focused on amount, timestamp, and wallet attributes where
 marginal reduction is largest.
 
-\textbf{Recommendation 6: Use ZKP Token only if computational
-constraints can be resolved.} ZKP Token is the only scheme with
+\textbf{Recommendation 6: Use Zero-Knowledge Proof Token only if computational
+constraints can be resolved.} Zero-Knowledge Proof Token is the only scheme with
 scale-independent risk. If NRB can resolve its computational
-requirements through tiered CBDC architecture or offline ZKP
+requirements through tiered CBDC architecture or offline zero-knowledge proof
 verification, it should be the target deployment scheme.
 
 \textbf{Recommendation 7: Conduct any village pilot under
-Ring Signature or better.} At $N = 50$, all schemes except ZKP
+Ring Signature or better.} At $N = 50$, all schemes except Zero-Knowledge Proof Token
 Token exceed $\Rnorm = 0.48$. Any NRB community-level pilot must
 deploy Ring Signature or above to protect pilot participants from
 high re-identification risk during the experimental phase.
@@ -269,8 +269,8 @@ factor of 34.
 
 Privacy in a CBDC is not incompatible with financial inclusion,
 regulatory compliance, or operational efficiency. Ring Signature
-with a full mitigation stack delivers near-ZKP privacy at a
-fraction of ZKP's computational cost. Nepal does not have to
+with a full mitigation stack delivers near-Zero-Knowledge Proof privacy at a
+fraction of Zero-Knowledge Proof Token's computational cost. Nepal does not have to
 choose between reaching its unbanked population and protecting
 that population's privacy. It has to choose the right
 cryptographic scheme.

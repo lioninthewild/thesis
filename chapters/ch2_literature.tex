@@ -7,12 +7,12 @@
 \label{ch:literature}
 
 This chapter reviews the body of knowledge relevant to this
-thesis across six areas: the global CBDC landscape, privacy
+work across six areas: the global CBDC landscape, privacy
 in digital payment systems, cryptographic schemes for CBDC
 privacy, known de-anonymization attacks, existing privacy
 measurement frameworks, and Hyperledger Fabric as the
 reference deployment platform. The chapter concludes by
-identifying the specific research gap that this thesis fills.
+identifying the specific research gap that this work fills.
 
 % ================================================================
 \section{Central Bank Digital Currency --- Global Overview}
@@ -33,14 +33,14 @@ dimensions. The first is the target user: a \textit{retail}
 CBDC is designed for use by households and businesses in
 everyday transactions, while a \textit{wholesale} CBDC is
 restricted to financial institutions for interbank settlement.
-This thesis is concerned exclusively with retail CBDC, which
+This work is concerned exclusively with retail CBDC, which
 is the design most relevant to financial inclusion objectives
 and to the privacy risks analysed here. The second dimension
 is the structural model: a \textit{token-based} CBDC assigns
 value to a cryptographic token that the holder controls
 through a private key, while an \textit{account-based} CBDC
 records balances against verified identities in a centralised
-ledger \cite{biscgide2024}. This thesis models token-based
+ledger \cite{biscgide2024}. This work models token-based
 CBDC, in which the cryptographic design of the token directly
 determines the privacy properties of each transaction.
 
@@ -67,7 +67,7 @@ all three pilots converge on the importance of a hybrid
 operational model in which the central bank retains core
 infrastructure while the private sector handles user-facing
 services. The privacy implications of this hybrid model are
-directly relevant to this thesis: under hybrid architecture,
+directly relevant to this work: under hybrid architecture,
 transaction metadata is visible to multiple participants
 beyond the central bank alone.
 
@@ -95,7 +95,7 @@ safeguard. However, the proposal also acknowledges that this
 separation does not fully resolve the metadata privacy
 problem: transaction data that does not contain identity
 fields may still be sufficient to re-identify users through
-pattern analysis, which is the precise problem this thesis
+pattern analysis, which is the precise problem this work
 quantifies.
 
 % ================================================================
@@ -125,10 +125,10 @@ wallet addresses rather than names.
 \textit{Confidentiality} means that transaction contents are
 hidden from third parties, even if the parties to the
 transaction are identifiable. This is the property provided
-by encrypted messaging and by ZKP range proofs that hide
+by encrypted messaging and by zero-knowledge proof range proofs that hide
 transaction amounts.
 
-The critical insight motivating this thesis is that
+The critical insight motivating this work is that
 pseudonymity without metadata privacy is insufficient. Garratt
 and van Oordt \cite{garratt2020} argue that privacy in
 digital payments should be treated as a public good, one
@@ -139,7 +139,7 @@ citizens receive. They distinguish between operational
 privacy, which concerns who can see transaction data, and
 informational privacy, which concerns what can be inferred
 from transaction data even by parties with legitimate access.
-This thesis addresses informational privacy: the risk of
+This work addresses informational privacy: the risk of
 inference from metadata by parties who have legitimate access
 to the ledger but should not be able to re-identify users
 from it.
@@ -168,7 +168,7 @@ elliptic curve signature scheme.
 
 The choice of cryptographic scheme in a token-based CBDC
 determines what metadata is observable to an adversary with
-ledger access. Six schemes are relevant to this thesis,
+ledger access. Six schemes are relevant to this work,
 spanning from the weakest to the strongest metadata privacy
 guarantees.
 
@@ -178,7 +178,7 @@ identifier. SHA-256 is the standard hash function used in
 practice. This design provides no metadata hiding: all
 transaction fields (amount, timestamp, merchant, wallet
 address) are recorded exactly on the ledger. It is
-included in this thesis as the baseline worst-case scheme.
+included in this work as the baseline worst-case scheme.
 
 \textbf{Blind Signature.} The blind signature scheme was
 introduced by Chaum \cite{chaum1983} as a mechanism
@@ -208,7 +208,7 @@ be bucketed rather than fully hidden.
 
 \textbf{Hybrid Scheme.} The digital euro project and similar
 tiered privacy proposals combine multiple cryptographic
-primitives. The hybrid scheme modelled in this thesis combines
+primitives. The hybrid scheme modelled in this work combines
 the wallet randomisation of blind signatures with the amount
 bucketing of ring signature approaches, representing a
 realistic intermediate option for resource-constrained
@@ -223,16 +223,16 @@ transaction with no mathematical link between addresses of
 the same user. This eliminates wallet-based linking attacks
 entirely but does not address amount or timestamp privacy.
 
-\textbf{ZKP Token.} Zero-knowledge proof systems allow a
+\textbf{Zero-Knowledge Proof Token.} Zero-knowledge proof systems allow a
 prover to demonstrate knowledge of a value without revealing
 the value itself. Groth and Kohlweiss \cite{groth2015}
 introduced one-out-of-many proofs that enable efficient
-membership proofs used in CBDC privacy schemes. In a ZKP
+membership proofs used in CBDC privacy schemes. In a Zero-Knowledge Proof
 token, all sensitive attributes are reduced to coarse
 disclosure bands (amount to a set of denominations,
 timestamp to day of week, merchant to broad sector category),
 and a nullifier-based wallet provides transaction
-unlinkability. ZKP tokens provide the strongest metadata
+unlinkability. Zero-Knowledge Proof tokens provide the strongest metadata
 privacy of all six schemes but carry the highest
 computational cost.
 
@@ -260,7 +260,7 @@ finding was that the \textit{combination} of attributes,
 even individually innocuous ones, created a unique
 behavioural fingerprint. This result directly motivates the
 pairwise interaction coefficient $\lambda_{ij}$ in this
-thesis, which models exactly this amplification effect.
+the work, which models exactly this amplification effect.
 
 In the blockchain context, Koshy et al.
 \cite{koshy2014} demonstrated that Bitcoin users could
@@ -287,7 +287,7 @@ this risk precisely.
 % ================================================================
 
 Three formal privacy measurement frameworks are directly
-relevant to this thesis: k-anonymity, l-diversity, and
+relevant to this work: k-anonymity, l-diversity, and
 differential privacy. Understanding both what each framework
 provides and where it falls short motivates the need for
 the new metric developed here.
@@ -299,8 +299,8 @@ quasi-identifier attributes if every record is
 indistinguishable from at least $k-1$ other records on
 those attributes. A dataset with $k=1$ for some record
 means that record is unique and fully identifiable. The
-connection to this thesis is direct: the single-attribute
-uniqueness score $s(a_i)$ in the model of this thesis
+connection to this work is direct: the single-attribute
+uniqueness score $s(a_i)$ in the model of this work
 measures the fraction of users for whom $k=1$ on attribute
 $a_i$. A user who is unique on an attribute ($k=1$)
 has zero protection from k-anonymity on that attribute.
@@ -312,7 +312,7 @@ CBDC context. First, it considers attributes independently:
 a record may satisfy k-anonymity on each attribute
 individually while being uniquely identifiable from their
 combination. The pairwise interaction term
-$\lambda_{ij} \times s(a_i) \times s(a_j)$ in this thesis
+$\lambda_{ij} \times s(a_i) \times s(a_j)$ in this work
 addresses this limitation directly. Second, k-anonymity
 does not provide a normalised, scheme-comparable metric.
 It produces a binary assessment for each attribute rather
@@ -326,7 +326,7 @@ at least $l$ well-represented values for sensitive
 attributes. This addresses the homogeneity attack on
 k-anonymous data. While l-diversity is relevant to
 attribute value distribution, it does not address the
-cross-attribute combination problem central to this thesis
+cross-attribute combination problem central to this work
 and does not produce a normalised risk metric suitable for
 scheme comparison.
 
@@ -348,14 +348,14 @@ calibrated noise to query outputs. In the CBDC context,
 differential privacy on transaction amounts: implemented
 by adding noise to the recorded amount, is one of the
 mitigation strategies evaluated in Chapter~\ref{ch:results}.
-The model in this thesis measures the effect of such
+The model in this work measures the effect of such
 mitigation by applying a multiplier to $s(a_i)$, which
 simulates the reduction in attribute uniqueness that noise
 injection achieves.
 
 \textbf{Limitations of Existing Frameworks.} None of the
 three frameworks above directly addresses the CBDC metadata
-de-anonymization problem as formulated in this thesis.
+de-anonymization problem as formulated in this work.
 k-Anonymity and l-diversity require access to the full
 dataset and do not generalise easily to the dynamic,
 growing transaction ledger of a live CBDC. Differential
@@ -395,7 +395,7 @@ could allow different transaction tiers or different
 merchant categories to be separated. However, all
 participants on a channel see all transactions on that
 channel, which creates the metadata exposure problem
-analysed in this thesis.
+analysed in this work.
 
 Fabric transaction records contain several observable
 metadata fields. Androulaki et al. \cite{androulaki2018}
@@ -406,7 +406,7 @@ peers endorsed the transaction), and the block header
 (containing timestamp and sequence number). In a CBDC
 chaincode, the transaction arguments include the transfer
 amount and recipient address. Together these fields correspond
-directly to the seven attributes modelled in this thesis:
+directly to the seven attributes modelled in this work:
 amount, timestamp, merchant (recipient organisation),
 wallet (sender address), frequency (derivable from ledger
 history), payment channel (derivable from chaincode ID),
@@ -420,15 +420,15 @@ self-sovereign identity agents. Their finding that combining
 individually low-sensitivity attributes such as name and
 date of birth produces highly sensitive composite
 information directly parallels the $\lambda_{ij}$
-interaction effect modelled in this thesis. The conceptual
+interaction effect modelled in this work. The conceptual
 connection between their attribute sensitivity framework
-and the uniqueness-based approach in this thesis represents
+and the uniqueness-based approach in this work represents
 an important cross-reference between identity privacy and
 transaction metadata privacy on permissioned blockchain
 platforms.
 
 It is important to note that Fabric's permissioned identity
-model does not eliminate the privacy problem this thesis
+model does not eliminate the privacy problem this work
 addresses. The Nepal Rastra Bank, as the network operator,
 knows the real-world identity behind every wallet address
 for compliance purposes. However, the metadata privacy
@@ -448,7 +448,7 @@ identity model does not resolve.
 The literature reviewed in this chapter reveals a consistent
 and specific gap. Table~\ref{tab:gap} summarises the coverage
 of existing work across the dimensions most relevant to this
-thesis.
+
 
 \begin{table}[H]
 \centering
@@ -470,7 +470,7 @@ Koshy et al. (2014)       & No  & No  & No  & No  \\
 Bhattacharya et al. (2020)& Partial & No & No & No \\
 Morales-Resendiz (2021)   & No  & No  & No  & Yes \\
 BIS CGIDE (2024)          & No  & No  & No  & Yes \\
-\textbf{This thesis}      & \textbf{Yes} & \textbf{Yes} &
+\textbf{This work}      & \textbf{Yes} & \textbf{Yes} &
 \textbf{Yes} & \textbf{Yes} \\
 \bottomrule
 \end{tabular}
@@ -489,7 +489,7 @@ measurement tool. De-anonymization attack literature
 demonstrates the threat empirically but does not generalise
 to a measurement framework.
 
-This thesis fills that gap by deriving $R_{\mathrm{norm}}$:
+This work fills that gap by deriving $R_{\mathrm{norm}}$:
 a normalised metadata de-anonymization risk score with
 a proven theoretical upper bound, applicable to any
 token-based CBDC attribute set and cryptographic scheme

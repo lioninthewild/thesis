@@ -83,7 +83,7 @@ diverse zones from the dense urban concentration of the
 Kathmandu valley to the remote hill and Terai rural regions.
 The privacy implications of a CBDC in this specific context
 have not yet been formally studied, and that is precisely the
-gap this thesis addresses.
+gap this work addresses.
 
 % ================================================================
 \section{Nepal Context}
@@ -95,7 +95,7 @@ deployment that differs significantly from both Western
 economies and the larger Asian economies typically studied in
 the CBDC literature. Understanding Nepal's specific
 characteristics is essential for understanding why this
-thesis approaches the privacy problem the way it does.
+work approaches the privacy problem the way it does.
 
 \subsection{Financial Inclusion and the Unbanked Population}
 
@@ -136,7 +136,7 @@ This mobile-first reality means that in a CBDC deployment,
 the payment channel, whether a transaction was made via
 mobile wallet, QR code, NFC, or offline token, is a
 metadata field that is observable at the network level. As
-this thesis will demonstrate, this attribute is relevant to
+this work will demonstrate, this attribute is relevant to
 privacy risk modelling in Nepal's specific context and has
 been incorporated into the model accordingly.
 
@@ -179,7 +179,7 @@ A transaction recorded in a hill rural zone with limited
 merchants may be far more uniquely identifying than an
 identical transaction recorded in the Kathmandu valley,
 simply because there are fewer possible users that
-transaction could belong to. This thesis incorporates
+transaction could belong to. This work incorporates
 transaction zone as a Nepal-specific attribute in its
 model for precisely this reason.
 
@@ -210,7 +210,7 @@ provides the permissioned identity management and
 chaincode-based transaction processing capabilities
 required for a regulated financial system.
 
-This thesis models the privacy risk specifically within
+This work models the privacy risk specifically within
 the context of a Hyperledger Fabric-based token CBDC
 under NRB's domestic jurisdiction. Cross-border
 remittances, while significant to Nepal's economy,
@@ -223,7 +223,7 @@ domestic model.
 \label{sec:problem}
 % ================================================================
 
-The problem this thesis addresses can be stated plainly:
+The problem this work addresses can be stated plainly:
 when a CBDC transaction is recorded on a digital ledger,
 it leaves behind a set of observable metadata fields.
 These fields, the amount, the time, the merchant, the
@@ -297,7 +297,7 @@ than hash-based tokens. These statements are directionally
 correct but provide no quantitative basis for decision-making.
 
 A policymaker at NRB considering whether to deploy Ring
-Signature tokens or ZKP tokens cannot currently answer
+Signature tokens or Zero-Knowledge Proof tokens cannot currently answer
 questions such as:
 
 \begin{itemize}
@@ -326,7 +326,7 @@ privacy, such as implementation cost or familiarity,
 with no formal basis for claiming that the chosen
 scheme provides adequate privacy protection.
 
-This thesis provides the mathematical framework,
+This work provides the mathematical framework,
 the implementation, and the empirical analysis required
 to answer all of these questions with specific numbers.
 
@@ -335,7 +335,7 @@ to answer all of these questions with specific numbers.
 \label{sec:research_question}
 % ================================================================
 
-The central research question motivating this thesis is:
+The central research question motivating this work is:
 
 \vspace{0.5em}
 \begin{center}
@@ -354,7 +354,7 @@ research questions that structure the analysis:
 \item \textbf{Scheme comparison.} Across six
 cryptographic schemes: Plain Hash Token, Blind
     Signature, Hybrid Scheme, Ring Signature, Stealth
-    Address, and ZKP Token, what are the relative
+    Address, and Zero-Knowledge Proof Token, what are the relative
     metadata privacy risk levels at a baseline population
     of $N = 1{,}000$ users?
 
@@ -394,59 +394,53 @@ Chapter~\ref{ch:results}.
 \label{sec:objectives}
 % ================================================================
 
-The overarching objective of this thesis is to develop a
+The overarching objective of this work is to develop a
 formal, quantitative framework for measuring metadata
 de-anonymization risk in token-based CBDC systems and to
 apply that framework in Nepal's specific deployment context.
 This overarching objective is broken down into five concrete
 objectives that together define the scope and contribution
-of the work.
+of the work:
 
-The first objective is to derive a normalised privacy risk
-metric from mathematical first principles. This metric,
-denoted $R_{\mathrm{norm}}$, must be bounded in the interval
-$[0, 1]$, must be comparable across different numbers of
-attributes and different population sizes, and must have a
-proven theoretical upper bound that gives the normalisation
-its meaning. Achieving this requires deriving both the
-raw risk accumulation formula and the theoretical maximum
-against which it is normalised.
+\begin{enumerate}
+\item Derive a normalised privacy risk metric from mathematical first
+principles. This metric, denoted $R_{\mathrm{norm}}$, must be bounded
+in the interval $[0, 1]$, must be comparable across different numbers
+of attributes and different population sizes, and must have a proven
+theoretical upper bound that gives the normalisation its meaning.
+Achieving this requires deriving both the raw risk accumulation
+formula and the theoretical maximum against which it is normalised.
 
-The second objective is to model six cryptographic schemes
-that represent the realistic spectrum of token-based CBDC
-privacy designs. Specifically, these schemes are Plain Hash Token, Blind
-Signature, Hybrid Scheme, Ring Signature, Stealth Address,
-and ZKP Token, which span from the weakest to the strongest
-available privacy guarantees. Each scheme must be modelled
-in terms of how it transforms the value domain of each
-observable metadata attribute, so that differences in
-$R_{\mathrm{norm}}$ across schemes reflect genuine
-cryptographic design differences rather than arbitrary
-parameter choices.
+\item Model six cryptographic schemes that represent the realistic
+spectrum of token-based CBDC privacy designs. Specifically, these
+schemes are Plain Hash Token, Blind Signature, Hybrid Scheme, Ring
+Signature, Stealth Address, and Zero-Knowledge Proof Token, which span from the weakest
+to the strongest available privacy guarantees. Each scheme must be
+modelled in terms of how it transforms the value domain of each
+observable metadata attribute, so that differences in $R_{\mathrm{norm}}$
+across schemes reflect genuine cryptographic design differences rather
+than arbitrary parameter choices.
 
-The third objective is to incorporate Nepal-specific context
-into the model. This means identifying the metadata
-attributes most relevant to Nepal's domestic CBDC deployment,
-grounding their value distributions in Nepal's payment
-infrastructure and geographic structure, and formally
-justifying the exclusion of attributes outside the domestic
-scope.
+\item Incorporate Nepal-specific context into the model. This means
+identifying the metadata attributes most relevant to Nepal's domestic
+CBDC deployment, grounding their value distributions in Nepal's payment
+infrastructure and geographic structure, and formally justifying the
+exclusion of attributes outside the domestic scope.
 
-The fourth objective is to conduct a comprehensive empirical
-analysis covering eight distinct experimental conditions:
-baseline scheme comparison, population scalability from
-village pilot to national scale, mitigation strategy
+\item Conduct a comprehensive empirical analysis covering eight distinct
+experimental conditions: baseline scheme comparison, population
+scalability from village pilot to national scale, mitigation strategy
 effectiveness, attribute sensitivity as the number of modelled
-attributes grows, statistical robustness across multiple
-random seeds, micro-scale behaviour at very small populations,
-sensitivity of results to the interaction coefficient, and
-worst-case scenario calibration against the theoretical
-maximum.
+attributes grows, statistical robustness across multiple random seeds,
+micro-scale behaviour at very small populations, sensitivity of results
+to the interaction coefficient, and worst-case scenario calibration
+against the theoretical maximum.
 
-The fifth objective is to translate the quantitative findings
-into actionable policy recommendations for the Nepal Rastra
-Bank, providing a formal basis for cryptographic scheme
-selection that can inform NRB's CBDC deployment decision.
+\item Translate the quantitative findings into actionable policy
+recommendations for the Nepal Rastra Bank, providing a formal basis
+for cryptographic scheme selection that can inform NRB's CBDC
+deployment decision.
+\end{enumerate}
 
 % ================================================================
 \section{Scope and Limitations}
@@ -456,12 +450,12 @@ selection that can inform NRB's CBDC deployment decision.
 Every research model operates within a defined boundary.
 Being explicit about that boundary is not a weakness, it
 is a requirement for honest and reproducible science. This
-section defines what this thesis does and does not cover,
+section defines what this work does and does not cover,
 and why each boundary was drawn where it was.
 
 \subsection{Scope}
 
-This thesis models a domestic, token-based CBDC under the
+This work models a domestic, token-based CBDC under the
 jurisdiction of the Nepal Rastra Bank. The reference
 deployment platform is Hyperledger Fabric, a permissioned
 enterprise blockchain framework. The model operates on
@@ -538,27 +532,27 @@ does not model dynamic user entry and exit.
 The significance of this work operates at three levels:
 academic, policy, and societal.
 
-At the academic level, this thesis makes a contribution
+At the academic level, this work makes a contribution
 to the formal privacy measurement literature by introducing
 a normalised metric specifically designed for the CBDC
 metadata context. Specifically, existing privacy frameworks (k-anonymity,
 l-diversity, and differential privacy) were not developed
 with CBDC metadata in mind and do not directly address the
-multi-scheme comparison problem this thesis solves.
+multi-scheme comparison problem this work solves.
 The derivation of $R_{\mathrm{max}}(m) = m + \binom{m}{2}$
 as a proven theoretical upper bound, and the use of this
 bound to produce a scale-independent normalised score,
 represents a formal contribution that extends the existing
 privacy measurement literature into a new application domain.
 
-At the policy level, this thesis provides the Nepal Rastra
+At the policy level, this work provides the Nepal Rastra
 Bank with the first quantitative tool for comparing CBDC
 cryptographic schemes on the basis of metadata privacy risk.
 Prior to this work, any comparison between schemes relied
-on qualitative judgement. This thesis replaces that
+on qualitative judgement. This work replaces that
 judgement with specific numbers: $R_{\mathrm{norm}} = 0.317$
 for Plain Hash Token and $R_{\mathrm{norm}} = 0.035$ for
-ZKP Token at $N = 1{,}000$, with the full risk ladder,
+Zero-Knowledge Proof Token at $N = 1{,}000$, with the full risk ladder,
 mitigation effectiveness data, and population scalability
 curves available for any deployment scenario NRB wishes
 to evaluate.
@@ -570,9 +564,9 @@ that will be entering the digital financial system for
 the first time, and a geographic structure that makes
 certain communities particularly vulnerable to
 re-identification from transaction metadata. The
-micro-scale analysis in this thesis demonstrates that
+micro-scale analysis in this work demonstrates that
 at a village pilot scale of $N = 50$ users, all schemes
-except ZKP Token produce $R_{\mathrm{norm}} > 0.48$,
+except Zero-Knowledge Proof Token produce $R_{\mathrm{norm}} > 0.48$,
 meaning nearly half of pilot participants are potentially
 re-identifiable from their transaction metadata alone.
 This finding has direct implications for how NRB should
@@ -584,7 +578,7 @@ developing economies share Nepal's characteristics, including
 mobile-first infrastructure, geographic stratification,
 high remittance dependency, and a large unbanked population
 entering the digital economy. The framework developed in
-this thesis is generalizable beyond Nepal. Any central bank
+this work is generalizable beyond Nepal. Any central bank
 facing similar deployment conditions can substitute their
 own attribute set and population parameters into the model
 and obtain equivalent analysis. This positions the work
@@ -611,7 +605,7 @@ defines the research questions and objectives, and
 honestly states the scope and limitations of the work.
 
 Chapter~\ref{ch:literature} reviews the existing body of
-knowledge relevant to this thesis. It covers the global
+knowledge relevant to this work. It covers the global
 CBDC landscape, the concept of privacy in digital payment
 systems, the cryptographic schemes evaluated in this work,
 known de-anonymization attacks including the foundational
@@ -619,7 +613,7 @@ Netflix attack, existing formal privacy measurement
 frameworks and their limitations, and the role of
 Hyperledger Fabric as the reference platform. The chapter
 concludes by identifying the specific research gap that
-this thesis fills.
+this work fills.
 
 Chapter~\ref{ch:methodology} presents the complete
 theoretical framework and implementation. It defines the
@@ -642,6 +636,6 @@ worst-case calibration.
 Chapter~\ref{ch:conclusions} synthesises the findings,
 provides direct answers to the research questions stated
 in this chapter, summarises the contributions of the
-thesis, makes specific recommendations to the Nepal
+the work, makes specific recommendations to the Nepal
 Rastra Bank, and identifies directions for future work
 that extend or build upon this model.
