@@ -22,7 +22,7 @@ Bank Digital Currency, or CBDC.
 
 A CBDC is a digital form of a country's official currency,
 issued and backed by the central bank, just as physical
-banknotes are. Unlike private digital payment platforms such
+banknotes. Unlike private digital payment platforms such
 as eSewa or Khalti, a CBDC is legal tender, it carries the
 full authority of the government and the central bank behind
 it. Unlike cryptocurrencies such as Bitcoin or Ethereum, a
@@ -86,7 +86,7 @@ have not yet been formally studied, and that is precisely the
 gap this work addresses.
 
 % ================================================================
-\section{Nepal Context}
+\section{In Context of Nepal}
 \label{sec:nepal_context}
 % ================================================================
 
@@ -122,8 +122,7 @@ inclusion may also bear the greatest privacy risk.
 
 \subsection{Mobile-First Payment Infrastructure}
 
-Nepal's digital payment ecosystem has developed rapidly and
-is predominantly mobile-first. eSewa and Khalti, Nepal's two
+Nepal's digital payment ecosystem has developed rapidly. The platforms like eSewa and Khalti, Nepal's two
 dominant digital wallet platforms, together process the
 majority of digital transactions in the country. QR code
 payments have been adopted widely at merchants ranging from
@@ -137,7 +136,7 @@ the payment channel, whether a transaction was made via
 mobile wallet, QR code, NFC, or offline token, is a
 metadata field that is observable at the network level. As
 this work will demonstrate, this attribute is relevant to
-privacy risk modelling in Nepal's specific context and has
+privacy risk modeling in Nepal's specific context and has
 been incorporated into the model accordingly.
 
 \subsection{Geographic Stratification}
@@ -290,7 +289,7 @@ Despite the significance of this problem, no formal
 quantitative framework exists for measuring metadata
 de-anonymization risk across different CBDC cryptographic
 scheme choices. Existing comparisons between schemes are
-qualitative: researchers and policymakers say that ring
+qualitative, researchers and policymakers say that ring
 signatures provide more privacy than blind signatures,
 or that zero-knowledge proofs provide stronger guarantees
 than hash-based tokens. These statements are directionally
@@ -298,7 +297,7 @@ correct but provide no quantitative basis for decision-making.
 
 A policymaker at NRB considering whether to deploy Ring
 Signature tokens or Zero-Knowledge Proof tokens cannot currently answer
-questions such as:
+questions such as,
 
 \begin{itemize}
     \item How much more privacy does Ring Signature
@@ -335,7 +334,7 @@ to answer all of these questions with specific numbers.
 \label{sec:research_question}
 % ================================================================
 
-The central research question motivating this work is:
+The central research question motivating this work is,
 
 \vspace{0.5em}
 \begin{center}
@@ -347,12 +346,12 @@ common quantitative scale?}
 \vspace{0.5em}
 
 This primary question gives rise to four secondary
-research questions that structure the analysis:
+research questions that structure the analysis,
 
 \begin{enumerate}
 
 \item \textbf{Scheme comparison.} Across six
-cryptographic schemes: Plain Hash Token, Blind
+cryptographic schemes, Plain Hash Token, Blind
     Signature, Hybrid Scheme, Ring Signature, Stealth
     Address, and Zero-Knowledge Proof Token, what are the relative
     metadata privacy risk levels at a baseline population
@@ -367,14 +366,14 @@ cryptographic schemes: Plain Hash Token, Blind
 
 \item \textbf{Mitigation effectiveness.} How
 effectively do privacy-enhancing technical
-mitigations: differential privacy on amounts,
+mitigations, differential privacy on amounts,
     timestamp suppression, wallet unlinkability, and
-    Nepal-specific controls: reduce the risk score
+    Nepal-specific controls, reduce the risk score
     of each scheme, and which mitigations provide the
     greatest return?
 
     \item \textbf{Nepal-specific context.} How do
-    Nepal-specific metadata attributes: payment
+    Nepal-specific metadata attributes, payment
     channel and transaction zone, affect the risk
     model, and what does the model reveal about the
     privacy implications of Nepal's specific demographic
@@ -385,9 +384,9 @@ mitigations: differential privacy on amounts,
 These questions are answered through the development
 and application of a formal mathematical model whose
 design, derivation, and implementation are described
-in detail in Chapter~\ref{ch:methodology}, and whose
+in detail in Chapter~\ref{ch,methodology}, and whose
 results are presented and discussed in
-Chapter~\ref{ch:results}.
+Chapter~\ref{ch,results}.
 
 % ================================================================
 \section{Research Objectives}
@@ -400,7 +399,7 @@ de-anonymization risk in token-based CBDC systems and to
 apply that framework in Nepal's specific deployment context.
 This overarching objective is broken down into five concrete
 objectives that together define the scope and contribution
-of the work:
+of the work,
 
 \begin{enumerate}
 \item Derive a normalised privacy risk metric from mathematical first
@@ -416,7 +415,7 @@ spectrum of token-based CBDC privacy designs. Specifically, these
 schemes are Plain Hash Token, Blind Signature, Hybrid Scheme, Ring
 Signature, Stealth Address, and Zero-Knowledge Proof Token, which span from the weakest
 to the strongest available privacy guarantees. Each scheme must be
-modelled in terms of how it transforms the value domain of each
+modeled in terms of how it transforms the value domain of each
 observable metadata attribute, so that differences in $R_{\mathrm{norm}}$
 across schemes reflect genuine cryptographic design differences rather
 than arbitrary parameter choices.
@@ -428,9 +427,9 @@ infrastructure and geographic structure, and formally justifying the
 exclusion of attributes outside the domestic scope.
 
 \item Conduct a comprehensive empirical analysis covering eight distinct
-experimental conditions: baseline scheme comparison, population
+experimental conditions, baseline scheme comparison, population
 scalability from village pilot to national scale, mitigation strategy
-effectiveness, attribute sensitivity as the number of modelled
+effectiveness, attribute sensitivity as the number of modeled
 attributes grows, statistical robustness across multiple random seeds,
 micro-scale behaviour at very small populations, sensitivity of results
 to the interaction coefficient, and worst-case scenario calibration
@@ -463,7 +462,7 @@ transaction metadata, specifically the observable fields associated
 with a completed transaction, and measures the risk that
 this metadata can be used to re-identify users.
 
-The model covers seven metadata attributes: transaction
+The model covers seven metadata attributes, transaction
 amount, timestamp, merchant identifier, wallet address,
 transaction frequency, payment channel, and transaction
 zone. These seven attributes correspond to fields that would
@@ -497,7 +496,7 @@ and explicitly excluded on these grounds.
 \textbf{Pairwise interactions only.} The model captures
 interaction effects between pairs of attributes. Higher-order
 interactions (triplets, quadruplets, and beyond) are
-not modelled. For most practical deployment scenarios,
+not modeled. For most practical deployment scenarios,
 pairwise interactions capture the dominant amplification
 effects. However, in datasets with strong higher-order
 correlations, the model may underestimate total risk.
@@ -520,7 +519,7 @@ and represents a direction for future work.
 \textbf{Static population.} The model assumes a fixed
 population of $N$ users. In practice, a CBDC user base
 grows over time as adoption increases. The scalability
-analysis in Chapter~\ref{ch:results} partially addresses
+analysis in Chapter~\ref{ch,results} partially addresses
 this by testing across a wide range of $N$ values, but
 does not model dynamic user entry and exit.
 
@@ -529,7 +528,7 @@ does not model dynamic user entry and exit.
 \label{sec:significance}
 % ================================================================
 
-The significance of this work operates at three levels:
+The significance of this work operates at three levels,
 academic, policy, and societal.
 
 At the academic level, this work makes a contribution
@@ -550,7 +549,7 @@ Bank with the first quantitative tool for comparing CBDC
 cryptographic schemes on the basis of metadata privacy risk.
 Prior to this work, any comparison between schemes relied
 on qualitative judgement. This work replaces that
-judgement with specific numbers: $R_{\mathrm{norm}} = 0.317$
+judgement with specific numbers, $R_{\mathrm{norm}} = 0.317$
 for Plain Hash Token and $R_{\mathrm{norm}} = 0.035$ for
 Zero-Knowledge Proof Token at $N = 1{,}000$, with the full risk ladder,
 mitigation effectiveness data, and population scalability
@@ -597,14 +596,14 @@ This report is organised into five chapters, each building
 on the previous to construct a complete argument from
 problem identification through to policy recommendation.
 
-Chapter~\ref{ch:introduction}, the present chapter,
+Chapter~\ref{ch,introduction}, the present chapter,
 establishes the background, context, and motivation for
 the research. It introduces the CBDC privacy problem,
 situates it within Nepal's specific deployment context,
 defines the research questions and objectives, and
 honestly states the scope and limitations of the work.
 
-Chapter~\ref{ch:literature} reviews the existing body of
+Chapter~\ref{ch,literature} reviews the existing body of
 knowledge relevant to this work. It covers the global
 CBDC landscape, the concept of privacy in digital payment
 systems, the cryptographic schemes evaluated in this work,
@@ -615,7 +614,7 @@ Hyperledger Fabric as the reference platform. The chapter
 concludes by identifying the specific research gap that
 this work fills.
 
-Chapter~\ref{ch:methodology} presents the complete
+Chapter~\ref{ch,methodology} presents the complete
 theoretical framework and implementation. It defines the
 system model and adversary model, derives the mathematical
 components of the risk metric from first principles,
@@ -624,7 +623,7 @@ transformations, justifies the Nepal-specific attribute
 set, and documents the synthetic data generation approach
 and Python implementation.
 
-Chapter~\ref{ch:results} presents and discusses the
+Chapter~\ref{ch,results} presents and discusses the
 results of eight analyses. Each analysis is presented
 with its motivating question, methodology, results, and
 interpretation. The chapter covers baseline scheme
@@ -633,7 +632,7 @@ effectiveness, attribute sensitivity, seed sensitivity,
 micro-scale pilot behaviour, lambda sensitivity, and
 worst-case calibration.
 
-Chapter~\ref{ch:conclusions} synthesises the findings,
+Chapter~\ref{ch,conclusions} synthesises the findings,
 provides direct answers to the research questions stated
 in this chapter, summarises the contributions of the
 the work, makes specific recommendations to the Nepal
