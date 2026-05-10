@@ -290,11 +290,11 @@ Consider a population of $N = 5$ users and the attribute
 \toprule
 \textbf{User} & \textbf{Zone} & \textbf{Unique?} \\
 \midrule
-Alice  & Kathmandu valley & No, shared with Carol, Eve \\
-Bob    & Hill rural       & Yes, sole occupant \\
-Carol  & Kathmandu valley & No, shared with Alice, Eve \\
-David  & Terai urban      & Yes, sole occupant \\
-Eve    & Kathmandu valley & No, shared with Alice, Carol \\
+User1 & Kathmandu valley & No \\
+User2 & Hill-Rural         & Yes \\
+User3 & Kathmandu valley   & No \\
+User4 & Terai-Urban        & Yes \\
+User5 & Kathmandu valley   & No \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -303,8 +303,8 @@ $\sum \mathbb{I}_i(u) = 0 + 1 + 0 + 1 + 0 = 2$
 
 $s(\text{zone}) = 2/5 = 0.400$
 
-Bob and David are uniquely identifiable from zone alone.
-Alice, Carol, and Eve are protected by sharing the
+User2 and User4 are uniquely identifiable from zone alone.
+User1, User3, and User5 are protected by sharing the
 Kathmandu valley value. $s = 0.400$ means 40\% of this
 population is exposed by this attribute.
 
@@ -385,7 +385,7 @@ The three cases of $\lambda_{ij}$ have clear interpretations,
 
 \subsection{Special Case Zero Denominator}
 When $s(a_i) = 0$ or $s(a_j) = 0$, the denominator of
-Equation~\ref{eq:lambda} is zero and $\lambda_{ij}$ is
+(3.4) is zero and $\lambda_{ij}$ is
 undefined. By convention, $\lambda_{ij} = 0$ in this case.
 
 This convention is justified by examining the contribution
@@ -444,23 +444,23 @@ Extending the five-user example, add a second attribute
 \begin{tabular}{lllll}
 \toprule
 \textbf{User} & \textbf{Zone} & \textbf{Channel} &
-\textbf{Pair} & \textbf{Joint unique?} \\
+\textbf{Pair} & \textbf{Unique?} \\
 \midrule
-Alice  & Kathmandu & Mobile & (KTM, Mob) & No --- Eve same \\
-Bob    & Hill rural & Mobile & (HR, Mob)  & Yes \\
-Carol  & Kathmandu & QR     & (KTM, QR)  & Yes \\
-David  & Terai urb & Mobile & (TU, Mob)  & Yes \\
-Eve    & Kathmandu & Mobile & (KTM, Mob) & No --- Alice same \\
+User1 & Kathmandu       & Mobile & (Kathmandu, Mobile)   & No \\
+User2 & Hill-Rural     & Mobile & (Hill-Rural, Mobile)  & Yes \\
+User3 & Kathmandu       & QR     & (Kathmandu, QR)        & Yes \\
+User4 & Terai-Urban    & Mobile & (Terai-Urban, Mobile) & Yes \\
+User5 & Kathmandu       & Mobile & (Kathmandu, Mobile)   & No \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 From the earlier example, $s(\text{zone}) = 0.400$,
-$s(\text{channel}) = 1/5 = 0.200$ (Carol is the only
+$s(\text{channel}) = 1/5 = 0.200$ (User3 is the only
 QR user).
 
 $s(\text{zone, channel}) = 3/5 = 0.600$
-(Bob, Carol, David are jointly unique).
+(User2, User3, User4 are jointly unique).
 
 \begin{equation*}
 \lambda_{\text{zone,channel}} =
@@ -469,7 +469,7 @@ $s(\text{zone, channel}) = 3/5 = 0.600$
 \end{equation*}
 
 The combination is 7.5 times more identifying than
-independence predicts. Carol was protected on zone alone
+independence predicts. User3 was protected on zone alone
 (shared Kathmandu) but exposed by the combination
 (sole Kathmandu QR user). This 7.5$\times$ amplification
 is the core of the pairwise interaction effect.
@@ -571,7 +571,7 @@ and amount. The remaining 19 pairs contribute little.
 \subsection{Python Implementation}
 
 The \texttt{R\_raw} function in the implementation
-directly maps to Equation~\ref{eq:r_raw},
+directly maps to (3.8),
 
 \begin{lstlisting}
 def R_raw(s, lmat, attrs),
@@ -584,7 +584,7 @@ def R_raw(s, lmat, attrs),
 The \texttt{combinations(attrs, 2)} call from Python's
 \texttt{itertools} library automatically generates all
 $\binom{m}{2}$ pairs with $j > i$, exactly matching the
-double sum in Equation~\ref{eq:r_raw}.
+double sum in (3.8).
 
 % ================================================================
 \section{Theoretical Maximum \texorpdfstring{$R_{\mathrm{max}}$}{R\_max}}
@@ -593,7 +593,7 @@ double sum in Equation~\ref{eq:r_raw}.
 
 \subsection{Motivation}
 
-$\Rraw$ as defined in Equation~\ref{eq:r_raw} is an
+$\Rraw$ as defined in (3.8) is an
 un-normalised quantity. Its value depends on $m$, with
 more attributes, more terms accumulate and $\Rraw$ grows.
 A value of $\Rraw = 8.886$ for Plain Hash Token with
@@ -610,7 +610,7 @@ core contribution of this work.
 \subsection{Worst-Case Conditions}
 
 $\Rraw$ is maximised when every term in
-Equation~\ref{eq:r_raw} simultaneously reaches its
+(3.8) simultaneously reaches its
 maximum value. Two conditions must hold jointly,
 
 \textbf{Condition 1,} $s(a_i) = 1$ for all $i = 1,
@@ -635,7 +635,7 @@ This may appear counterintuitive, surely $\lambda_{ij}
 > 1$ would give larger pair terms? The answer is no,
 because of the bound on $s(a_i, a_j)$.
 
-From Equation~\ref{eq:pair_term}, each pair term equals
+From (3.9), each pair term equals
 $s(a_i, a_j)$, which is a fraction of users and
 therefore bounded above by 1. When $s(a_i) = s(a_j) = 1$,
 setting $\lambda_{ij} = 1$ gives $s(a_i, a_j) = 1$,
@@ -714,7 +714,7 @@ its maximum-case value of 1.
 For individual terms, $s(a_i) \leq 1$ for all $i$,
 since $s(a_i)$ is a fraction of users.
 
-For pair terms, from Equation~\ref{eq:pair_term},
+For pair terms, from (3.9),
 each pair term equals $s(a_i, a_j)$. Since
 $s(a_i, a_j)$ is a fraction of users,
 $s(a_i, a_j) \leq 1$ for all pairs.
@@ -1394,7 +1394,7 @@ def pipeline(df, attrs),
 
 This function, (1) computes $s(a_i)$ for all $m$ attributes;
 (2) computes $\lambda_{ij}$ for all $\binom{m}{2}$ pairs;
-(3) accumulates $\Rraw$ using Equation~\ref{eq:r_raw};
+(3) accumulates $\Rraw$ using (3.8);
 (4) normalises to produce $\Rnorm$.
 
 \subsection{Software Environment}
