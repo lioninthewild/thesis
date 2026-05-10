@@ -278,7 +278,7 @@ the deployment population. In a small hill rural VDC in
 Nepal with limited merchants and low transaction frequency,
 the anonymity set for any individual transaction is
 dramatically smaller than in a dense urban environment. The
-micro-scale analysis in Chapter~\ref{ch,results} quantifies
+micro-scale analysis in Chapter~\ref{ch:results} quantifies
 this risk precisely.
 
 % ================================================================
@@ -347,7 +347,7 @@ the guarantee. Differential privacy is enforced by adding
 calibrated noise to query outputs. In the CBDC context,
 differential privacy on transaction amounts, implemented
 by adding noise to the recorded amount, is one of the
-mitigation strategies evaluated in Chapter~\ref{ch,results}.
+mitigation strategies evaluated in Chapter~\ref{ch:results}.
 The model in this work measures the effect of such
 mitigation by applying a multiplier to $s(a_i)$, which
 simulates the reduction in attribute uniqueness that noise
@@ -436,7 +436,7 @@ problem exists at a different level, it concerns what other
 channel participants, insiders with partial access, and
 adversaries who obtain the transaction log without the
 identity mapping can infer from the observable metadata
-alone. As argued in Chapter~\ref{ch,introduction}, this
+alone. As argued in Chapter~\ref{ch:introduction}, this
 is a real and consequential threat that the permissioned
 identity model does not resolve.
 
@@ -446,13 +446,12 @@ identity model does not resolve.
 % ================================================================
 
 The literature reviewed in this chapter reveals a consistent
-and specific gap. Table~\ref{tab,gap} summarises the coverage
+and specific gap. Table~\ref{tab:gap} summarises the coverage
 of existing work across the dimensions most relevant to this
 
 
-\begin{table}[H]
-\centering
-\caption{Summary of existing work and coverage gaps}
+\begin{table}[tbp]
+\caption{Summary of existing work and coverage gaps.}%
 \label{tab:gap}
 \begin{tabular}{lcccc}
 \toprule
@@ -462,17 +461,18 @@ of existing work across the dimensions most relevant to this
 \textbf{Normalised} &
 \textbf{CBDC-specific} \\
 \midrule
-Sweeney (2002)            & Yes & No  & No  & No  \\
-Dwork (2006)              & Yes & No  & No  & No  \\
-Machanavajjhala (2007)    & Yes & No  & No  & No  \\
-Narayanan \& Shmatikoff (2008) & No & No & No & No \\
-Koshy et al. (2014)       & No  & No  & No  & No  \\
-Bhattacharya et al. (2020)& Partial & No & No & No \\
-Morales-Resendiz (2021)   & No  & No  & No  & Yes \\
-BIS CGIDE (2024)          & No  & No  & No  & Yes \\
-\textbf{This work}      & \textbf{Yes} & \textbf{Yes} &
+\cite{biscgide2024}        & Yes      & No      & No  & Yes  \\
+\cite{moralesresendiz2021}  & No       & No      & No  & Yes  \\
+\cite{garratt2020}          & No       & No      & No  & No   \\
+\cite{koshy2014}           & No       & No      & No  & No   \\
+\cite{chaum1983}           & No       & No      & No  & No   \\
+\cite{asghar2011}          & No       & No      & No  & No   \\
+\cite{vansaberhagen2013}   & No       & No      & No  & No   \\
+\cite{noether2015}         & No       & No      & No  & No   \\
+\textbf{This work}          & \textbf{Yes} & \textbf{Yes} &
 \textbf{Yes} & \textbf{Yes} \\
 \bottomrule
+\addlinespace
 \end{tabular}
 \end{table}
 
