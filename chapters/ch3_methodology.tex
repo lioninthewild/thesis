@@ -43,7 +43,7 @@ a small village pilot to a national deployment.
 Each transaction in the CBDC system is associated with a
 set of $m$ observable metadata attributes. Formally, each
 attribute $a_i$ is a function that maps every user in $U$
-to a value in a domain $V_i$:
+to a value in a domain $V_i$,
 
 \begin{equation}
 a_i : U \rightarrow V_i \quad \text{for } i = 1, 2, \ldots, m
@@ -52,7 +52,7 @@ a_i : U \rightarrow V_i \quad \text{for } i = 1, 2, \ldots, m
 
 The value domain $V_i$ is the complete set of all possible
 values that attribute $a_i$ can take. The nature of $V_i$
-depends on the attribute:
+depends on the attribute,
 
 \begin{itemize}
     \item For \textit{amount}, $V_i \subset \mathbb{R}^+$,
@@ -108,7 +108,7 @@ identity.
 
 The adversary is modeled as a \textit{passive,
 honest-but-curious observer}. This is a standard adversary
-model in cryptographic privacy literature. The adversary:
+model in cryptographic privacy literature. The adversary,
 
 \begin{itemize}
     \item \textbf{Observes} all $m$ metadata fields for
@@ -203,7 +203,7 @@ fraction of users in the population who are uniquely
 identifiable from attribute $a_i$ alone.
 
 A user $u$ is \textit{unique} on attribute $a_i$ if no
-other user in $U$ shares the same attribute value:
+other user in $U$ shares the same attribute value,
 
 \begin{equation}
 \mathbb{I}_i(u) =
@@ -217,7 +217,7 @@ other user in $U$ shares the same attribute value:
 The indicator function $\mathbb{I}_i(u)$ equals 1 if and
 only if user $u$ is the sole occupant of their attribute
 value, no other user shares it. The uniqueness score is
-then the population-weighted average of this indicator:
+then the population-weighted average of this indicator,
 
 \begin{equation}
 s(a_i) = \frac{1}{N} \sum_{u \in U} \mathbb{I}_i(u)
@@ -263,7 +263,7 @@ are protected from single-attribute identification.
 
 The single-attribute uniqueness score connects formally
 to the k-anonymity framework introduced by Sweeney
-\citeyear{sweeney2002}. A user satisfies k-anonymity
+\cite{sweeney2002}. A user satisfies k-anonymity
 on attribute $a_i$ with $k \geq 2$ if they share their
 attribute value with at least $k-1$ other users. A user
 who is unique, $k=1$, has zero k-anonymity protection
@@ -323,7 +323,7 @@ unique, they are fully identifiable from the pair
 identifiable from the pair of attributes even though
 neither attribute exposes them individually. This is the
 attribute combination effect demonstrated empirically by
-Narayanan and Shmatikoff \citeyear{narayanan2008} in the
+Narayanan and Shmatikoff \cite{narayanan2008} in the
 Netflix de-anonymization study. The pairwise interaction
 coefficient $\lambda_{ij}$ formally captures this
 amplification.
@@ -385,7 +385,7 @@ The three cases of $\lambda_{ij}$ have clear interpretations,
 
 \subsection{Special Case Zero Denominator}
 When $s(a_i) = 0$ or $s(a_j) = 0$, the denominator of
-Equation~\ref{eq,lambda} is zero and $\lambda_{ij}$ is
+Equation~\ref{eq:lambda} is zero and $\lambda_{ij}$ is
 undefined. By convention, $\lambda_{ij} = 0$ in this case.
 
 This convention is justified by examining the contribution
@@ -429,7 +429,7 @@ $\lambda_{ij} = \lambda_{ji}$.
 
 This symmetry means the interaction matrix
 $\Lambda = [\lambda_{ij}]$ is symmetric. In the
-$\lambda_{ij}$ heatmaps in Chapter~\ref{ch,results},
+$\lambda_{ij}$ heatmaps in Chapter~\ref{ch:results},
 the matrix is visually symmetric across the diagonal.
 
 \subsection{Worked Example}
@@ -571,7 +571,7 @@ and amount. The remaining 19 pairs contribute little.
 \subsection{Python Implementation}
 
 The \texttt{R\_raw} function in the implementation
-directly maps to Equation~\ref{eq,r_raw},
+directly maps to Equation~\ref{eq:r_raw},
 
 \begin{lstlisting}
 def R_raw(s, lmat, attrs),
@@ -584,7 +584,7 @@ def R_raw(s, lmat, attrs),
 The \texttt{combinations(attrs, 2)} call from Python's
 \texttt{itertools} library automatically generates all
 $\binom{m}{2}$ pairs with $j > i$, exactly matching the
-double sum in Equation~\ref{eq,r_raw}.
+double sum in Equation~\ref{eq:r_raw}.
 
 % ================================================================
 \section{Theoretical Maximum \texorpdfstring{$R_{\mathrm{max}}$}{R\_max}}
@@ -593,7 +593,7 @@ double sum in Equation~\ref{eq,r_raw}.
 
 \subsection{Motivation}
 
-$\Rraw$ as defined in Equation~\ref{eq,r_raw} is an
+$\Rraw$ as defined in Equation~\ref{eq:r_raw} is an
 un-normalised quantity. Its value depends on $m$, with
 more attributes, more terms accumulate and $\Rraw$ grows.
 A value of $\Rraw = 8.886$ for Plain Hash Token with
@@ -610,7 +610,7 @@ core contribution of this work.
 \subsection{Worst-Case Conditions}
 
 $\Rraw$ is maximised when every term in
-Equation~\ref{eq,r_raw} simultaneously reaches its
+Equation~\ref{eq:r_raw} simultaneously reaches its
 maximum value. Two conditions must hold jointly,
 
 \textbf{Condition 1,} $s(a_i) = 1$ for all $i = 1,
@@ -635,7 +635,7 @@ This may appear counterintuitive, surely $\lambda_{ij}
 > 1$ would give larger pair terms? The answer is no,
 because of the bound on $s(a_i, a_j)$.
 
-From Equation~\ref{eq,pair_term}, each pair term equals
+From Equation~\ref{eq:pair_term}, each pair term equals
 $s(a_i, a_j)$, which is a fraction of users and
 therefore bounded above by 1. When $s(a_i) = s(a_j) = 1$,
 setting $\lambda_{ij} = 1$ gives $s(a_i, a_j) = 1$,
@@ -714,7 +714,7 @@ its maximum-case value of 1.
 For individual terms, $s(a_i) \leq 1$ for all $i$,
 since $s(a_i)$ is a fraction of users.
 
-For pair terms, from Equation~\ref{eq,pair_term},
+For pair terms, from Equation~\ref{eq:pair_term},
 each pair term equals $s(a_i, a_j)$. Since
 $s(a_i, a_j)$ is a fraction of users,
 $s(a_i, a_j) \leq 1$ for all pairs.
@@ -755,7 +755,7 @@ for any $m$, $N$, and cryptographic scheme.
 $R_{\mathrm{norm}} \in [0, 1]$.
 
 This follows directly from the theorem in
-Section~\ref{sec,r_max}, $0 \leq \Rraw
+Section~\ref{sec:r_max}, $0 \leq \Rraw
 \leq R_{\mathrm{max}}$, and dividing by $R_{\mathrm{max}}
 > 0$ preserves the bounds.
 
@@ -786,7 +786,7 @@ structure. A model with $m = 5$ attributes and
 a model with $m = 7$ attributes can be compared
 on $R_{\mathrm{norm}}$ without adjustment. This
 property makes the m-sensitivity analysis in
-Chapter~\ref{ch,results} formally valid.
+Chapter~\ref{ch:results} formally valid.
 
 \textbf{Property 5, Monotonicity},
 $R_{\mathrm{norm}}$ is non-decreasing in each
@@ -825,7 +825,7 @@ are also substantial.
 
 \subsection{Interpretation Guide}
 
-Table~\ref{tab,r_norm_interp} provides a practical
+Table~\ref{tab:r_norm_interp} provides a practical
 interpretation guide for $R_{\mathrm{norm}}$ values
 in the CBDC deployment context.
 
@@ -859,7 +859,7 @@ $R_{\mathrm{norm}} = 0.035$ falls in the Very Low
 category. Ring Signature and Hybrid Scheme with
 $R_{\mathrm{norm}} \approx 0.069$ fall in the Low
 category. These classifications directly inform the
-policy recommendations in Chapter~\ref{ch,results}.
+policy recommendations in Chapter~\ref{ch:results}.
 
 % ================================================================
 \section{Mitigation Modeling}
@@ -928,7 +928,7 @@ scores from scratch.
 \subsection{Mitigation Strategies Evaluated}
 
 Seven mitigation strategies are evaluated in
-Chapter~\ref{ch,results}. Table~\ref{tab,mitigations}
+Chapter~\ref{ch:results}. Table~\ref{tab:mitigations}
 shows the multiplier configuration of each strategy.
 
 \begin{table}[H]
@@ -999,10 +999,10 @@ monitoring and tax reporting obligations.
 The reference deployment platform for this work is
 Hyperledger Fabric, a permissioned enterprise blockchain
 framework maintained under the Linux Foundation's Hyperledger
-project \citep{hyperledgerfabric2023}. Fabric is chosen
+project \cite{hyperledgerfabric2023}. Fabric is chosen
 because it is the most widely referenced platform in the
 CBDC implementation literature for token-based retail
-deployments \citep{biscgide2024}, and because its
+deployments \cite{biscgide2024}, and because its
 architecture directly determines which metadata fields are
 observable on the ledger.
 
@@ -1011,7 +1011,7 @@ every participant to be enrolled through a Membership Service
 Provider (MSP) before joining the network. This permissioned
 model makes Fabric suitable for CBDC deployment where KYC
 and AML compliance require verified participant identities.
-Androulaki et al. \citeyear{androulaki2018} describe Fabric's
+Androulaki et al. \cite{androulaki2018} describe Fabric's
 core architecture, modular consensus, channel-based data
 partitioning, and chaincode (smart contract) execution in
 isolated containers.
@@ -1066,7 +1066,7 @@ network operator, knows the real-world identity behind every
 wallet address. This is by design, KYC and AML compliance
 require it. However, this does not eliminate the privacy
 problem addressed in this work. As argued in
-Chapter~\ref{ch,introduction}, the metadata privacy problem
+Chapter~\ref{ch:introduction}, the metadata privacy problem
 exists at a different level, it concerns what other
 channel participants, insiders with partial access, and
 adversaries who obtain the transaction log without the
@@ -1092,7 +1092,7 @@ This work models seven metadata attributes, five standard
 attributes present in any CBDC deployment, and two
 Nepal-specific attributes grounded in Nepal's payment
 infrastructure and geographic structure.
-Table~\ref{tab,attribute_set} defines the complete set.
+Table~\ref{tab:attribute_set} defines the complete set.
 
 \begin{table}[H]
 \centering
@@ -1177,7 +1177,7 @@ this ceiling of 28.
 
 Six cryptographic schemes are modeled, spanning the full
 spectrum of realistic token-based CBDC privacy designs.
-Table~\ref{tab,six_schemes} summarises each scheme.
+Table~\ref{tab:six_schemes} summarises each scheme.
 
 \begin{table}[H]
 \centering
@@ -1222,7 +1222,7 @@ wallet address is sequential and permanently fixed to each
 user. No metadata transformation occurs.
 
 \textbf{Blind Signature} applies Chaum's
-\citeyear{chaum1983} blinding protocol. The bank signs a
+\cite{chaum1983} blinding protocol. The bank signs a
 token without seeing its serial number, enabling wallet
 randomisation. The timestamp is coarsened to the hour of
 day (24 values). Amounts and merchant IDs remain at full
@@ -1237,7 +1237,7 @@ the gap between Blind Signature and Ring Signature on the
 risk ladder.
 
 \textbf{Ring Signature} applies the CryptoNote ring
-signature construction \citep{vansaberhagen2013}. The
+signature construction \cite{vansaberhagen2013}. The
 wallet is drawn from a pool 20 times the population size.
 Amounts are bucketed to NPR 100 increments. Merchant
 categories are reduced to 20 broad types. This provides
@@ -1253,7 +1253,7 @@ the spending pattern attack entirely for the wallet
 attribute, but amounts and timestamps remain visible.
 
 \textbf{Zero-Knowledge Proof Token} applies zero-knowledge range proofs
-\citep{groth2015} to reduce all attributes to coarse
+\cite{groth2015} to reduce all attributes to coarse
 disclosure bands. Amounts are restricted to five
 denominations $\{0, 100, 500, 1000, 5000\}$ NPR.
 Timestamps are reduced to day of week (7 values). Merchants
@@ -1286,7 +1286,7 @@ deployment conditions.
 
 For each scheme, the value domain of each attribute is
 set to reflect how that scheme transforms the underlying
-transaction data. Table~\ref{tab,data_gen} describes the
+transaction data. Table~\ref{tab:data_gen} describes the
 generation logic for each scheme-attribute combination.
 
 \begin{table}[H]
@@ -1394,7 +1394,7 @@ def pipeline(df, attrs),
 
 This function, (1) computes $s(a_i)$ for all $m$ attributes;
 (2) computes $\lambda_{ij}$ for all $\binom{m}{2}$ pairs;
-(3) accumulates $\Rraw$ using Equation~\ref{eq,r_raw};
+(3) accumulates $\Rraw$ using Equation~\ref{eq:r_raw};
 (4) normalises to produce $\Rnorm$.
 
 \subsection{Software Environment}
