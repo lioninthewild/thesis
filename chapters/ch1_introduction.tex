@@ -384,61 +384,39 @@ mitigations, differential privacy on amounts,
 These questions are answered through the development
 and application of a formal mathematical model whose
 design, derivation, and implementation are described
-in detail in Chapter~\ref{ch,methodology}, and whose
+in detail in Chapter~\ref{ch:methodology}, and whose
 results are presented and discussed in
-Chapter~\ref{ch,results}.
+Chapter~\ref{ch:results}.
 
 % ================================================================
 \section{Research Objectives}
 \label{sec:objectives}
 % ================================================================
 
-The overarching objective of this work is to develop a
-formal, quantitative framework for measuring metadata
-de-anonymization risk in token-based CBDC systems and to
-apply that framework in Nepal's specific deployment context.
-This overarching objective is broken down into five concrete
-objectives that together define the scope and contribution
-of the work,
+This work aims to develop a formal, quantitative framework
+for measuring metadata de-anonymization risk in token-based
+CBDC systems. This objective is operationalised through the
+following five concrete aims:
 
 \begin{enumerate}
-\item Derive a normalised privacy risk metric from mathematical first
-principles. This metric, denoted $R_{\mathrm{norm}}$, must be bounded
-in the interval $[0, 1]$, must be comparable across different numbers
-of attributes and different population sizes, and must have a proven
-theoretical upper bound that gives the normalisation its meaning.
-Achieving this requires deriving both the raw risk accumulation
-formula and the theoretical maximum against which it is normalised.
+\item Derive a normalised privacy risk metric $R_{\mathrm{norm}}$
+from mathematical first principles, bounded in $[0, 1]$ with a
+proven theoretical upper bound.
 
-\item Model six cryptographic schemes that represent the realistic
-spectrum of token-based CBDC privacy designs. Specifically, these
-schemes are Plain Hash Token, Blind Signature, Hybrid Scheme, Ring
-Signature, Stealth Address, and Zero-Knowledge Proof Token, which span from the weakest
-to the strongest available privacy guarantees. Each scheme must be
-modeled in terms of how it transforms the value domain of each
-observable metadata attribute, so that differences in $R_{\mathrm{norm}}$
-across schemes reflect genuine cryptographic design differences rather
-than arbitrary parameter choices.
+\item Model six cryptographic schemes spanning the full privacy
+spectrum, quantifying how each scheme transforms the value
+domain of observable metadata attributes.
 
-\item Incorporate Nepal-specific context into the model. This means
-identifying the metadata attributes most relevant to Nepal's domestic
-CBDC deployment, grounding their value distributions in Nepal's payment
-infrastructure and geographic structure, and formally justifying the
-exclusion of attributes outside the domestic scope.
+\item Incorporate Nepal-specific metadata attributes into the
+privacy risk model.
 
-\item Conduct a comprehensive empirical analysis covering eight distinct
-experimental conditions, baseline scheme comparison, population
-scalability from village pilot to national scale, mitigation strategy
-effectiveness, attribute sensitivity as the number of modeled
-attributes grows, statistical robustness across multiple random seeds,
-micro-scale behaviour at very small populations, sensitivity of results
-to the interaction coefficient, and worst-case scenario calibration
-against the theoretical maximum.
+\item Conduct empirical analysis across eight experimental
+conditions including scheme comparison, population scalability,
+mitigation effectiveness, and attribute sensitivity.
 
-\item Translate the quantitative findings into actionable policy
-recommendations for the Nepal Rastra Bank, providing a formal basis
-for cryptographic scheme selection that can inform NRB's CBDC
-deployment decision.
+\item Translate quantitative findings into policy recommendations
+for Nepal Rastra Bank to guide CBDC cryptographic scheme
+selection.
 \end{enumerate}
 
 % ================================================================
@@ -519,7 +497,7 @@ and represents a direction for future work.
 \textbf{Static population.} The model assumes a fixed
 population of $N$ users. In practice, a CBDC user base
 grows over time as adoption increases. The scalability
-analysis in Chapter~\ref{ch,results} partially addresses
+analysis in Chapter~\ref{ch:results} partially addresses
 this by testing across a wide range of $N$ values, but
 does not model dynamic user entry and exit.
 
@@ -596,14 +574,14 @@ This report is organised into five chapters, each building
 on the previous to construct a complete argument from
 problem identification through to policy recommendation.
 
-Chapter~\ref{ch,introduction}, the present chapter,
+Chapter~\ref{ch:introduction}, the present chapter,
 establishes the background, context, and motivation for
 the research. It introduces the CBDC privacy problem,
 situates it within Nepal's specific deployment context,
 defines the research questions and objectives, and
 honestly states the scope and limitations of the work.
 
-Chapter~\ref{ch,literature} reviews the existing body of
+Chapter~\ref{ch:literature} reviews the existing body of
 knowledge relevant to this work. It covers the global
 CBDC landscape, the concept of privacy in digital payment
 systems, the cryptographic schemes evaluated in this work,
@@ -614,7 +592,7 @@ Hyperledger Fabric as the reference platform. The chapter
 concludes by identifying the specific research gap that
 this work fills.
 
-Chapter~\ref{ch,methodology} presents the complete
+Chapter~\ref{ch:methodology} presents the complete
 theoretical framework and implementation. It defines the
 system model and adversary model, derives the mathematical
 components of the risk metric from first principles,
@@ -623,7 +601,7 @@ transformations, justifies the Nepal-specific attribute
 set, and documents the synthetic data generation approach
 and Python implementation.
 
-Chapter~\ref{ch,results} presents and discusses the
+Chapter~\ref{ch:results} presents and discusses the
 results of eight analyses. Each analysis is presented
 with its motivating question, methodology, results, and
 interpretation. The chapter covers baseline scheme
@@ -632,7 +610,7 @@ effectiveness, attribute sensitivity, seed sensitivity,
 micro-scale pilot behaviour, lambda sensitivity, and
 worst-case calibration.
 
-Chapter~\ref{ch,conclusions} synthesises the findings,
+Chapter~\ref{ch:conclusions} synthesises the findings,
 provides direct answers to the research questions stated
 in this chapter, summarises the contributions of the
 the work, makes specific recommendations to the Nepal
