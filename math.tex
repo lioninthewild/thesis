@@ -376,7 +376,7 @@ R_{\mathrm{raw}} = \sum_{i=1}^{m} s(a_i) + \sum_{i<j} \lambda_{ij} \cdot s(a_i) 
 
 Where:
 \begin{itemize}
-    \item $m$ = number of attributes (in our model, $m = 7$)
+    \item $m$ = number of observable metadata attributes (in our model, $m = 7$)
     \item The first sum runs over all single attributes
     \item The double sum runs over all unique pairs of attributes ($i$ and $j$ where $i < j$)
 \end{itemize}
@@ -427,7 +427,7 @@ This is perhaps the most important mathematical contribution of the thesis - pro
 \Rmax(m) = m + \binom{m}{2} = m + \frac{m(m-1)}{2}
 \end{equation}
 
-Where $m$ is the number of attributes.
+Where $m$ is the number of observable metadata attributes.
 
 \textbf{Theorem (Proof):}
 
@@ -482,7 +482,7 @@ Where:
 \begin{itemize}
     \item $\Rraw$ = the calculated raw risk score
     \item $\Rmax(m) = m + \binom{m}{2}$ = theoretical maximum
-    \item $m$ = number of attributes
+    \item $m$ = number of observable metadata attributes
 \end{itemize}
 
 For our model with $m = 7$:
