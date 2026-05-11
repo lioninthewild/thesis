@@ -82,13 +82,13 @@ measurably distinct privacy outcome.
 \textbf{Wallet dominance.} Across all six schemes, the wallet
 attribute is the single largest contributor to $\Rnorm$. Even
 Zero-Knowledge Proof Token, with its nullifier pool of size $N \times 100$,
-shows $s(\text{wallet}) = 0.982$, nearly every user has a
+shows the single-attribute uniqueness score for the wallet attribute ($s(\text{wallet}) = 0.982$), nearly every user has a
 unique nullifier at $N = 1{,}000$. The critical difference
 between schemes is not whether the wallet is unique but whether
 it is \textit{linkable} across transactions. Stealth Address
 and Zero-Knowledge Proof Token produce per-transaction wallets with no
 mathematical link between them, breaking the spending pattern
-attack even when $s(\text{wallet})$ is high.
+attack even when the single-attribute uniqueness score for the wallet attribute ($s(\text{wallet})$) is high.
 
 \textbf{Hybrid and Ring Signature equivalence.} Hybrid Scheme
 ($\Rnorm = 0.067$) and Ring Signature ($\Rnorm = 0.069$) are
@@ -99,7 +99,7 @@ hybrid privacy design delivers equivalent metadata protection
 to a full ring signature construction.
 
 \textbf{Nepal-specific attributes.} Payment channel and
-transaction zone show $s(a_i) = 0.000$ across all schemes at
+transaction zone show the single-attribute uniqueness score ($s(a_i) = 0.000$) across all schemes at
 $N = 1{,}000$. Nepal's skewed demographic distributions,
 60\% mobile wallet, 35\% Kathmandu valley, mean most users
 share these attribute values and are not uniquely identifiable
@@ -241,7 +241,7 @@ primary privacy engineering priority.
 
 \textbf{Nepal Controls produce zero reduction.} Nepal Controls
 apply multipliers to payment channel and transaction zone.
-Because both attributes have $s(a_i) = 0$ at $N = 1{,}000$
+Because both attributes have the single-attribute uniqueness score ($s(a_i) = 0$) at $N = 1{,}000$
 due to Nepal's demographic clustering, the multipliers have
 no effect on $\Rnorm$. This confirms that Nepal's passive
 demographic protection on these fields makes explicit control
